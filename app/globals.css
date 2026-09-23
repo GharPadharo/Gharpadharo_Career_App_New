@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand Colors */
+  --primary: #525599;
+  --primary-hover: #46477f;
+  --accent: #ffb400;
+  --heading: #0f172a;
+  --body: #475569;
+  --muted: #64748b;
+  --background: #f8fafc;
+  --card: #ffffff;
+  --border: #e2e8f0;
+  --footer: #0f1115;
 }
 
 @theme inline {
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-accent: var(--accent);
+  --color-heading: var(--heading);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-border: var(--border);
+  --color-footer: var(--footer);
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base element defaults */
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--body);
+    font-family: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: var(--heading);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Reusable Design System Component Utilities */
+@layer components {
+  /* Standard Page Container */
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full;
+  }
+
+  /* Major Section Spacing */
+  .section-spacing {
+    @apply py-16 lg:py-24;
+  }
+
+  /* Primary Button Style */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-white bg-primary hover:bg-primary-hover transition-all duration-200 shadow-sm active:scale-[0.98] cursor-pointer;
+  }
+
+  /* Secondary Button Style */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold bg-white text-heading border border-border hover:border-primary hover:text-primary transition-all duration-200 shadow-sm active:scale-[0.98] cursor-pointer;
+  }
+
+  /* Form Input Style */
+  .input-base {
+    @apply w-full bg-white border border-border text-heading placeholder:text-muted rounded-xl px-4 py-2.5 outline-none transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 shadow-xs;
+  }
+
+  /* Standard Card Surface */
+  .card-base {
+    @apply bg-card border border-border rounded-2xl shadow-sm p-6;
+  }
+
+  /* Large Feature Panel */
+  .panel-base {
+    @apply bg-card border border-border rounded-3xl shadow-md p-8 lg:p-12;
+  }
+
+  /* Tag / Chip Base */
+  .chip-base {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold;
+  }
 }
