@@ -1,118 +1,98 @@
 import Image from "next/image";
+import Link from "next/link";
 
 /**
- * Life at GharPadharo Image Data Structure
- * 
- * Future replacement is straightforward: simply update src, alt, and caption values below.
- * No component restructuring is needed when swapping temporary assets with production photography.
+ * Centralized image configuration for homepage preview
  */
-const lifeAtImages = {
-  featured: {
-    src: "/images/life-at-gharpadharo/placeholder-mountains.jpg",
-    alt: "Placeholder view of the Himalayan mountain landscape in Uttarakhand",
-    caption: "A place to do meaningful work",
-  },
-  workspace: {
-    src: "/images/life-at-gharpadharo/placeholder-workspace.jpg",
-    alt: "Placeholder modern workspace desk with laptop and natural daylight",
-    caption: "Learn. Collaborate. Create.",
-  },
-  collaboration: {
+const previewImages = {
+  team: {
     src: "/images/life-at-gharpadharo/placeholder-collaboration.jpg",
-    alt: "Placeholder team members collaborating around a work desk",
-    caption: "Collaborate. Innovate. Build.",
+    alt: "GharPadharo team collaborating around a desk",
+  },
+  place: {
+    src: "/images/life-at-gharpadharo/placeholder-mountains.jpg",
+    alt: "Mountain landscape in Uttarakhand",
   },
 };
 
 /**
- * LifeAtGharPadharo Component
+ * LifeAtGharPadharo Preview Component (Homepage)
  * 
- * Visual employer-brand section (id="life-at-gharpadharo") matching the reference design:
- * - Left: Eyebrow, Heading, description.
- * - Right: Asymmetric image collage (large focal mountain image on left, workspace & collaboration team stacked on right)
- *   with subtle typography overlays.
+ * Compact, image-led promotional teaser section linking to the dedicated `/life-at-gharpadharo` page.
+ * Features:
+ * - Eyebrow: LIFE AT GHARPADHARO
+ * - Heading: Come build with us.
+ * - Supporting copy: Get a glimpse of the people, places, and experiences behind the work.
+ * - Primary CTA: Explore Life at GharPadharo →
+ * - Compact visual preview with team and place imagery.
  */
 export default function LifeAtGharPadharo() {
   return (
     <section
       id="life-at-gharpadharo"
-      className="w-full py-16 lg:py-24 bg-white border-b border-border/60 scroll-mt-20"
+      className="w-full py-10 sm:py-12 lg:py-16 bg-white border-b border-border/60 scroll-mt-20"
     >
       <div className="container-custom">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-center">
-          {/* Left Column: Heading and Narrative */}
-          <div className="lg:col-span-5 space-y-6 text-center lg:text-left">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+          {/* Left Column: Heading, Copy & Action */}
+          <div className="lg:col-span-5 space-y-5 text-center lg:text-left">
             <span className="text-xs font-bold text-primary tracking-widest uppercase inline-block">
               LIFE AT GHARPADHARO
             </span>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-heading tracking-tight leading-[1.16]">
-              Life at{" "}
-              <span className="text-primary">GharPadharo</span>
+            <h2 className="text-3xl sm:text-4xl lg:text-[38px] font-extrabold text-heading tracking-tight leading-[1.18]">
+              Come build with us.
             </h2>
 
             <p className="text-sm sm:text-base text-body leading-relaxed max-w-lg mx-auto lg:mx-0 font-normal">
-              Great work happens when people have the space to learn, collaborate,
-              experiment, and build together.
+              Get a glimpse of the people, places, and experiences behind the work.
             </p>
+
+            <div className="pt-1 flex justify-center lg:justify-start">
+              <Link
+                href="/life-at-gharpadharo"
+                className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm sm:text-base font-semibold px-6 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+              >
+                <span>Explore Life at GharPadharo</span>
+                <span aria-hidden="true">&rarr;</span>
+              </Link>
+            </div>
           </div>
 
-          {/* Right Column: Asymmetric Image Collage */}
+          {/* Right Column: Compact Visual Preview Cards */}
           <div className="lg:col-span-7">
-            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 sm:gap-5 items-stretch">
-              {/* Left Tall Focal Image: Himalayan Landscape */}
-              <div className="sm:col-span-7 relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 aspect-[4/5] sm:aspect-auto sm:h-full min-h-[300px] sm:min-h-[380px] group">
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+              {/* Collaboration Team Photo Card */}
+              <div className="sm:col-span-7 relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 aspect-[4/3] group">
                 <Image
-                  src={lifeAtImages.featured.src}
-                  alt={lifeAtImages.featured.alt}
+                  src={previewImages.team.src}
+                  alt={previewImages.team.alt}
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                  priority={false}
+                  className="object-cover transition-transform duration-500 group-hover:scale-103"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-5 left-5 right-5 text-white">
-                  <p className="font-serif italic text-lg sm:text-xl font-medium tracking-wide drop-shadow-sm">
-                    {lifeAtImages.featured.caption}
-                  </p>
-                  <div className="h-0.5 w-12 bg-white/70 rounded-full mt-1.5" />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-3.5 left-4 right-4 text-white">
+                  <span className="inline-block text-[11px] font-semibold uppercase tracking-wider bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-md">
+                    People
+                  </span>
                 </div>
               </div>
 
-              {/* Right Stack: Workspace + Collaboration */}
-              <div className="sm:col-span-5 flex flex-col gap-4 sm:gap-5 justify-between">
-                {/* Top: Modern Workspace */}
-                <div className="relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 aspect-[16/10] sm:aspect-[4/3] group">
-                  <Image
-                    src={lifeAtImages.workspace.src}
-                    alt={lifeAtImages.workspace.alt}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 30vw, 260px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/65 via-transparent to-transparent pointer-events-none" />
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <p className="font-serif italic text-sm sm:text-base font-medium tracking-wide drop-shadow-sm">
-                      {lifeAtImages.workspace.caption}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Bottom: Sunset Valley */}
-                <div className="relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 aspect-[16/10] sm:aspect-[4/3] group">
-                  <Image
-                    src={lifeAtImages.collaboration.src}
-                    alt={lifeAtImages.collaboration.alt}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 30vw, 260px"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/65 via-transparent to-transparent pointer-events-none" />
-                  <div className="absolute bottom-4 left-4 right-4 text-white">
-                    <p className="font-serif italic text-sm sm:text-base font-medium tracking-wide drop-shadow-sm">
-                      {lifeAtImages.collaboration.caption}
-                    </p>
-                  </div>
+              {/* Uttarakhand Himalayan Landscape Photo Card */}
+              <div className="sm:col-span-5 relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 aspect-[4/3] group">
+                <Image
+                  src={previewImages.place.src}
+                  alt={previewImages.place.alt}
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-103"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 35vw, 260px"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-3.5 left-4 right-4 text-white">
+                  <span className="inline-block text-[11px] font-semibold uppercase tracking-wider bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-md">
+                    Place
+                  </span>
                 </div>
               </div>
             </div>

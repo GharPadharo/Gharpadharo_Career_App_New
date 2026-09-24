@@ -35,7 +35,7 @@ export default function Header() {
         {/* Brand / Logo */}
         <Link
           href="/"
-          className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-lg py-1"
+          className="flex items-center gap-3 outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded-lg py-1"
           aria-label="GharPadharo Careers Home"
         >
           <Image
@@ -63,7 +63,7 @@ export default function Header() {
             Jobs
           </Link>
           <Link
-            href="/#life-at-gharpadharo"
+            href="/life-at-gharpadharo"
             className="text-sm font-semibold text-slate-700 hover:text-primary transition-colors duration-200"
           >
             Life at GharPadharo
@@ -158,7 +158,7 @@ export default function Header() {
                 Jobs
               </Link>
               <Link
-                href="/#life-at-gharpadharo"
+                href="/life-at-gharpadharo"
                 onClick={() => setIsMenuOpen(false)}
                 className="px-4 py-3.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100 hover:text-primary transition-colors"
               >

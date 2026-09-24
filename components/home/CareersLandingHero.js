@@ -42,7 +42,7 @@ export default function CareersLandingHero() {
               </Link>
 
               <Link
-                href="/#life-at-gharpadharo"
+                href="/life-at-gharpadharo"
                 className="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-sm sm:text-base font-semibold transition-all duration-200 shadow-2xs text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
               >
                 <span>Life at GharPadharo</span>

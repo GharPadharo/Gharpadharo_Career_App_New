@@ -29,7 +29,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/#life-at-gharpadharo"
+                  href="/life-at-gharpadharo"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   Life at GharPadharo
