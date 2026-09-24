@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Close mobile drawer on Escape key and lock body scroll
@@ -27,6 +29,12 @@ export default function Header() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isMenuOpen]);
+
+  const isAdminDashboard = pathname?.startsWith("/admin/dashboard");
+
+  if (isAdminDashboard) {
+    return null;
+  }
 
   return (
     <header className="sticky top-0 z-[100] w-full bg-white border-b border-border shadow-xs">
