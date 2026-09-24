@@ -92,11 +92,11 @@ export default function AdminLoginPage() {
         {/* Navigation back to public portal */}
         <div className="text-center mt-6">
           <Link
-            href="/careers"
+            href="/jobs"
             className="inline-flex items-center text-sm font-medium text-body hover:text-primary transition-colors gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md px-2 py-1"
           >
             <span aria-hidden="true">&larr;</span>
-            <span>Back to Careers</span>
+            <span>Back to Jobs</span>
           </Link>
         </div>
       </div>

@@ -34,7 +34,7 @@ export default function Header() {
       <div className="container-custom h-18 flex items-center justify-between relative z-[100] bg-white">
         {/* Brand / Logo */}
         <Link
-          href="/careers"
+          href="/"
           className="flex items-center gap-3 focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-lg py-1"
           aria-label="GharPadharo Careers Home"
         >
@@ -57,7 +57,7 @@ export default function Header() {
           aria-label="Primary Navigation"
         >
           <Link
-            href="/careers"
+            href="/jobs"
             className="text-sm font-semibold text-slate-700 hover:text-primary transition-colors duration-200"
           >
             Jobs
@@ -151,7 +151,7 @@ export default function Header() {
               aria-label="Mobile Navigation Links"
             >
               <Link
-                href="/careers"
+                href="/jobs"
                 onClick={() => setIsMenuOpen(false)}
                 className="px-4 py-3.5 rounded-xl text-base font-semibold text-slate-800 hover:bg-slate-100 hover:text-primary transition-colors"
               >

@@ -12,7 +12,7 @@ const badgeColorMap = {
  * OpenPositionsPreview Component
  * 
  * Clean, compact preview of 3 current roles pulled directly from lib/mockJobs.js.
- * Matches reference layout with metadata icons and direct link to /careers/jobs/[id].
+ * Matches reference layout with metadata icons and direct link to /jobs/[id].
  */
 export default function OpenPositionsPreview() {
   const previewJobs = mockJobs.slice(0, 3);
@@ -35,7 +35,7 @@ export default function OpenPositionsPreview() {
           </div>
 
           <Link
-            href="/careers"
+            href="/jobs"
             className="hidden sm:inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-primary-hover hover:underline transition-colors shrink-0"
           >
             <span>View all open positions</span>
@@ -59,7 +59,7 @@ export default function OpenPositionsPreview() {
                   <div className="flex items-start justify-between gap-3">
                     <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight leading-snug">
                       <Link
-                        href={`/careers/jobs/${job.id}`}
+                        href={`/jobs/${job.id}`}
                         className="hover:text-primary transition-colors focus:outline-none focus:underline"
                       >
                         {job.title}
@@ -107,7 +107,7 @@ export default function OpenPositionsPreview() {
                     {job.postedText}
                   </time>
                   <Link
-                    href={`/careers/jobs/${job.id}`}
+                    href={`/jobs/${job.id}`}
                     aria-label={`View role details for ${job.title}`}
                     className="inline-flex items-center gap-1 font-semibold text-primary hover:text-primary-hover hover:underline transition-colors"
                   >
@@ -123,7 +123,7 @@ export default function OpenPositionsPreview() {
         {/* Mobile View All Link */}
         <div className="mt-8 text-center sm:hidden">
           <Link
-            href="/careers"
+            href="/jobs"
             className="w-full inline-flex items-center justify-center gap-2 btn-primary px-6 py-3 rounded-xl shadow-xs text-sm font-bold"
           >
             <span>View all open positions</span>

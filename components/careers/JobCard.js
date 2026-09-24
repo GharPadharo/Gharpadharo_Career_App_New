@@ -18,7 +18,7 @@ export default function JobCard({ job }) {
         <div className="flex flex-wrap items-center gap-2.5">
           <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
             <Link
-              href={`/careers/jobs/${job.id}`}
+              href={`/jobs/${job.id}`}
               className="hover:text-primary transition-colors focus:outline-none focus:underline"
             >
               {job.title}
@@ -127,12 +127,12 @@ export default function JobCard({ job }) {
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-3 sm:gap-4 shrink-0 justify-between sm:justify-end w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4 shrink-0 justify-between sm:justify-end w-full sm:w-auto">
           {/* Secondary Link: View full job details */}
           <Link
-            href={`/careers/jobs/${job.id}`}
+            href={`/jobs/${job.id}`}
             aria-label={`View full job details for ${job.title}`}
-            className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-[#525599] hover:text-[#46477f] hover:underline transition-colors focus:outline-none focus:ring-1 focus:ring-primary rounded py-1 px-1"
+            className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary hover:text-primary-hover hover:underline transition-colors focus:outline-none focus:ring-1 focus:ring-primary rounded py-1 px-1"
           >
             <span>View full job details</span>
             <span aria-hidden="true">&rarr;</span>
@@ -140,9 +140,9 @@ export default function JobCard({ job }) {
 
           {/* Primary CTA: Apply Now */}
           <Link
-            href={`/careers/jobs/${job.id}/apply`}
+            href={`/jobs/${job.id}/apply`}
             aria-label={`Apply for ${job.title}`}
-            className="inline-flex items-center justify-center gap-1.5 bg-[#3b5ae8] hover:bg-[#314bc7] text-white text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl shadow-xs transition-all duration-200 shrink-0 active:scale-95 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            className="inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary-hover text-white text-xs sm:text-sm font-bold px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl shadow-xs transition-all duration-200 shrink-0 active:scale-95 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
           >
             <span>Apply Now</span>
             <span aria-hidden="true">&rarr;</span>

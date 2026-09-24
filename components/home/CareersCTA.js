@@ -6,7 +6,7 @@ import Link from "next/link";
  * Minimalist, high-impact CTA banner matching the reference design:
  * - Solid brand purple (#525599) rounded container.
  * - Left: "Ready to build something meaningful?" + subtitle.
- * - Right: White "Explore Open Positions →" button linking to /careers.
+ * - Right: White "Explore Open Positions →" button linking to /jobs.
  */
 export default function CareersCTA() {
   return (
@@ -26,7 +26,7 @@ export default function CareersCTA() {
           {/* Right Button */}
           <div className="shrink-0 w-full sm:w-auto text-center">
             <Link
-              href="/careers"
+              href="/jobs"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-900 text-xs sm:text-sm font-bold px-6 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
             >
               <span>Explore Open Positions</span>

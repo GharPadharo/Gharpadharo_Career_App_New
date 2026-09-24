@@ -81,7 +81,7 @@ export default function AboutGharPadharo() {
 
             <div className="pt-2 flex justify-center lg:justify-start">
               <a
-                href="https://www.gharpadharo.com/"
+                href="https://www.gharpadharo.com/about"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-300 hover:border-slate-400 bg-white hover:bg-slate-50 text-slate-800 text-sm font-semibold transition-all shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"

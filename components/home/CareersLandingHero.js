@@ -34,7 +34,7 @@ export default function CareersLandingHero() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
               <Link
-                href="/careers"
+                href="/jobs"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm sm:text-base font-bold px-6 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
               >
                 <span>Explore Open Positions</span>

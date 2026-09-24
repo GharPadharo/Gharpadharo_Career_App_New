@@ -210,13 +210,13 @@ export default function JobApplicationForm({ job }) {
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
-            href="/careers"
+            href="/jobs"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary-hover text-white text-sm font-bold px-6 py-3 rounded-xl transition-all shadow-xs"
           >
             Back to Jobs
           </Link>
           <Link
-            href={`/careers/jobs/${job.id}`}
+            href={`/jobs/${job.id}`}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-white border border-slate-300 hover:border-primary text-slate-700 hover:text-primary text-sm font-semibold px-6 py-3 rounded-xl transition-colors"
           >
             View Job Details
@@ -658,7 +658,7 @@ export default function JobApplicationForm({ job }) {
       {/* SECTION 6: Submit Button */}
       <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
         <Link
-          href={`/careers/jobs/${job.id}`}
+          href={`/jobs/${job.id}`}
           className="text-xs sm:text-sm font-semibold text-slate-500 hover:text-primary transition-colors focus:outline-none focus:underline order-2 sm:order-1"
         >
           Cancel

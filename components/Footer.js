@@ -29,14 +29,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/careers"
-                  className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
-                >
-                  Teams
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/#life-at-gharpadharo"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
@@ -63,7 +55,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link
-                  href="/careers#interview-preparation"
+                  href="/jobs#interview-preparation"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   Interview Preparation
@@ -71,7 +63,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/careers#resume-tips"
+                  href="/jobs#resume-tips"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   Resume Tips
@@ -79,7 +71,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/careers#events"
+                  href="/jobs#events"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   Career Events
@@ -87,7 +79,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/careers#faq"
+                  href="/jobs#faq"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   FAQ
@@ -95,7 +87,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/careers#blog"
+                  href="/jobs#blog"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   Blog
@@ -113,7 +105,7 @@ export default function Footer() {
             <ul className="space-y-2.5 text-sm">
               <li>
                 <Link
-                  href="#"
+                  href="https://www.instagram.com/ghar_padharo"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   Instagram
@@ -121,7 +113,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="https://www.linkedin.com/company/gharpadharo/"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   LinkedIn
@@ -129,7 +121,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="#"
+                  href="https://www.youtube.com/@gharpadharo"
                   className="text-slate-300 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
                   YouTube
