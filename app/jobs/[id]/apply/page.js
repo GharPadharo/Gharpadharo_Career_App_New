@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import { serializeJob } from "@/lib/jobSerializer";
-import { mockJobs } from "@/lib/mockJobs";
 import JobApplicationForm from "@/components/careers/JobApplicationForm";
 
 export const dynamic = "force-dynamic";
@@ -21,9 +20,7 @@ async function getJobBySlug(id) {
   } catch (error) {
     console.error("Error fetching job for apply page:", error);
   }
-  // Fallback to mock data
-  const fallback = mockJobs.find((j) => j.id === id);
-  return fallback || null;
+  return null;
 }
 
 export async function generateMetadata({ params }) {

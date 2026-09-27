@@ -2,7 +2,6 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import { mockJobs as defaultMockJobs } from "@/lib/mockJobs";
 import JobFilters from "./JobFilters";
 import JobCard from "./JobCard";
 
@@ -16,7 +15,7 @@ const PAGE_SIZE = 4;
  * - State B: Global zero available openings (Explore Life at GharPadharo CTA)
  */
 export default function JobListings({
-  allJobs = defaultMockJobs,
+  allJobs = [],
   searchQuery = "",
   onSearchChange,
 }) {

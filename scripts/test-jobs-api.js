@@ -58,6 +58,10 @@ async function runTests() {
     assert(data.count === 6, `Expected 6 active jobs, received ${data.count}`);
     const allActive = data.jobs.every((j) => j.status === "active");
     assert(allActive, "All returned jobs have status === 'active'");
+    const zeroDraft = data.jobs.every((j) => j.status !== "draft");
+    assert(zeroDraft, "Zero draft jobs returned in public listing");
+    const zeroClosed = data.jobs.every((j) => j.status !== "closed");
+    assert(zeroClosed, "Zero closed jobs returned in public listing");
     const hasPostedText = data.jobs.every((j) => typeof j.postedText === "string");
     assert(hasPostedText, "All returned jobs have valid postedText");
     const hasSlugId = data.jobs.every((j) => j.id === j.slug);
@@ -172,6 +176,25 @@ async function runTests() {
     await mongoose.disconnect();
   } catch (err) {
     assert(false, `Database check threw error: ${err.message}`);
+  }
+
+  // TEST 11: Public Pages Data Source Verification (No mockJobs in public pages)
+  console.log("\n--- 11. Public Pages Data Source Integrity ---");
+  try {
+    const homeCode = fs.readFileSync(path.resolve("app/page.js"), "utf-8");
+    const homePreviewCode = fs.readFileSync(
+      path.resolve("components/home/OpenPositionsPreview.js"),
+      "utf-8"
+    );
+    const jobsPageCode = fs.readFileSync(path.resolve("app/jobs/page.js"), "utf-8");
+    const jobDetailPageCode = fs.readFileSync(path.resolve("app/jobs/[id]/page.js"), "utf-8");
+
+    assert(!homeCode.includes("mockJobs"), "app/page.js does NOT import mockJobs");
+    assert(!homePreviewCode.includes("mockJobs"), "OpenPositionsPreview.js does NOT import mockJobs");
+    assert(!jobsPageCode.includes("mockJobs"), "app/jobs/page.js does NOT import mockJobs");
+    assert(!jobDetailPageCode.includes("mockJobs"), "app/jobs/[id]/page.js does NOT import mockJobs");
+  } catch (err) {
+    assert(false, `Public pages source verification threw error: ${err.message}`);
   }
 
   console.log("\n==================================================");

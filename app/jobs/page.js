@@ -1,7 +1,6 @@
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import { serializeJob } from "@/lib/jobSerializer";
-import { getActiveJobs } from "@/lib/mockJobs";
 import JobsContent from "@/components/careers/JobsContent";
 
 export const dynamic = "force-dynamic";
@@ -39,8 +38,8 @@ export default async function JobsPage() {
     const docs = await Job.find({ status: "active" }).sort({ postedAt: -1, createdAt: -1 });
     activeJobs = docs.map(serializeJob);
   } catch (error) {
-    console.error("Failed to load jobs from database, using fallback:", error);
-    activeJobs = getActiveJobs();
+    console.error("Failed to load jobs from database:", error);
+    activeJobs = [];
   }
 
   return <JobsContent allJobs={activeJobs} />;

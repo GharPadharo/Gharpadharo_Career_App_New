@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { mockJobs } from "@/lib/mockJobs";
 
 const badgeColorMap = {
   "Full-time": "bg-emerald-50 text-emerald-700 border-emerald-200/80",
@@ -11,11 +10,11 @@ const badgeColorMap = {
 /**
  * OpenPositionsPreview Component
  * 
- * Clean, compact preview of 3 current roles pulled directly from lib/mockJobs.js.
+ * Clean, compact preview of current roles sourced directly from MongoDB Atlas.
  * Matches reference layout with metadata icons and direct link to /jobs/[id].
  */
-export default function OpenPositionsPreview() {
-  const previewJobs = mockJobs
+export default function OpenPositionsPreview({ jobs = [] }) {
+  const previewJobs = (jobs || [])
     .filter((job) => !job.status || job.status === "active")
     .slice(0, 3);
 
