@@ -9,7 +9,7 @@ const ALLOWED_MIME_TYPES = [
   "application/msword",
   "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
 ];
-const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
 export default function JobApplicationForm({ job }) {
   // Form values
@@ -32,8 +32,11 @@ export default function JobApplicationForm({ job }) {
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
-  // Validation errors & submission state
+  // Validation errors, submission & server state
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submittingStage, setSubmittingStage] = useState(""); // "uploading" | "submitting"
+  const [serverError, setServerError] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Field change handler
@@ -129,8 +132,8 @@ export default function JobApplicationForm({ job }) {
     return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
   };
 
-  // Form submission
-  const handleSubmit = (e) => {
+  // Form submission connected to POST /api/applications
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = {};
 
@@ -172,9 +175,69 @@ export default function JobApplicationForm({ job }) {
       return;
     }
 
-    // Success: frontend confirmation without sending or saving data
-    setErrors({});
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    setServerError(null);
+
+    try {
+      // 1. Upload resume to POST /api/uploads/resume
+      setSubmittingStage("uploading");
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", resumeFile);
+
+      const uploadRes = await fetch("/api/uploads/resume", {
+        method: "POST",
+        body: uploadFormData,
+      });
+
+      const uploadData = await uploadRes.json().catch(() => ({}));
+
+      if (!uploadRes.ok || !uploadData.success) {
+        throw new Error(
+          uploadData.error || "Failed to upload resume. Please check your document and try again."
+        );
+      }
+
+      const uploadedResume = uploadData.resume;
+
+      // 2. Submit application with uploaded resume metadata to POST /api/applications
+      setSubmittingStage("submitting");
+      const payload = {
+        jobSlug: job.slug || job.id,
+        jobId: job._id || undefined,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        currentJobTitle: formData.currentJobTitle.trim(),
+        experience: formData.experience,
+        linkedin: formData.linkedin.trim(),
+        portfolio: formData.portfolio.trim(),
+        coverLetter: formData.coverLetter.trim(),
+        resume: uploadedResume,
+        consent: formData.consent,
+      };
+
+      const res = await fetch("/api/applications", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to submit application. Please try again.");
+      }
+
+      setErrors({});
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error("Application submission error:", err);
+      setServerError(err.message || "An error occurred while submitting your application.");
+    } finally {
+      setIsSubmitting(false);
+      setSubmittingStage("");
+    }
   };
 
   // Success Confirmation Screen
@@ -564,7 +627,7 @@ export default function JobApplicationForm({ job }) {
               <span className="text-primary font-bold">browse</span>
             </p>
             <p id="resume-help" className="text-xs text-slate-400 mt-2 font-medium">
-              PDF, DOC, or DOCX — max 5MB
+              PDF, DOC, or DOCX — max 10MB
             </p>
           </div>
         ) : (
@@ -655,6 +718,35 @@ export default function JobApplicationForm({ job }) {
         )}
       </div>
 
+      {/* Server Error Alert Banner */}
+      {serverError && (
+        <div
+          role="alert"
+          className="p-4 sm:p-5 rounded-2xl bg-red-50 border border-red-200 text-red-900 flex items-start justify-between shadow-2xs animate-in fade-in duration-200"
+        >
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5">
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-sm font-bold">Submission failed</p>
+              <p className="text-xs text-red-700 mt-0.5 font-medium leading-relaxed">
+                {serverError}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setServerError(null)}
+            className="text-xs font-bold text-red-800 hover:text-red-950 underline shrink-0 ml-4 pt-1 cursor-pointer"
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
       {/* SECTION 6: Submit Button */}
       <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
         <Link
@@ -666,10 +758,29 @@ export default function JobApplicationForm({ job }) {
 
         <button
           type="submit"
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#3b5ae8] hover:bg-[#314bc7] text-white text-sm sm:text-base font-bold px-8 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 cursor-pointer order-1 sm:order-2 focus:outline-none focus:ring-2 focus:ring-primary/40"
+          disabled={isSubmitting}
+          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm sm:text-base font-bold px-8 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 cursor-pointer order-1 sm:order-2 focus:outline-none focus:ring-2 focus:ring-primary/40"
         >
-          <span>Submit Application</span>
-          <span aria-hidden="true">&rarr;</span>
+          {isSubmitting ? (
+            <>
+              <svg className="w-4 h-4 animate-spin text-white" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              <span>
+                {submittingStage === "uploading"
+                  ? "Uploading resume..."
+                  : submittingStage === "submitting"
+                  ? "Submitting application..."
+                  : "Processing..."}
+              </span>
+            </>
+          ) : (
+            <>
+              <span>Submit Application</span>
+              <span aria-hidden="true">&rarr;</span>
+            </>
+          )}
         </button>
       </div>
     </form>

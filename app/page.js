@@ -6,16 +6,20 @@ import AboutGharPadharo from "@/components/home/AboutGharPadharo";
 import CareersCTA from "@/components/home/CareersCTA";
 
 export const metadata = {
-  title: "GharPadharo Careers | Build the Future With Us",
+  title: {
+    absolute:
+      "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
+  },
   description:
-    "Join GharPadharo and build something meaningful. Explore career opportunities across technology, product, operations, marketing, and data science in Uttarakhand.",
+    "GharPadharo is a property and rental technology platform connecting property seekers and owners. Explore career opportunities across technology, product, operations, and growth.",
   alternates: {
     canonical: "https://career.gharpadharo.com/",
   },
   openGraph: {
-    title: "GharPadharo Careers | Build the Future With Us",
+    title:
+      "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
     description:
-      "Join GharPadharo and build something meaningful. Explore career opportunities across technology, product, operations, marketing, and data science in Uttarakhand.",
+      "GharPadharo is a property and rental technology platform connecting property seekers and owners. Explore career opportunities across technology, product, operations, and growth.",
     url: "https://career.gharpadharo.com/",
     siteName: "GharPadharo Careers",
     locale: "en_IN",
@@ -23,9 +27,10 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GharPadharo Careers | Build the Future With Us",
+    title:
+      "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
     description:
-      "Join GharPadharo and build something meaningful. Explore career opportunities across technology, product, operations, marketing, and data science in Uttarakhand.",
+      "GharPadharo is a property and rental technology platform connecting property seekers and owners. Explore career opportunities across technology, product, operations, and growth.",
   },
 };
 

@@ -1,24 +1,24 @@
-import CareersHero from "@/components/careers/CareersHero";
-import JobListings from "@/components/careers/JobListings";
+import { connectDB } from "@/lib/mongodb";
+import Job from "@/models/Job";
+import { serializeJob } from "@/lib/jobSerializer";
+import { getActiveJobs } from "@/lib/mockJobs";
+import JobsContent from "@/components/careers/JobsContent";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
-  title: "GharPadharo Careers | Join Our Team",
+  title: {
+    absolute: "Jobs at GharPadharo | Careers",
+  },
   description:
-    "Explore career opportunities at GharPadharo. Discover jobs, teams, and opportunities to build your career with us.",
-  keywords: [
-    "GharPadharo Careers",
-    "Ghar Padharo jobs",
-    "startup careers India",
-    "tech jobs Dehradun",
-    "remote jobs India",
-  ],
+    "Explore current career opportunities at GharPadharo across technology, product, operations, and more. Find your next role with us.",
   alternates: {
     canonical: "https://career.gharpadharo.com/jobs",
   },
   openGraph: {
-    title: "GharPadharo Careers | Join Our Team",
+    title: "Jobs at GharPadharo | Careers",
     description:
-      "Explore career opportunities at GharPadharo. Discover jobs, teams, and opportunities to build your career with us.",
+      "Explore current career opportunities at GharPadharo across technology, product, operations, and more. Find your next role with us.",
     url: "https://career.gharpadharo.com/jobs",
     siteName: "GharPadharo Careers",
     locale: "en_IN",
@@ -26,17 +26,22 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GharPadharo Careers | Join Our Team",
+    title: "Jobs at GharPadharo | Careers",
     description:
-      "Explore career opportunities at GharPadharo. Discover jobs, teams, and opportunities to build your career with us.",
+      "Explore current career opportunities at GharPadharo across technology, product, operations, and more. Find your next role with us.",
   },
 };
 
-export default function JobsPage() {
-  return (
-    <>
-      <CareersHero />
-      <JobListings />
-    </>
-  );
+export default async function JobsPage() {
+  let activeJobs = [];
+  try {
+    await connectDB();
+    const docs = await Job.find({ status: "active" }).sort({ postedAt: -1, createdAt: -1 });
+    activeJobs = docs.map(serializeJob);
+  } catch (error) {
+    console.error("Failed to load jobs from database, using fallback:", error);
+    activeJobs = getActiveJobs();
+  }
+
+  return <JobsContent allJobs={activeJobs} />;
 }

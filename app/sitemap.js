@@ -4,12 +4,14 @@ export default function sitemap() {
   const baseUrl = "https://career.gharpadharo.com";
   const currentDate = new Date().toISOString();
 
-  const jobUrls = mockJobs.map((job) => ({
-    url: `${baseUrl}/jobs/${job.id}`,
-    lastModified: currentDate,
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  const jobUrls = mockJobs
+    .filter((job) => !job.status || job.status === "active")
+    .map((job) => ({
+      url: `${baseUrl}/jobs/${job.id}`,
+      lastModified: currentDate,
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }));
 
   return [
     {

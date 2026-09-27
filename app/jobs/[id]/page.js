@@ -1,6 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import mongoose from "mongoose";
+import { connectDB } from "@/lib/mongodb";
+import Job from "@/models/Job";
+import { serializeJob } from "@/lib/jobSerializer";
 import { mockJobs } from "@/lib/mockJobs";
+
+export const dynamic = "force-dynamic";
 
 const badgeColorMap = {
   "Full-time": "bg-emerald-50 text-emerald-700 border-emerald-200/80",
@@ -16,27 +22,47 @@ const employmentTypeMap = {
   Internship: "INTERN",
 };
 
-export function generateStaticParams() {
-  return mockJobs.map((job) => ({ id: job.id }));
+async function getJobBySlug(id) {
+  try {
+    await connectDB();
+    const isObjectId = mongoose.Types.ObjectId.isValid(id);
+    const query = isObjectId ? { $or: [{ slug: id }, { _id: id }] } : { slug: id };
+    const doc = await Job.findOne(query);
+    if (doc) {
+      return serializeJob(doc);
+    }
+  } catch (error) {
+    console.error("Error fetching job from database:", error);
+  }
+  // Fallback to mock data
+  const fallback = mockJobs.find((j) => j.id === id);
+  return fallback || null;
 }
 
 export async function generateMetadata({ params }) {
   const { id } = await params;
-  const job = mockJobs.find((j) => j.id === id);
+  const job = await getJobBySlug(id);
 
-  if (!job) {
+  if (!job || job.status === "draft") {
     return {
       title: "Job Not Found | GharPadharo Careers",
-      description: "The requested job position does not exist or has closed.",
+      description: "The requested job position does not exist or is not available.",
     };
   }
 
-  const title = `${job.title} | GharPadharo Careers`;
-  const description = `${job.title} opportunity in ${job.team} at GharPadharo. ${job.description}`;
+  const isClosed = job.status === "closed";
+  const title = isClosed
+    ? `${job.title} (Applications Closed) | GharPadharo Careers`
+    : `${job.title} | GharPadharo Careers`;
+  const description = isClosed
+    ? `The position for ${job.title} at GharPadharo is now closed and no longer accepting applications.`
+    : job.description;
   const canonicalUrl = `https://career.gharpadharo.com/jobs/${job.id}`;
 
   return {
-    title,
+    title: {
+      absolute: title,
+    },
     description,
     alternates: {
       canonical: canonicalUrl,
@@ -59,12 +85,13 @@ export async function generateMetadata({ params }) {
 
 export default async function JobDetailsPage({ params }) {
   const { id } = await params;
-  const job = mockJobs.find((j) => j.id === id);
+  const job = await getJobBySlug(id);
 
-  if (!job) {
+  if (!job || job.status === "draft") {
     notFound();
   }
 
+  const isClosed = job.status === "closed";
   const badgeClasses =
     badgeColorMap[job.type] || "bg-slate-50 text-slate-700 border-slate-200";
 
@@ -140,7 +167,36 @@ export default async function JobDetailsPage({ params }) {
                 >
                   {job.type}
                 </span>
+                {isClosed && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500" aria-hidden="true" />
+                    Closed
+                  </span>
+                )}
               </div>
+
+              {/* Closed position notice banner */}
+              {isClosed && (
+                <div className="mt-3.5 p-3.5 bg-slate-50 border border-slate-200/90 rounded-xl flex items-center gap-3 text-xs sm:text-sm text-slate-700 font-medium">
+                  <svg
+                    className="w-5 h-5 text-slate-500 shrink-0"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>
+                    This position is closed and no longer accepting applications.
+                  </span>
+                </div>
+              )}
 
               {/* Metadata row */}
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm text-slate-600 font-medium pt-1">
@@ -201,7 +257,7 @@ export default async function JobDetailsPage({ params }) {
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth={1.8}
-                      d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"
+                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                     />
                   </svg>
                   <span>{job.experience}</span>
@@ -230,14 +286,23 @@ export default async function JobDetailsPage({ params }) {
 
             {/* Header Apply CTA */}
             <div className="shrink-0">
-              <Link
-                href={`/jobs/${job.id}/apply`}
-                aria-label={`Apply for ${job.title}`}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm sm:text-base font-bold px-7 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 text-center focus:outline-none focus:ring-2 focus:ring-primary/40"
-              >
-                <span>Apply Now</span>
-                <span aria-hidden="true">&rarr;</span>
-              </Link>
+              {isClosed ? (
+                <span
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-100 border border-slate-200 text-slate-500 text-sm sm:text-base font-bold px-7 py-3.5 rounded-xl cursor-not-allowed select-none text-center"
+                  aria-disabled="true"
+                >
+                  Applications Closed
+                </span>
+              ) : (
+                <Link
+                  href={`/jobs/${job.id}/apply`}
+                  aria-label={`Apply for ${job.title}`}
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm sm:text-base font-bold px-7 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 text-center focus:outline-none focus:ring-2 focus:ring-primary/40"
+                >
+                  <span>Apply Now</span>
+                  <span aria-hidden="true">&rarr;</span>
+                </Link>
+              )}
             </div>
           </div>
         </section>
@@ -425,14 +490,23 @@ export default async function JobDetailsPage({ params }) {
 
               {/* Sidebar Action Buttons */}
               <div className="pt-2 space-y-3">
-                <Link
-                  href={`/jobs/${job.id}/apply`}
-                  aria-label={`Apply for ${job.title}`}
-                  className="w-full inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary-hover text-white text-sm font-bold px-5 py-3 rounded-xl shadow-xs transition-all duration-200 text-center active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/40"
-                >
-                  <span>Apply Now</span>
-                  <span aria-hidden="true">&rarr;</span>
-                </Link>
+                {isClosed ? (
+                  <span
+                    className="w-full inline-flex items-center justify-center bg-slate-100 border border-slate-200 text-slate-500 text-sm font-bold px-5 py-3 rounded-xl cursor-not-allowed select-none text-center"
+                    aria-disabled="true"
+                  >
+                    Applications Closed
+                  </span>
+                ) : (
+                  <Link
+                    href={`/jobs/${job.id}/apply`}
+                    aria-label={`Apply for ${job.title}`}
+                    className="w-full inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary-hover text-white text-sm font-bold px-5 py-3 rounded-xl shadow-xs transition-all duration-200 text-center active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  >
+                    <span>Apply Now</span>
+                    <span aria-hidden="true">&rarr;</span>
+                  </Link>
+                )}
 
                 <Link
                   href="/jobs"

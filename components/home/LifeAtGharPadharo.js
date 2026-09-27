@@ -41,11 +41,13 @@ export default function LifeAtGharPadharo() {
             </span>
 
             <h2 className="text-3xl sm:text-4xl lg:text-[38px] font-extrabold text-heading tracking-tight leading-[1.18]">
-              Come build with us.
+              Build for people. Learn from the problem. Grow with the team.
             </h2>
 
             <p className="text-sm sm:text-base text-body leading-relaxed max-w-lg mx-auto lg:mx-0 font-normal">
-              Get a glimpse of the people, places, and experiences behind the work.
+              The problems we work on are real — helping people find places to
+              live and helping property owners reach the right people. We bring
+              together engineering, design, operations and growth to solve them.
             </p>
 
             <div className="pt-1 flex justify-center lg:justify-start">

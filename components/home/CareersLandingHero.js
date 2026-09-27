@@ -16,20 +16,17 @@ export default function CareersLandingHero() {
           {/* Left Column: Heading, Copy, and CTAs */}
           <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
             <span className="text-xs font-bold text-primary tracking-widest uppercase inline-block">
-              BUILD THE FUTURE WITH US
+              CAREERS AT GHARPADHARO
             </span>
 
             <h1 className="text-3xl sm:text-4xl lg:text-[48px] font-extrabold text-heading tracking-tight leading-[1.14]">
-              Build something
-              <br />
-              meaningful with
-              <br />
-              <span className="text-primary">GharPadharo.</span>
+              Build technology that makes finding a place simpler.
             </h1>
 
             <p className="text-sm sm:text-base text-body leading-relaxed max-w-lg mx-auto lg:mx-0 font-normal">
-              Join a team of curious people building technology, products, and
-              experiences that make a real difference.
+              GharPadharo is building a more transparent way to discover rooms,
+              PGs, hostels and flats — connecting property seekers and owners
+              directly.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">

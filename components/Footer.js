@@ -197,8 +197,8 @@ export default function Footer() {
               Accessibility
             </Link>
           </div>
-          <p className="text-center md:text-right">
-            © 2024 GharPadharo. All rights reserved.
+          <p className="text-center md:text-right" suppressHydrationWarning>
+            © {new Date().getFullYear()} GharPadharo. All rights reserved.
           </p>
         </div>
       </div>

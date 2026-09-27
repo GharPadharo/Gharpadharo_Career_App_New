@@ -17,7 +17,20 @@ export const metadata = {
   },
 };
 
-export default function AdminLoginPage() {
+export default async function AdminLoginPage({ searchParams }) {
+  const params = await searchParams;
+  const error = params?.error;
+  const callbackUrl = params?.callbackUrl || "/admin/dashboard";
+
+  let errorMessage = "";
+  if (error === "AccessDenied") {
+    errorMessage = "Access denied: Your Google account is not authorized as an administrator.";
+  } else if (error === "OAuthCallbackError" || error === "OAuthSignin") {
+    errorMessage = "Could not authenticate with Google. Please check your credentials and try again.";
+  } else if (error) {
+    errorMessage = "Authentication failed. Please try signing in again.";
+  }
+
   return (
     <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center px-4 py-12 sm:py-20 bg-background">
       <div className="w-full max-w-[460px] mx-auto">
@@ -52,19 +65,35 @@ export default function AdminLoginPage() {
             </p>
           </div>
 
-          {/* Structural Error Container (Prepared for future OAuth error responses, e.g. ?error=AccessDenied) */}
-          {/* Currently hidden by default because authentication is not yet active */}
-          <div
-            id="oauth-error-container"
-            aria-live="polite"
-            className="hidden mb-6 p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium"
-          >
-            {/* Future OAuth error message will be rendered here */}
-          </div>
+          {/* Error Notice for Access Denied / OAuth failures */}
+          {errorMessage && (
+            <div
+              id="oauth-error-container"
+              role="alert"
+              aria-live="polite"
+              className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium flex items-start gap-2.5"
+            >
+              <svg
+                className="w-4 h-4 text-red-500 shrink-0 mt-0.5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+              <span>{errorMessage}</span>
+            </div>
+          )}
 
           {/* OAuth Action Button */}
           <div className="space-y-4">
-            <GoogleSignInButton />
+            <GoogleSignInButton callbackUrl={callbackUrl} />
           </div>
 
           {/* Informational Security Notice */}
@@ -81,6 +110,7 @@ export default function AdminLoginPage() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  strokeWidth="2"
                   d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
                 />
               </svg>

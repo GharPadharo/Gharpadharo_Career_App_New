@@ -18,9 +18,13 @@ import Image from "next/image";
  *     3. Supporting: "Join us in building technology that makes everyday experiences simpler."
  *     4. Search: Functional job search with placeholder "Search roles, teams, or keywords..." and "Search Jobs" button.
  */
-export default function CareersHero() {
+export default function CareersHero({ searchQuery = "", onSearchChange }) {
   const handleSearchSubmit = (e) => {
     e.preventDefault();
+    const openingsEl = document.getElementById("openings");
+    if (openingsEl) {
+      openingsEl.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -31,7 +35,7 @@ export default function CareersHero() {
         aria-hidden="true"
       >
         <Image
-          src="/images/careers/careers-hero.jpg"
+          src="/images/careers/careers-hero-office.jpg"
           alt="GharPadharo team collaborating in a modern office"
           fill
           priority
@@ -65,14 +69,14 @@ export default function CareersHero() {
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-[32px] sm:text-[40px] lg:text-[48px] xl:text-[52px] font-extrabold tracking-tight text-white leading-[1.08] max-w-[560px] drop-shadow-sm">
+          <h1 className="text-[32px] sm:text-[40px] lg:text-[48px] xl:text-[52px] font-extrabold tracking-tight text-white leading-[1.08] max-w-[560px]">
             Build what&apos;s next,
             <br />
             <span className="text-[#ffb400]">together.</span>
           </h1>
 
           {/* Short Supporting Text */}
-          <p className="text-xs sm:text-sm md:text-base text-white/85 max-w-[520px] font-normal leading-relaxed drop-shadow-xs">
+          <p className="text-xs sm:text-sm md:text-base text-white/85 max-w-[520px] font-normal leading-relaxed">
             Join us in building technology that makes everyday experiences simpler.
           </p>
 
@@ -106,6 +110,8 @@ export default function CareersHero() {
                 <input
                   id="careers-search-input"
                   type="text"
+                  value={searchQuery}
+                  onChange={(e) => onSearchChange?.(e.target.value)}
                   placeholder="Search roles, teams, or keywords..."
                   className="w-full bg-transparent px-3 py-2 text-slate-800 placeholder-slate-400 text-xs sm:text-sm font-medium outline-none"
                 />

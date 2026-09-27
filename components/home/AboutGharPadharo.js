@@ -35,13 +35,19 @@ export default function AboutGharPadharo() {
             </span>
 
             <h2 className="text-3xl sm:text-4xl lg:text-[40px] font-extrabold text-heading tracking-tight leading-[1.18]">
-              Making housing simpler through technology.
+              Technology for a better way to find a place.
             </h2>
 
-            <p className="text-sm sm:text-base text-body leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal">
-              GharPadharo connects property seekers and owners, making it easier
-              to discover and navigate housing opportunities in Uttarakhand.
-            </p>
+            <div className="space-y-3 max-w-xl mx-auto lg:mx-0">
+              <p className="text-sm sm:text-base text-body leading-relaxed font-normal">
+                GharPadharo connects property seekers and property owners through a
+                platform designed to simplify the housing experience.
+              </p>
+              <p className="text-sm sm:text-base text-body leading-relaxed font-normal">
+                From discovering available rooms and properties to connecting with owners directly,
+                we&apos;re working to make renting more transparent, convenient and trustworthy.
+              </p>
+            </div>
 
             <div className="pt-2 flex justify-center lg:justify-start">
               <a

@@ -15,7 +15,9 @@ const badgeColorMap = {
  * Matches reference layout with metadata icons and direct link to /jobs/[id].
  */
 export default function OpenPositionsPreview() {
-  const previewJobs = mockJobs.slice(0, 3);
+  const previewJobs = mockJobs
+    .filter((job) => !job.status || job.status === "active")
+    .slice(0, 3);
 
   return (
     <section className="w-full py-16 lg:py-20 bg-white border-b border-border/60">
@@ -24,13 +26,13 @@ export default function OpenPositionsPreview() {
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
           <div>
             <span className="text-xs font-bold text-primary tracking-widest uppercase block mb-1.5">
-              OPPORTUNITIES
+              OPEN POSITIONS
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight">
-              Find your next opportunity
+              Work on problems that matter in everyday life.
             </h2>
             <p className="text-sm sm:text-base text-body mt-1.5 font-normal leading-relaxed">
-              Explore open roles across technology, product, operations, marketing, and more.
+              From technology and product to operations, growth and community, we&apos;re building the systems that make property discovery simpler for people and property owners.
             </p>
           </div>
 

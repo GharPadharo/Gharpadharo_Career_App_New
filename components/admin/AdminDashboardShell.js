@@ -23,12 +23,21 @@ export default function AdminDashboardShell({ children, title, subtitle }) {
   let headerSubtitle = subtitle;
 
   if (!headerTitle) {
-    if (pathname === "/admin/dashboard/new") {
+    if (pathname === "/admin/dashboard/jobs/new" || pathname === "/admin/dashboard/new") {
       headerTitle = "Add New Job";
       headerSubtitle = "Create and configure a new career opportunity.";
-    } else if (pathname?.endsWith("/edit")) {
+    } else if (pathname?.includes("/edit")) {
       headerTitle = "Edit Job";
       headerSubtitle = "Update job details, requirements, and publishing status.";
+    } else if (pathname === "/admin/dashboard/jobs") {
+      headerTitle = "Jobs";
+      headerSubtitle = "Create, edit and manage the positions shown on the GharPadharo careers site.";
+    } else if (pathname === "/admin/dashboard/applications") {
+      headerTitle = "Applications";
+      headerSubtitle = "Review candidate submissions and application details.";
+    } else if (pathname?.startsWith("/admin/dashboard/applications/")) {
+      headerTitle = "Application Details";
+      headerSubtitle = "Review candidate background, resume, and application notes.";
     } else {
       headerTitle = "Dashboard";
       headerSubtitle = "Manage jobs and review career activity.";

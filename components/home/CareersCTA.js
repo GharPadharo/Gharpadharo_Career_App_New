@@ -14,12 +14,15 @@ export default function CareersCTA() {
       <div className="container-custom">
         <div className="rounded-3xl bg-[#525599] text-white p-8 sm:p-10 lg:p-12 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm">
           {/* Left Text */}
-          <div className="space-y-1.5 text-center sm:text-left">
-            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight">
-              Ready to build something meaningful?
+          <div className="space-y-2 text-center sm:text-left">
+            <span className="text-xs font-bold text-amber-300 tracking-widest uppercase inline-block">
+              WORK WITH US
+            </span>
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-white tracking-tight leading-snug">
+              Build technology that makes finding a place simpler.
             </h2>
-            <p className="text-xs sm:text-sm text-indigo-100 font-normal leading-relaxed">
-              Explore our open positions and find a role where you can make an impact.
+            <p className="text-xs sm:text-sm text-indigo-100 font-normal leading-relaxed max-w-xl">
+              Work on a real-world problem with people building a more transparent way to discover and rent property.
             </p>
           </div>
 
