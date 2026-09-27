@@ -1,8 +1,5 @@
-import { getActiveJobs, getDraftJobs, getClosedJobs } from "@/lib/mockJobs";
-import { mockApplications } from "@/lib/mockApplications";
 import AdminQuickActions from "@/components/admin/AdminQuickActions";
-import AdminStats from "@/components/admin/AdminStats";
-import RecentActivityCard from "@/components/admin/RecentActivityCard";
+import AdminDashboardOverview from "@/components/admin/AdminDashboardOverview";
 
 export const metadata = {
   title: "Admin Dashboard | GharPadharo Careers",
@@ -14,17 +11,6 @@ export const metadata = {
 };
 
 export default function AdminDashboardPage() {
-  // Derive counts directly from canonical datasets
-  const activeCount = getActiveJobs().length;
-  const draftCount = getDraftJobs().length;
-  const closedCount = getClosedJobs().length;
-  const applicationsCount = mockApplications.length;
-
-  // Compact status breakdown derived dynamically from mockApplications
-  const newCount = mockApplications.filter((app) => app.status === "new").length;
-  const viewedCount = mockApplications.filter((app) => app.status === "viewed").length;
-  const applicationBreakdown = `${newCount} New · ${viewedCount} Viewed`;
-
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* 1. Welcome / Page Heading (Deterministic, Hydration-Safe) */}
@@ -44,17 +30,8 @@ export default function AdminDashboardPage() {
       {/* 2. Quick Actions */}
       <AdminQuickActions />
 
-      {/* 3. 4 Overview Stats */}
-      <AdminStats
-        activeCount={activeCount}
-        draftCount={draftCount}
-        closedCount={closedCount}
-        applicationsCount={applicationsCount}
-        applicationBreakdown={applicationBreakdown}
-      />
-
-      {/* 4. Compact Recruitment Activity Card */}
-      <RecentActivityCard />
+      {/* 3. Live Overview Stats & Real-time Recruitment Activity */}
+      <AdminDashboardOverview />
     </div>
   );
 }

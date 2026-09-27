@@ -2,25 +2,48 @@
  * AdminStats Component
  * 
  * 4 Overview Stat Cards for Admin Dashboard:
- * 1. Active Jobs (currently active & accepting applications)
+ * 1. Active Jobs (currently active & accepting applications, with total count)
  * 2. Draft Jobs (saved internally but not active)
  * 3. Closed Jobs (archived positions closed to applications)
- * 4. Total Applications (applications received)
+ * 4. Total Applications (applications received, with new/viewed breakdown)
  * 
- * Clean, restrained design matching GharPadharo design tokens.
+ * Features:
+ * - Real-time statistics queried from MongoDB Atlas
+ * - Skeletons during loading to prevent misleading zero flashes
+ * - Clean, restrained design matching GharPadharo design tokens
  */
 export default function AdminStats({
-  activeCount = 0,
-  draftCount = 0,
-  closedCount = 0,
-  applicationsCount = 0,
-  applicationBreakdown = null,
+  isLoading = false,
+  jobs = null,
+  applications = null,
+  // Backward compatibility props if passed individually
+  activeCount,
+  draftCount,
+  closedCount,
+  applicationsCount,
+  applicationBreakdown,
 }) {
+  const totalJobs = jobs?.total ?? (activeCount || 0) + (draftCount || 0) + (closedCount || 0);
+  const activeJobs = jobs?.active ?? activeCount ?? 0;
+  const draftJobs = jobs?.draft ?? draftCount ?? 0;
+  const closedJobs = jobs?.closed ?? closedCount ?? 0;
+
+  const totalApps = applications?.total ?? applicationsCount ?? 0;
+  const newApps = applications?.new ?? 0;
+  const viewedApps = applications?.viewed ?? 0;
+
+  const appsBreakdown =
+    applicationBreakdown ||
+    (applications
+      ? `${newApps} New · ${viewedApps} Viewed`
+      : "Applications received");
+
   const cards = [
     {
       title: "ACTIVE JOBS",
-      value: activeCount,
-      supporting: "Currently active and accepting applications",
+      value: activeJobs,
+      badgeText: `Total: ${totalJobs}`,
+      supporting: `Active positions (${totalJobs} total listings)`,
       icon: (
         <svg
           className="w-5 h-5 text-emerald-600"
@@ -42,8 +65,8 @@ export default function AdminStats({
     },
     {
       title: "DRAFT JOBS",
-      value: draftCount,
-      supporting: "Jobs saved internally but not active",
+      value: draftJobs,
+      supporting: "Jobs saved internally but not published",
       icon: (
         <svg
           className="w-5 h-5 text-amber-600"
@@ -65,7 +88,7 @@ export default function AdminStats({
     },
     {
       title: "CLOSED JOBS",
-      value: closedCount,
+      value: closedJobs,
       supporting: "Archived positions closed to applications",
       icon: (
         <svg
@@ -88,8 +111,8 @@ export default function AdminStats({
     },
     {
       title: "TOTAL APPLICATIONS",
-      value: applicationsCount,
-      supporting: applicationBreakdown || "Applications received",
+      value: totalApps,
+      supporting: appsBreakdown,
       icon: (
         <svg
           className="w-5 h-5 text-primary"
@@ -111,16 +134,57 @@ export default function AdminStats({
     },
   ];
 
+  if (isLoading) {
+    return (
+      <div className="space-y-3">
+        {/* Skeleton Top Meta Line */}
+        <div className="flex items-center justify-between text-xs px-0.5 animate-pulse">
+          <div className="h-3.5 w-32 bg-slate-200 rounded" />
+          <div className="h-5 w-28 bg-slate-100 rounded-full" />
+        </div>
+
+        {/* Skeleton 4 Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs animate-pulse flex flex-col justify-between h-[152px]"
+            >
+              <div>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="h-3 w-24 bg-slate-200 rounded" />
+                  <div className="w-9 h-9 rounded-xl bg-slate-100 shrink-0" />
+                </div>
+                <div className="mt-3">
+                  <div className="h-8 w-14 bg-slate-200 rounded" />
+                </div>
+              </div>
+              <div className="pt-3 border-t border-slate-100">
+                <div className="h-3 w-36 bg-slate-100 rounded" />
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-3">
-      {/* Top Meta Line with Demo Data Indicator */}
+      {/* Top Meta Line with Live MongoDB Data Indicator */}
       <div className="flex items-center justify-between text-xs text-muted px-0.5">
-        <span className="font-semibold uppercase tracking-wider text-slate-500">
-          Platform Overview
-        </span>
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200/60 font-medium text-[11px]">
-          <span className="w-1.5 h-1.5 rounded-full bg-slate-400" aria-hidden="true" />
-          Frontend preview data
+        <div className="flex items-center gap-2">
+          <span className="font-semibold uppercase tracking-wider text-slate-500">
+            Platform Overview
+          </span>
+          <span className="text-slate-300">·</span>
+          <span className="font-medium text-slate-600">
+            {totalJobs} Total Jobs ({activeJobs} Active, {draftJobs} Draft, {closedJobs} Closed)
+          </span>
+        </div>
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-medium text-[11px]">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
+          Live MongoDB data
         </span>
       </div>
 
@@ -143,10 +207,15 @@ export default function AdminStats({
                 </div>
               </div>
 
-              <div className="mt-3">
+              <div className="mt-3 flex items-baseline gap-2">
                 <span className="text-3xl font-extrabold text-heading tracking-tight">
                   {card.value}
                 </span>
+                {card.badgeText && (
+                  <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
+                    {card.badgeText}
+                  </span>
+                )}
               </div>
             </div>
 
