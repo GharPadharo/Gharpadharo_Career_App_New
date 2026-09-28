@@ -40,7 +40,13 @@ export async function GET(request) {
       query.status = status.toLowerCase();
     }
 
-    if (jobFilter && jobFilter !== "All" && jobFilter.toLowerCase() !== "all") {
+    const typeFilter = searchParams.get("type") || searchParams.get("applicationType") || "";
+
+    if (typeFilter && typeFilter.toLowerCase() !== "all") {
+      query.applicationType = typeFilter.toLowerCase();
+    } else if (jobFilter === "general" || jobFilter.toLowerCase() === "general") {
+      query.applicationType = "general";
+    } else if (jobFilter && jobFilter !== "All" && jobFilter.toLowerCase() !== "all") {
       query.$or = [{ jobSlug: jobFilter }, { jobTitle: jobFilter }];
     }
 
@@ -54,6 +60,8 @@ export async function GET(request) {
         { email: searchRegex },
         { jobTitle: searchRegex },
         { jobTeam: searchRegex },
+        { opportunityLookingFor: searchRegex },
+        { aboutYourself: searchRegex },
       ];
     }
 

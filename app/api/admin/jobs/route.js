@@ -4,6 +4,7 @@ import Job from "@/models/Job";
 import User from "@/models/User";
 import { requireAdminAuth } from "@/lib/authGuard";
 import { serializeJob } from "@/lib/jobSerializer";
+import { logActivity } from "@/lib/activityLogger";
 
 export const dynamic = "force-dynamic";
 
@@ -176,6 +177,21 @@ export async function POST(request) {
       postedAt: normalizedStatus === "active" ? new Date() : new Date(),
       createdById: adminUserId,
       updatedById: adminUserId,
+    });
+
+    await logActivity({
+      type: "job_created",
+      title: "Job created",
+      description: `${newJob.title} position was created`,
+      entityType: "job",
+      entityId: newJob._id,
+      actorId: adminUserId || null,
+      metadata: {
+        jobTitle: newJob.title,
+        jobSlug: newJob.slug,
+        team: newJob.team,
+        status: newJob.status,
+      },
     });
 
     return NextResponse.json(

@@ -108,11 +108,7 @@ export default function AdminDashboardOverview() {
       />
 
       {/* 2. Real-time Recruitment Activity */}
-      <RecentActivityCard
-        isLoading={isLoading}
-        recentApplications={statsData?.recentApplications || []}
-        recentJobs={statsData?.recentJobs || []}
-      />
+      <RecentActivityCard />
     </div>
   );
 }

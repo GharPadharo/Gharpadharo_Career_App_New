@@ -2,8 +2,10 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
+import User from "@/models/User";
 import { requireAdminAuth } from "@/lib/authGuard";
 import { deleteResume } from "@/lib/cloudinary";
+import { logActivity } from "@/lib/activityLogger";
 
 export const dynamic = "force-dynamic";
 
@@ -135,6 +137,42 @@ export async function DELETE(request) {
     if (deletableIds.length > 0) {
       const deleteResult = await Application.deleteMany({ _id: { $in: deletableIds } });
       deletedCount = deleteResult.deletedCount;
+
+      if (deletedCount > 0) {
+        let adminDoc = null;
+        if (authResult.user?.email) {
+          adminDoc = await User.findOne({ email: authResult.user.email.toLowerCase() });
+        }
+
+        let description = `${deletedCount} applications were deleted`;
+        let singleEntityId = null;
+        let metadata = { deletedCount };
+
+        if (deletedCount === 1) {
+          const singleApp = foundMap.get(deletableIds[0].toString());
+          const jobTitle =
+            singleApp?.jobTitle ||
+            (singleApp?.applicationType === "general"
+              ? "General Application"
+              : "a position");
+          description = `An application for ${jobTitle} was deleted`;
+          singleEntityId = deletableIds[0];
+          metadata = {
+            deletedCount: 1,
+            jobTitle,
+          };
+        }
+
+        await logActivity({
+          type: "application_deleted",
+          title: deletedCount === 1 ? "Application deleted" : "Applications deleted",
+          description,
+          entityType: "application",
+          entityId: singleEntityId,
+          actorId: adminDoc?._id || null,
+          metadata,
+        });
+      }
     }
 
     return NextResponse.json({

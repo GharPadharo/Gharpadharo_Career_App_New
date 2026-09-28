@@ -32,25 +32,58 @@ const ResumeMetadataSchema = new mongoose.Schema(
 
 const ApplicationSchema = new mongoose.Schema(
   {
+    applicationType: {
+      type: String,
+      enum: {
+        values: ["job", "general"],
+        message: "{VALUE} is not a valid application type",
+      },
+      default: "job",
+      index: true,
+    },
     jobId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Job",
-      required: [true, "Job reference is required"],
+      required: [
+        function () {
+          return this.applicationType === "job";
+        },
+        "Job reference is required for job applications",
+      ],
+      default: null,
     },
     jobSlug: {
       type: String,
-      required: [true, "Job slug is required"],
+      required: [
+        function () {
+          return this.applicationType === "job";
+        },
+        "Job slug is required for job applications",
+      ],
       trim: true,
+      default: null,
     },
     jobTitle: {
       type: String,
-      required: [true, "Job title is required"],
+      required: [
+        function () {
+          return this.applicationType === "job";
+        },
+        "Job title is required for job applications",
+      ],
       trim: true,
+      default: null,
     },
     jobTeam: {
       type: String,
-      required: [true, "Job team is required"],
+      required: [
+        function () {
+          return this.applicationType === "job";
+        },
+        "Job team is required for job applications",
+      ],
       trim: true,
+      default: null,
     },
     firstName: {
       type: String,
@@ -75,8 +108,14 @@ const ApplicationSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      required: [true, "Phone number is required"],
+      required: [
+        function () {
+          return this.applicationType === "job";
+        },
+        "Phone number is required for job applications",
+      ],
       trim: true,
+      default: "",
     },
     currentJobTitle: {
       type: String,
@@ -85,8 +124,14 @@ const ApplicationSchema = new mongoose.Schema(
     },
     experience: {
       type: String,
-      required: [true, "Experience is required"],
+      required: [
+        function () {
+          return this.applicationType === "job";
+        },
+        "Experience is required for job applications",
+      ],
       trim: true,
+      default: "",
     },
     linkedin: {
       type: String,
@@ -100,8 +145,24 @@ const ApplicationSchema = new mongoose.Schema(
     },
     coverLetter: {
       type: String,
-      required: [true, "Cover letter is required"],
+      required: [
+        function () {
+          return this.applicationType === "job";
+        },
+        "Cover letter is required for job applications",
+      ],
       trim: true,
+      default: "",
+    },
+    opportunityLookingFor: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+    aboutYourself: {
+      type: String,
+      trim: true,
+      default: "",
     },
     resume: {
       type: ResumeMetadataSchema,
@@ -141,6 +202,8 @@ ApplicationSchema.index({ jobId: 1, createdAt: -1 });
 ApplicationSchema.index({ status: 1, createdAt: -1 });
 ApplicationSchema.index({ email: 1 });
 ApplicationSchema.index({ jobId: 1, email: 1 });
+ApplicationSchema.index({ applicationType: 1, createdAt: -1 });
+ApplicationSchema.index({ applicationType: 1, email: 1 });
 
 // Safe export pattern preventing OverwriteModelError during Next.js hot reload
 export default mongoose.models.Application || mongoose.model("Application", ApplicationSchema);

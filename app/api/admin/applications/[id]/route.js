@@ -5,6 +5,7 @@ import Application from "@/models/Application";
 import User from "@/models/User";
 import { requireAdminAuth } from "@/lib/authGuard";
 import { serializeApplication } from "@/lib/applicationSerializer";
+import { logActivity } from "@/lib/activityLogger";
 
 export const dynamic = "force-dynamic";
 
@@ -105,6 +106,8 @@ export async function PATCH(request, context) {
         );
       }
 
+      const previousStatus = application.status;
+
       if (normalizedStatus === "viewed") {
         application.status = "viewed";
         if (!application.viewedAt) {
@@ -112,18 +115,66 @@ export async function PATCH(request, context) {
         }
 
         // Resolve admin user ID securely from server session
+        let adminDoc = null;
         if (authResult.user.email) {
-          const adminDoc = await User.findOne({
+          adminDoc = await User.findOne({
             email: authResult.user.email.toLowerCase(),
           });
           if (adminDoc) {
             application.viewedBy = adminDoc._id;
           }
         }
+
+        if (previousStatus !== "viewed") {
+          const candidateName =
+            application.candidate ||
+            `${application.firstName || ""} ${application.lastName || ""}`.trim() ||
+            "Candidate";
+
+          await logActivity({
+            type: "application_viewed",
+            title: "Application viewed",
+            description: `${candidateName}'s application was viewed`,
+            entityType: "application",
+            entityId: application._id,
+            actorId: adminDoc?._id || null,
+            metadata: {
+              candidateName,
+              jobTitle:
+                application.jobTitle ||
+                (application.applicationType === "general"
+                  ? "General Application"
+                  : "Position"),
+              jobSlug: application.jobSlug || "",
+              status: "viewed",
+            },
+          });
+        }
       } else {
         application.status = "new";
         application.viewedAt = undefined;
         application.viewedBy = undefined;
+
+        if (previousStatus !== "new") {
+          const candidateName =
+            application.candidate ||
+            `${application.firstName || ""} ${application.lastName || ""}`.trim() ||
+            "Candidate";
+
+          await logActivity({
+            type: "application_status_changed",
+            title: "Status updated",
+            description: `${candidateName}'s application was marked as new`,
+            entityType: "application",
+            entityId: application._id,
+            actorId: null,
+            metadata: {
+              candidateName,
+              status: "new",
+              previousStatus,
+            },
+          });
+        }
       }
     }
 

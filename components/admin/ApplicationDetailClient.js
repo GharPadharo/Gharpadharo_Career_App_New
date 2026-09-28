@@ -77,19 +77,30 @@ export default function ApplicationDetailClient({ application, job }) {
       {/* 3. Header Card: Candidate Display */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs">
         <div className="pb-6 border-b border-slate-100">
-          <span className="text-xs font-bold text-primary tracking-widest uppercase inline-block mb-1">
-            APPLICATION
-          </span>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-xs font-bold text-primary tracking-widest uppercase">
+              APPLICATION
+            </span>
+            {application.applicationType === "general" && (
+              <span className="px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-[11px] font-bold">
+                General Application
+              </span>
+            )}
+          </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight leading-tight">
             {application.candidate}
           </h1>
           <p className="text-sm font-semibold text-slate-700 mt-1">
             Applied for:{" "}
             <span className="text-primary font-bold">
-              {job?.title || application.jobId}
+              {application.applicationType === "general"
+                ? "General Application"
+                : job?.title || application.jobTitle || application.jobId}
             </span>{" "}
             <span className="text-xs text-muted font-normal">
-              ({job?.team || "General"})
+              ({application.applicationType === "general"
+                ? "General Talent Pool"
+                : job?.team || application.jobTeam || "General"})
             </span>
           </p>
         </div>
@@ -113,7 +124,7 @@ export default function ApplicationDetailClient({ application, job }) {
               Phone
             </span>
             <span className="text-slate-800 font-medium">
-              {application.phone}
+              {application.phone || "Not provided"}
             </span>
           </div>
 
@@ -122,7 +133,7 @@ export default function ApplicationDetailClient({ application, job }) {
               Experience
             </span>
             <span className="text-slate-800 font-medium">
-              {application.experience}
+              {application.experience || "Flexible"}
             </span>
           </div>
 
@@ -134,7 +145,7 @@ export default function ApplicationDetailClient({ application, job }) {
               {application.appliedText}
             </span>
             <span className="text-[11px] text-muted">
-              {application.appliedAt.slice(0, 10)}
+              {application.appliedAt?.slice(0, 10)}
             </span>
           </div>
         </div>
@@ -258,10 +269,40 @@ export default function ApplicationDetailClient({ application, job }) {
         </div>
       </div>
 
+      {/* Opportunity of Interest (General Applications) */}
+      {application.opportunityLookingFor && (
+        <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-3">
+          <div>
+            <h2 className="text-lg font-bold text-heading">Opportunity of Interest</h2>
+            <p className="text-xs text-muted mt-0.5">
+              Role or areas of focus the candidate is seeking.
+            </p>
+          </div>
+          <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80 text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+            {application.opportunityLookingFor}
+          </div>
+        </div>
+      )}
+
+      {/* About Candidate (General Applications) */}
+      {application.aboutYourself && (
+        <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-3">
+          <div>
+            <h2 className="text-lg font-bold text-heading">About Candidate</h2>
+            <p className="text-xs text-muted mt-0.5">
+              Candidate&apos;s background and personal introduction.
+            </p>
+          </div>
+          <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80 text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+            {application.aboutYourself}
+          </div>
+        </div>
+      )}
+
       {/* 6. Cover Letter Section */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-4">
         <div>
-          <h2 className="text-lg font-bold text-heading">Cover Letter</h2>
+          <h2 className="text-lg font-bold text-heading">Cover Letter / Note</h2>
           <p className="text-xs text-muted mt-0.5">
             Candidate&apos;s statement of interest and background.
           </p>

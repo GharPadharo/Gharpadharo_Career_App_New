@@ -45,7 +45,7 @@ export async function GET() {
       Application.countDocuments({ status: "new" }),
       Application.countDocuments({ status: "viewed" }),
       Application.find({})
-        .select("_id candidate firstName lastName email jobTitle jobSlug status createdAt")
+        .select("_id candidate firstName lastName email jobTitle jobSlug applicationType status createdAt")
         .sort({ createdAt: -1 })
         .limit(5)
         .lean(),
@@ -64,8 +64,12 @@ export async function GET() {
         `${app.firstName || ""} ${app.lastName || ""}`.trim() ||
         "Applicant",
       email: (app.email || "").toLowerCase().trim(),
-      jobTitle: app.jobTitle || "",
-      jobSlug: app.jobSlug || "",
+      jobTitle:
+        app.jobTitle ||
+        (app.applicationType === "general" || !app.jobSlug
+          ? "General Application"
+          : "Position"),
+      jobSlug: app.jobSlug || "general-application",
       status: app.status || "new",
       createdAt: app.createdAt
         ? new Date(app.createdAt).toISOString()

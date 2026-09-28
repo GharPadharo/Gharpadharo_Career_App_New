@@ -5,6 +5,7 @@ import Job from "@/models/Job";
 import User from "@/models/User";
 import { requireAdminAuth } from "@/lib/authGuard";
 import { serializeJob } from "@/lib/jobSerializer";
+import { logActivity } from "@/lib/activityLogger";
 
 export const dynamic = "force-dynamic";
 
@@ -176,8 +177,12 @@ export async function PATCH(request, context) {
       job.tags = cleanArray(body.skills);
     }
 
+    const previousStatus = job.status;
+    let statusChanged = false;
+    let normalizedStatus = previousStatus;
+
     if (body.status !== undefined) {
-      const normalizedStatus = body.status.toLowerCase();
+      normalizedStatus = body.status.toLowerCase();
       if (!VALID_STATUSES.includes(normalizedStatus)) {
         return NextResponse.json(
           { success: false, error: `Invalid status: ${body.status}` },
@@ -185,23 +190,121 @@ export async function PATCH(request, context) {
         );
       }
 
-      // If moving to active from another status, refresh postedAt
-      if (normalizedStatus === "active" && job.status !== "active") {
-        job.postedAt = new Date();
+      if (normalizedStatus !== previousStatus) {
+        statusChanged = true;
+        // If moving to active from another status, refresh postedAt
+        if (normalizedStatus === "active") {
+          job.postedAt = new Date();
+        }
+        job.status = normalizedStatus;
       }
-
-      job.status = normalizedStatus;
     }
 
     // Attach updatedById audit
+    let adminDoc = null;
     if (authResult.user.email) {
-      const adminDoc = await User.findOne({ email: authResult.user.email.toLowerCase() });
+      adminDoc = await User.findOne({ email: authResult.user.email.toLowerCase() });
       if (adminDoc) {
         job.updatedById = adminDoc._id;
       }
     }
 
     await job.save();
+
+    // Log appropriate activity event
+    if (statusChanged) {
+      if (previousStatus === "draft" && normalizedStatus === "active") {
+        await logActivity({
+          type: "job_published",
+          title: "Job published",
+          description: `${job.title} position was published`,
+          entityType: "job",
+          entityId: job._id,
+          actorId: adminDoc?._id || null,
+          metadata: {
+            jobTitle: job.title,
+            jobSlug: job.slug,
+            previousStatus,
+            status: normalizedStatus,
+          },
+        });
+      } else if (previousStatus === "active" && normalizedStatus === "closed") {
+        await logActivity({
+          type: "job_closed",
+          title: "Job closed",
+          description: `${job.title} position was closed`,
+          entityType: "job",
+          entityId: job._id,
+          actorId: adminDoc?._id || null,
+          metadata: {
+            jobTitle: job.title,
+            jobSlug: job.slug,
+            previousStatus,
+            status: normalizedStatus,
+          },
+        });
+      } else if (previousStatus === "closed" && normalizedStatus === "active") {
+        await logActivity({
+          type: "job_reopened",
+          title: "Job reopened",
+          description: `${job.title} position was reopened`,
+          entityType: "job",
+          entityId: job._id,
+          actorId: adminDoc?._id || null,
+          metadata: {
+            jobTitle: job.title,
+            jobSlug: job.slug,
+            previousStatus,
+            status: normalizedStatus,
+          },
+        });
+      } else {
+        await logActivity({
+          type: "job_updated",
+          title: "Job status changed",
+          description: `${job.title} position moved to ${normalizedStatus}`,
+          entityType: "job",
+          entityId: job._id,
+          actorId: adminDoc?._id || null,
+          metadata: {
+            jobTitle: job.title,
+            jobSlug: job.slug,
+            previousStatus,
+            status: normalizedStatus,
+          },
+        });
+      }
+    } else {
+      // Check if material content changed (title, description, requirements, etc.)
+      const materialKeys = [
+        "title",
+        "team",
+        "type",
+        "experience",
+        "location",
+        "workMode",
+        "description",
+        "responsibilities",
+        "skills",
+        "requirements",
+        "tags",
+      ];
+      const hasMaterialChanges = materialKeys.some((k) => body[k] !== undefined);
+      if (hasMaterialChanges) {
+        await logActivity({
+          type: "job_updated",
+          title: "Job updated",
+          description: `${job.title} details were updated`,
+          entityType: "job",
+          entityId: job._id,
+          actorId: adminDoc?._id || null,
+          metadata: {
+            jobTitle: job.title,
+            jobSlug: job.slug,
+          },
+        });
+      }
+    }
 
     return NextResponse.json({
       success: true,

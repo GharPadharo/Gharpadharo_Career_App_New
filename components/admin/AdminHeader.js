@@ -80,10 +80,7 @@ export default function AdminHeader({
       <div className="relative shrink-0" ref={dropdownRef}>
         <button
           type="button"
-          onClick={() => {
-            setIsDropdownOpen((prev) => !prev);
-            setLogoutFeedback(false);
-          }}
+          onClick={() => setIsDropdownOpen((prev) => !prev)}
           aria-expanded={isDropdownOpen}
           aria-haspopup="menu"
           className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-slate-100/70 transition-colors cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"

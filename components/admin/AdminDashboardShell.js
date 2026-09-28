@@ -43,6 +43,9 @@ export default function AdminDashboardShell({
     } else if (pathname?.startsWith("/admin/dashboard/applications/")) {
       headerTitle = "Application Details";
       headerSubtitle = "Review candidate background, resume, and application notes.";
+    } else if (pathname === "/admin/dashboard/activity") {
+      headerTitle = "Recruitment Activity";
+      headerSubtitle = "Review the full recruitment event log and activity history.";
     } else {
       headerTitle = "Dashboard";
       headerSubtitle = "Manage jobs and review career activity.";

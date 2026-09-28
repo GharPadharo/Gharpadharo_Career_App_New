@@ -34,6 +34,7 @@ export default function AdminApplicationsTable({
 }) {
   const [applications, setApplications] = useState(initialApplications);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedJobId, setSelectedJobId] = useState("All");
 
@@ -100,6 +101,16 @@ export default function AdminApplicationsTable({
   // Derived filtered list
   const filteredApplications = useMemo(() => {
     return applications.filter((app) => {
+      const isGeneral =
+        app.applicationType === "general" ||
+        app.jobId === "general" ||
+        (!app.jobId && !app.jobSlug);
+
+      // Type filter: All, job, general
+      const matchesType =
+        selectedType === "All" ||
+        (selectedType === "general" ? isGeneral : !isGeneral);
+
       // Status filter: All, new, viewed
       const matchesStatus =
         selectedStatus === "All" ||
@@ -107,25 +118,35 @@ export default function AdminApplicationsTable({
 
       // Job filter
       const matchesJob =
-        selectedJobId === "All" || app.jobId === selectedJobId;
+        selectedJobId === "All" ||
+        (selectedJobId === "general"
+          ? isGeneral
+          : app.jobId === selectedJobId || app.jobSlug === selectedJobId);
 
       // Search term
       const query = searchTerm.toLowerCase().trim();
-      const jobTitle = jobsById.get(app.jobId)?.title?.toLowerCase() || "";
+      const jobTitle =
+        jobsById.get(app.jobId)?.title?.toLowerCase() ||
+        app.jobTitle?.toLowerCase() ||
+        (isGeneral ? "general application" : "");
       const matchesSearch =
         !query ||
         app.candidate.toLowerCase().includes(query) ||
         app.email.toLowerCase().includes(query) ||
-        jobTitle.includes(query);
+        jobTitle.includes(query) ||
+        (app.opportunityLookingFor &&
+          app.opportunityLookingFor.toLowerCase().includes(query)) ||
+        (app.aboutYourself &&
+          app.aboutYourself.toLowerCase().includes(query));
 
-      return matchesStatus && matchesJob && matchesSearch;
+      return matchesType && matchesStatus && matchesJob && matchesSearch;
     });
-  }, [applications, searchTerm, selectedStatus, selectedJobId, jobsById]);
+  }, [applications, searchTerm, selectedType, selectedStatus, selectedJobId, jobsById]);
 
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedStatus, selectedJobId]);
+  }, [searchTerm, selectedType, selectedStatus, selectedJobId]);
 
   // Total pages calculation
   const totalPages = Math.max(1, Math.ceil(filteredApplications.length / pageSize));
@@ -260,11 +281,15 @@ export default function AdminApplicationsTable({
   };
 
   const isFiltered = Boolean(
-    searchTerm.trim() || selectedStatus !== "All" || selectedJobId !== "All"
+    searchTerm.trim() ||
+      selectedType !== "All" ||
+      selectedStatus !== "All" ||
+      selectedJobId !== "All"
   );
 
   const handleClearFilters = () => {
     setSearchTerm("");
+    setSelectedType("All");
     setSelectedStatus("All");
     setSelectedJobId("All");
   };
@@ -350,7 +375,7 @@ export default function AdminApplicationsTable({
 
       {/* 1. Filter Toolbar */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-3 sm:p-4 shadow-2xs space-y-3">
-        {/* Controls Row: Responsive 2-column Grid on Mobile, Flex on Desktop */}
+        {/* Controls Row: Responsive Grid on Mobile, Flex on Desktop */}
         <div className="grid grid-cols-2 md:flex md:items-center gap-3">
           {/* 1. Search Input: Spans 2 cols on mobile (100%), flex-1 on desktop */}
           <div className="col-span-2 md:col-auto md:flex-1 relative">
@@ -372,7 +397,7 @@ export default function AdminApplicationsTable({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Search candidates or jobs..."
+              placeholder="Search candidates, roles, or notes..."
               className="w-full h-11 pl-10 pr-9 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition-colors"
               aria-label="Search candidates or jobs"
             />
@@ -390,8 +415,27 @@ export default function AdminApplicationsTable({
             )}
           </div>
 
-          {/* 2. Status Dropdown: 50% width on mobile (col-span-1), 220px on desktop */}
-          <div className="col-span-1 md:col-auto relative w-full md:w-[220px] md:shrink-0">
+          {/* 2. Type Dropdown: All, Job Applications, General Applications */}
+          <div className="col-span-1 md:col-auto relative w-full md:w-[170px] md:shrink-0">
+            <select
+              value={selectedType}
+              onChange={(e) => setSelectedType(e.target.value)}
+              className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
+              aria-label="Filter by Type"
+            >
+              <option value="All">All Types</option>
+              <option value="job">Job Applications</option>
+              <option value="general">General</option>
+            </select>
+            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+
+          {/* 3. Status Dropdown: 50% width on mobile, 150px on desktop */}
+          <div className="col-span-1 md:col-auto relative w-full md:w-[150px] md:shrink-0">
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
@@ -409,15 +453,16 @@ export default function AdminApplicationsTable({
             </div>
           </div>
 
-          {/* 3. Job Dropdown: 50% width on mobile (col-span-1), 220px on desktop */}
-          <div className="col-span-1 md:col-auto relative w-full md:w-[220px] md:shrink-0">
+          {/* 4. Job Dropdown: spans 2 cols on mobile (100%), 200px on desktop */}
+          <div className="col-span-2 md:col-auto relative w-full md:w-[200px] md:shrink-0">
             <select
               value={selectedJobId}
               onChange={(e) => setSelectedJobId(e.target.value)}
               className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden truncate"
               aria-label="Filter by Job"
             >
-              <option value="All">All Jobs</option>
+              <option value="All">All Positions</option>
+              <option value="general">General Applications</option>
               {jobs.map((job) => (
                 <option key={job.id} value={job.id}>
                   {job.title}
@@ -569,14 +614,33 @@ export default function AdminApplicationsTable({
 
                         {/* Position Column: Job Title + Team */}
                         <td className="py-3.5 sm:py-4 px-4">
-                          <div>
-                            <span className="font-semibold text-slate-800 block">
-                              {job?.title || app.jobId}
-                            </span>
-                            <span className="text-xs text-muted block mt-0.5">
-                              {job?.team || "General"}
-                            </span>
-                          </div>
+                          {(() => {
+                            const isGeneral =
+                              app.applicationType === "general" ||
+                              app.jobId === "general" ||
+                              (!app.jobId && !app.jobSlug);
+                            return (
+                              <div>
+                                <span className="font-semibold text-slate-800 flex items-center gap-1.5">
+                                  <span>
+                                    {isGeneral
+                                      ? "General Application"
+                                      : job?.title || app.jobTitle || app.jobId}
+                                  </span>
+                                  {isGeneral && (
+                                    <span className="px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold">
+                                      General
+                                    </span>
+                                  )}
+                                </span>
+                                <span className="text-xs text-muted block mt-0.5">
+                                  {isGeneral
+                                    ? "General Talent Pool"
+                                    : job?.team || app.jobTeam || "General"}
+                                </span>
+                              </div>
+                            );
+                          })()}
                         </td>
 
                         {/* Experience */}
@@ -678,18 +742,39 @@ export default function AdminApplicationsTable({
                       <ApplicationStatusBadge status={app.status} />
                     </div>
 
-                    <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-100 space-y-1">
-                      <div className="text-xs font-semibold text-slate-800">
-                        {job?.title || app.jobId}
-                      </div>
-                      <div className="text-[11px] text-muted flex items-center gap-2">
-                        <span>{job?.team || "General"}</span>
-                        <span aria-hidden="true">&bull;</span>
-                        <span>{app.experience}</span>
-                        <span aria-hidden="true">&bull;</span>
-                        <span>{app.appliedText}</span>
-                      </div>
-                    </div>
+                    {(() => {
+                      const isGeneral =
+                        app.applicationType === "general" ||
+                        app.jobId === "general" ||
+                        (!app.jobId && !app.jobSlug);
+                      return (
+                        <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-100 space-y-1">
+                          <div className="text-xs font-semibold text-slate-800 flex items-center justify-between">
+                            <span>
+                              {isGeneral
+                                ? "General Application"
+                                : job?.title || app.jobTitle || app.jobId}
+                            </span>
+                            {isGeneral && (
+                              <span className="px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold">
+                                General
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-[11px] text-muted flex items-center gap-2">
+                            <span>
+                              {isGeneral
+                                ? "General Talent Pool"
+                                : job?.team || app.jobTeam || "General"}
+                            </span>
+                            <span aria-hidden="true">&bull;</span>
+                            <span>{app.experience || "Flexible"}</span>
+                            <span aria-hidden="true">&bull;</span>
+                            <span>{app.appliedText}</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
 
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-end">
                       <Link
