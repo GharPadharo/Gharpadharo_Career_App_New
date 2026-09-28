@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "add:admin": "node scripts/add-admin.js",
+    "remove:admin": "node scripts/remove-admin.js"
   },
   "dependencies": {
     "cloudinary": "^2.11.0",

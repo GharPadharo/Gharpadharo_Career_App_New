@@ -80,9 +80,9 @@ async function seedDatabase() {
     console.log(`   ✓ Deleted ${deletedJobs.deletedCount} old job(s).`);
     console.log(`   ✓ Deleted ${deletedApps.deletedCount} old application(s).\n`);
 
-    // 3. Seed Development Admin Users from ADMIN_EMAILS
+    // 3. Seed Development Admin Users (ADMIN_SEED_EMAIL or default)
     console.log("3. Seeding development admin user(s)...");
-    const rawAdminEmails = process.env.ADMIN_EMAILS || "admin@gharpadharo.com";
+    const rawAdminEmails = process.env.ADMIN_SEED_EMAIL || process.env.ADMIN_EMAILS || "admin@gharpadharo.com";
     const adminEmails = rawAdminEmails
       .split(",")
       .map((e) => e.trim().toLowerCase())

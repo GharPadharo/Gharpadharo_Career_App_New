@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 /**
  * AdminSidebar Component
@@ -12,10 +12,61 @@ import { useEffect } from "react";
  * - Desktop: Fixed/Sticky left sidebar (w-64)
  * - Mobile: Slide-out drawer with backdrop overlay
  * - Navigation: Overview, Jobs, Applications
+ * - Applications badge: Real-time count of MongoDB Application documents
  * - Bottom: Link to "Back to Careers"
  */
-export default function AdminSidebar({ isOpen, onClose }) {
+export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
   const pathname = usePathname();
+  const [count, setCount] = useState(
+    typeof applicationsCount === "number" ? applicationsCount : null
+  );
+
+  // Sync with prop when passed from server layout
+  useEffect(() => {
+    if (typeof applicationsCount === "number") {
+      setCount(applicationsCount);
+    }
+  }, [applicationsCount]);
+
+  // Fetch count from dashboard stats API
+  const fetchCount = useCallback(async () => {
+    try {
+      const res = await fetch("/api/admin/dashboard/stats");
+      if (res.ok) {
+        const json = await res.json();
+        const total = json?.data?.applications?.total ?? json?.applications?.total;
+        if (typeof total === "number") {
+          setCount(total);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load application count for sidebar:", err);
+    }
+  }, []);
+
+  // Refresh on pathname change (navigation)
+  useEffect(() => {
+    fetchCount();
+  }, [pathname, fetchCount]);
+
+  // Real-time synchronization via custom event and window focus
+  useEffect(() => {
+    const handleUpdate = (e) => {
+      if (typeof e.detail?.count === "number") {
+        setCount(e.detail.count);
+      } else {
+        fetchCount();
+      }
+    };
+
+    window.addEventListener("applications-updated", handleUpdate);
+    window.addEventListener("focus", fetchCount);
+
+    return () => {
+      window.removeEventListener("applications-updated", handleUpdate);
+      window.removeEventListener("focus", fetchCount);
+    };
+  }, [fetchCount]);
 
   // Close mobile drawer on Escape key
   useEffect(() => {
@@ -61,7 +112,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
       label: "Applications",
       href: "/admin/dashboard/applications",
       active: pathname === "/admin/dashboard/applications" || pathname?.startsWith("/admin/dashboard/applications/"),
-      badge: "10",
+      badge: typeof count === "number" ? String(count) : undefined,
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />

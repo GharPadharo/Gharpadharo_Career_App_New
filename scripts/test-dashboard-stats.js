@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { encode } from "next-auth/jwt";
+import mongoose from "mongoose";
 
 // 1. Load environment variables from .env.local
 try {
@@ -55,12 +56,20 @@ async function runTests() {
     }
   }
 
-  // Extract authorized admin email from environment
-  const authorizedEmail =
-    (process.env.ADMIN_EMAILS || "")
-      .split(",")
-      .map((e) => e.trim().toLowerCase())
-      .filter(Boolean)[0] || "himanshupanwar496@gmail.com";
+  // Query active admin user directly from MongoDB User collection
+  const MONGODB_URI = process.env.MONGODB_URI;
+  const MONGODB_DB_NAME = process.env.MONGODB_DB_NAME || "gharpadharo_careers";
+  if (!mongoose.connection.readyState) {
+    await mongoose.connect(MONGODB_URI, { dbName: MONGODB_DB_NAME });
+  }
+
+  const UserModel = mongoose.models.User || mongoose.model("User", new mongoose.Schema({}, { strict: false }));
+  const dbAdmin = await UserModel.findOne({ role: { $in: ["admin", "superadmin"] }, isActive: true }).lean();
+  
+  if (!dbAdmin) {
+    throw new Error("No active admin user found in MongoDB User collection for testing!");
+  }
+  const authorizedEmail = dbAdmin.email;
 
   // Generate valid admin session token for testing
   const cookieName = BASE_URL.startsWith("https")
@@ -69,11 +78,12 @@ async function runTests() {
 
   const adminToken = await encode({
     token: {
-      name: "Admin Tester",
-      email: authorizedEmail, // Valid authorized admin email from ADMIN_EMAILS
-      sub: "admin-tester-id",
+      name: dbAdmin.name || "Admin Tester",
+      email: authorizedEmail,
+      sub: dbAdmin._id.toString(),
       isAdmin: true,
-      role: "admin",
+      role: dbAdmin.role || "admin",
+      dbUserId: dbAdmin._id.toString(),
     },
     secret: AUTH_SECRET,
     salt: cookieName,
@@ -241,6 +251,8 @@ async function runTests() {
   } else {
     assert(false, "No statsData available to verify fields");
   }
+
+  await mongoose.disconnect();
 
   console.log("\n==================================================");
   console.log(`TEST RESULTS: ${passed} PASSED | ${failed} FAILED`);

@@ -1,4 +1,8 @@
+import { connectDB } from "@/lib/mongodb";
+import Application from "@/models/Application";
 import AdminDashboardShell from "@/components/admin/AdminDashboardShell";
+
+export const dynamic = "force-dynamic";
 
 export const metadata = {
   title: "Admin Dashboard | GharPadharo Careers",
@@ -14,6 +18,18 @@ export const metadata = {
   },
 };
 
-export default function AdminDashboardLayout({ children }) {
-  return <AdminDashboardShell>{children}</AdminDashboardShell>;
+export default async function AdminDashboardLayout({ children }) {
+  let initialApplicationsCount = null;
+  try {
+    await connectDB();
+    initialApplicationsCount = await Application.countDocuments({});
+  } catch (err) {
+    console.error("Failed to query application count for layout:", err);
+  }
+
+  return (
+    <AdminDashboardShell initialApplicationsCount={initialApplicationsCount}>
+      {children}
+    </AdminDashboardShell>
+  );
 }

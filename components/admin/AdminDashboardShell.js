@@ -14,7 +14,12 @@ import AdminHeader from "./AdminHeader";
  * - Contextual header titles based on pathname
  * - Hosts main content area with proper background and responsive padding
  */
-export default function AdminDashboardShell({ children, title, subtitle }) {
+export default function AdminDashboardShell({
+  children,
+  title,
+  subtitle,
+  initialApplicationsCount = null,
+}) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
 
@@ -50,6 +55,7 @@ export default function AdminDashboardShell({ children, title, subtitle }) {
       <AdminSidebar
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
+        applicationsCount={initialApplicationsCount}
       />
 
       {/* Main Content Area */}
