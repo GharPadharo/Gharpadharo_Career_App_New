@@ -191,6 +191,12 @@ const ApplicationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
+    applicationNumber: {
+      type: Number,
+      index: true,
+      sparse: true,
+      unique: true,
+    },
   },
   {
     timestamps: true,
@@ -204,6 +210,10 @@ ApplicationSchema.index({ email: 1 });
 ApplicationSchema.index({ jobId: 1, email: 1 });
 ApplicationSchema.index({ applicationType: 1, createdAt: -1 });
 ApplicationSchema.index({ applicationType: 1, email: 1 });
+
+if (mongoose.models.Application && !mongoose.models.Application.schema.path("applicationNumber")) {
+  delete mongoose.models.Application;
+}
 
 // Safe export pattern preventing OverwriteModelError during Next.js hot reload
 export default mongoose.models.Application || mongoose.model("Application", ApplicationSchema);

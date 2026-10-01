@@ -6,6 +6,8 @@ import Application from "@/models/Application";
 import { serializeApplication } from "@/lib/applicationSerializer";
 import { deleteResume } from "@/lib/cloudinary";
 import { logActivity } from "@/lib/activityLogger";
+import { appendApplicationToSheet } from "@/lib/googleSheets";
+import { getNextApplicationNumber } from "@/lib/applicationCounter";
 
 export const dynamic = "force-dynamic";
 
@@ -238,7 +240,10 @@ export async function POST(request) {
 
       let newApplication;
       try {
+        const applicationNumber = await getNextApplicationNumber();
+
         newApplication = await Application.create({
+          applicationNumber,
           applicationType: "general",
           jobId: null,
           jobSlug: null,
@@ -255,7 +260,7 @@ export async function POST(request) {
           portfolio: (portfolio || "").trim().slice(0, 300),
           opportunityLookingFor: (opportunityLookingFor || "").trim().slice(0, 1000),
           aboutYourself: (aboutYourself || "").trim().slice(0, 3000),
-          coverLetter: (coverLetter || combinedNotes || "General Application").trim().slice(0, 5000),
+          coverLetter: (coverLetter || "").trim().slice(0, 5000),
           resume: resumeMetadata,
           consent: true,
           status: "new",
@@ -281,6 +286,11 @@ export async function POST(request) {
           jobSlug: "general-application",
           applicationType: "general",
         },
+      });
+
+      // Secondary downstream sync to Google Sheets (fails safely, never breaks submission)
+      await appendApplicationToSheet(newApplication).catch((syncErr) => {
+        console.error("Google Sheets sync error (general):", syncErr?.message || syncErr);
       });
 
       return NextResponse.json(
@@ -417,7 +427,10 @@ export async function POST(request) {
 
     let newApplication;
     try {
+      const applicationNumber = await getNextApplicationNumber();
+
       newApplication = await Application.create({
+        applicationNumber,
         applicationType: "job",
         jobId: job._id,
         jobSlug: job.slug,
@@ -458,6 +471,11 @@ export async function POST(request) {
         jobSlug: job.slug,
         applicationType: "job",
       },
+    });
+
+    // Secondary downstream sync to Google Sheets (fails safely, never breaks submission)
+    await appendApplicationToSheet(newApplication).catch((syncErr) => {
+      console.error("Google Sheets sync error (job):", syncErr?.message || syncErr);
     });
 
     return NextResponse.json(

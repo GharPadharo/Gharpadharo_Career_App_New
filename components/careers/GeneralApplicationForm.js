@@ -55,6 +55,9 @@ export default function GeneralApplicationForm() {
         return next;
       });
     }
+    if (serverError) {
+      setServerError(null);
+    }
   };
 
   // Resume file validation helper
@@ -87,6 +90,13 @@ export default function GeneralApplicationForm() {
       } else {
         setResumeError("");
         setResumeFile(file);
+        if (errors.resume) {
+          setErrors((prev) => {
+            const next = { ...prev };
+            delete next.resume;
+            return next;
+          });
+        }
       }
     }
   };
@@ -113,6 +123,13 @@ export default function GeneralApplicationForm() {
       } else {
         setResumeError("");
         setResumeFile(file);
+        if (errors.resume) {
+          setErrors((prev) => {
+            const next = { ...prev };
+            delete next.resume;
+            return next;
+          });
+        }
       }
     }
   };
@@ -120,6 +137,13 @@ export default function GeneralApplicationForm() {
   const handleRemoveResume = () => {
     setResumeFile(null);
     setResumeError("");
+    if (errors.resume) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next.resume;
+        return next;
+      });
+    }
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -173,6 +197,7 @@ export default function GeneralApplicationForm() {
 
     setIsSubmitting(true);
     setServerError(null);
+    setResumeError("");
 
     try {
       // 1. Upload resume to POST /api/uploads/resume
@@ -180,17 +205,46 @@ export default function GeneralApplicationForm() {
       const uploadFormData = new FormData();
       uploadFormData.append("file", resumeFile);
 
-      const uploadRes = await fetch("/api/uploads/resume", {
-        method: "POST",
-        body: uploadFormData,
-      });
+      let uploadRes;
+      try {
+        uploadRes = await fetch("/api/uploads/resume", {
+          method: "POST",
+          body: uploadFormData,
+        });
+      } catch {
+        setServerError(
+          "Network error: Unable to connect to the resume upload service. Please check your connection and try again."
+        );
+        setIsSubmitting(false);
+        setSubmittingStage("");
+        return;
+      }
 
       const uploadData = await uploadRes.json().catch(() => ({}));
 
       if (!uploadRes.ok || !uploadData.success) {
-        throw new Error(
-          uploadData.error || "Failed to upload resume. Please check your document and try again."
-        );
+        const errorMsg =
+          uploadData.error ||
+          "Failed to upload resume. Please check your document and try again.";
+
+        // Expected user-facing validation error on resume (e.g. 400 invalid / corrupt / wrong format)
+        if (uploadRes.status >= 400 && uploadRes.status < 500) {
+          setResumeError(errorMsg);
+          setErrors((prev) => ({ ...prev, resume: errorMsg }));
+          const resumeElem =
+            document.getElementById("resume-error") ||
+            document.getElementById("resume");
+          if (resumeElem) {
+            resumeElem.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        } else {
+          // Unexpected 5xx server-level error
+          setServerError(errorMsg);
+        }
+
+        setIsSubmitting(false);
+        setSubmittingStage("");
+        return;
       }
 
       const uploadedResume = uploadData.resume;
@@ -213,23 +267,50 @@ export default function GeneralApplicationForm() {
         consent: formData.consent,
       };
 
-      const res = await fetch("/api/applications", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      let res;
+      try {
+        res = await fetch("/api/applications", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+      } catch {
+        setServerError(
+          "Network error: Unable to submit application. Please check your connection and try again."
+        );
+        setIsSubmitting(false);
+        setSubmittingStage("");
+        return;
+      }
 
       const data = await res.json().catch(() => ({}));
 
       if (!res.ok || !data.success) {
-        throw new Error(data.error || "Failed to submit application. Please try again.");
+        const errorMsg =
+          data.error || "Failed to submit application. Please try again.";
+
+        // Set the returned user-friendly error message in serverError
+        setServerError(errorMsg);
+
+        // If duplicate application error (409) or email conflict, also highlight the email field
+        if (res.status === 409) {
+          setErrors((prev) => ({
+            ...prev,
+            email: errorMsg,
+          }));
+        }
+
+        setIsSubmitting(false);
+        setSubmittingStage("");
+        return;
       }
 
       setErrors({});
       setIsSubmitted(true);
-    } catch (err) {
-      console.error("General application submission error:", err);
-      setServerError(err.message || "An error occurred while submitting your application.");
+    } catch {
+      setServerError(
+        "An unexpected error occurred while processing your application. Please try again."
+      );
     } finally {
       setIsSubmitting(false);
       setSubmittingStage("");
@@ -614,7 +695,13 @@ export default function GeneralApplicationForm() {
             </div>
           ) : (
             /* Selected file display */
-            <div className="flex items-center justify-between p-4 rounded-xl border border-slate-200 bg-slate-50/60">
+            <div
+              className={`flex items-center justify-between p-4 rounded-xl border transition-colors ${
+                errors.resume || resumeError
+                  ? "border-red-300 bg-red-50/30"
+                  : "border-slate-200 bg-slate-50/60"
+              }`}
+            >
               <div className="flex items-center gap-3 min-w-0">
                 <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

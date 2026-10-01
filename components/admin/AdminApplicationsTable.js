@@ -50,6 +50,7 @@ export default function AdminApplicationsTable({
   const pageSize = 10;
 
   const headerCheckboxRef = useRef(null);
+  const isFirstRender = useRef(true);
 
   // Sync frontend session viewed applications on client mount
   useEffect(() => {
@@ -63,8 +64,12 @@ export default function AdminApplicationsTable({
     }
   }, []);
 
-  // Sync sidebar applications count when applications length changes
+  // Sync sidebar applications count when applications length changes after mutations (skip initial mount)
   useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     if (typeof window !== "undefined") {
       window.dispatchEvent(
         new CustomEvent("applications-updated", {
@@ -74,21 +79,13 @@ export default function AdminApplicationsTable({
     }
   }, [applications.length]);
 
-  // Handler for marking application as viewed in state and DB
+  // Handler for updating local viewed state when user navigates to view an application
+  // Server persistence is handled cleanly by ApplicationDetailClient upon page open
   const handleViewClick = (id) => {
     markApplicationAsViewed(id);
     setApplications((prev) =>
       prev.map((app) => (app.id === id ? { ...app, status: "viewed" } : app))
     );
-
-    // Persist viewed status to MongoDB
-    fetch(`/api/admin/applications/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: "viewed" }),
-    }).catch((err) => {
-      console.error("Failed to mark application as viewed on server:", err);
-    });
   };
 
   // Create job lookup map for instant access to title and team
@@ -237,18 +234,8 @@ export default function AdminApplicationsTable({
       // Successful or partial deletion
       const deletedSet = new Set(data.deletedIds || []);
 
-      // Remove deleted records from state
-      setApplications((prev) => {
-        const remaining = prev.filter((app) => !deletedSet.has(app.id));
-        if (typeof window !== "undefined") {
-          window.dispatchEvent(
-            new CustomEvent("applications-updated", {
-              detail: { count: remaining.length },
-            })
-          );
-        }
-        return remaining;
-      });
+      // Remove deleted records from state (pure updater function - no render-phase side effects)
+      setApplications((prev) => prev.filter((app) => !deletedSet.has(app.id)));
 
       // Remove deleted IDs from selection state
       setSelectedIds((prev) => {

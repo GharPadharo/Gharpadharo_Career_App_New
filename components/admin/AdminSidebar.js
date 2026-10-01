@@ -53,7 +53,7 @@ export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
   useEffect(() => {
     const handleUpdate = (e) => {
       if (typeof e.detail?.count === "number") {
-        setCount(e.detail.count);
+        setCount((prev) => (prev === e.detail.count ? prev : e.detail.count));
       } else {
         fetchCount();
       }

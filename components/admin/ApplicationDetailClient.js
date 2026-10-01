@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { markApplicationAsViewed } from "@/lib/viewedApplications";
 
@@ -15,16 +15,20 @@ import { markApplicationAsViewed } from "@/lib/viewedApplications";
  */
 export default function ApplicationDetailClient({ application, job }) {
   const [wasJustViewed, setWasJustViewed] = useState(false);
+  const viewedAppIdRef = useRef(null);
 
   useEffect(() => {
     // When opened, mark application as viewed in session and DB
-    if (application.id) {
-      markApplicationAsViewed(application.id);
-      if (application.status === "new") {
-        setWasJustViewed(true);
-      }
+    if (!application?.id || viewedAppIdRef.current === application.id) {
+      return;
+    }
+    viewedAppIdRef.current = application.id;
 
-      // Persist to MongoDB
+    markApplicationAsViewed(application.id);
+    if (application.status === "new") {
+      setWasJustViewed(true);
+
+      // Persist to MongoDB only if it transitioned from "new"
       fetch(`/api/admin/applications/${application.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -33,7 +37,7 @@ export default function ApplicationDetailClient({ application, job }) {
         console.error("Failed to mark application as viewed:", err);
       });
     }
-  }, [application.id, application.status]);
+  }, [application?.id, application?.status]);
 
   return (
     <div className="space-y-6 max-w-4xl mx-auto">
@@ -123,18 +127,30 @@ export default function ApplicationDetailClient({ application, job }) {
             <span className="text-xs font-bold text-muted uppercase tracking-wider block mb-1">
               Phone
             </span>
-            <span className="text-slate-800 font-medium">
-              {application.phone || "Not provided"}
-            </span>
+            {application.phone?.trim() ? (
+              <span className="text-slate-800 font-medium">
+                {application.phone.trim()}
+              </span>
+            ) : (
+              <span className="text-xs text-muted italic">
+                Not submitted
+              </span>
+            )}
           </div>
 
           <div>
             <span className="text-xs font-bold text-muted uppercase tracking-wider block mb-1">
               Experience
             </span>
-            <span className="text-slate-800 font-medium">
-              {application.experience || "Flexible"}
-            </span>
+            {application.experience?.trim() ? (
+              <span className="text-slate-800 font-medium">
+                {application.experience.trim()}
+              </span>
+            ) : (
+              <span className="text-xs text-muted italic">
+                Not submitted
+              </span>
+            )}
           </div>
 
           <div>
@@ -161,17 +177,17 @@ export default function ApplicationDetailClient({ application, job }) {
         </div>
 
         {(() => {
-          const resumeUrl = application.resumeMetadata?.fileUrl || "";
+          const resumeUrl = application.resumeMetadata?.fileUrl?.trim() || "";
           const resumeName =
-            application.resumeMetadata?.fileName ||
-            (typeof application.resume === "string" ? application.resume : "") ||
+            application.resumeMetadata?.fileName?.trim() ||
+            (typeof application.resume === "string" ? application.resume.trim() : "") ||
             "";
           const hasResume = Boolean(resumeName || resumeUrl);
 
           if (!hasResume) {
             return (
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-500 italic">
-                No resume uploaded for this candidate.
+              <div className="p-4 rounded-xl bg-slate-50/50 border border-slate-200/80 text-xs text-muted italic">
+                Not submitted
               </div>
             );
           }
@@ -198,7 +214,7 @@ export default function ApplicationDetailClient({ application, job }) {
               <div className="flex items-center gap-2 shrink-0">
                 {resumeUrl ? (
                   <a
-                    href={resumeUrl}
+                    href={`/api/admin/applications/${application.id}/resume`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-semibold shadow-2xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer"
@@ -228,49 +244,74 @@ export default function ApplicationDetailClient({ application, job }) {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <span className="text-xs font-bold text-muted uppercase tracking-wider block">
-                LinkedIn
-              </span>
-              <span className="text-xs text-slate-800 font-medium mt-0.5 block truncate max-w-[170px] sm:max-w-xs md:max-w-sm">
-                {application.linkedin}
-              </span>
-            </div>
-            <a
-              href={application.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-semibold text-primary hover:underline shrink-0 ml-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded px-1"
-            >
-              Open &rarr;
-            </a>
-          </div>
+        {(() => {
+          const linkedin = typeof application.linkedin === "string" ? application.linkedin.trim() : "";
+          const portfolio = typeof application.portfolio === "string" ? application.portfolio.trim() : "";
+          const hasLinkedIn = Boolean(linkedin);
+          const hasPortfolio = Boolean(portfolio);
 
-          <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <span className="text-xs font-bold text-muted uppercase tracking-wider block">
-                Portfolio / Website
-              </span>
-              <span className="text-xs text-slate-800 font-medium mt-0.5 block truncate max-w-[170px] sm:max-w-xs md:max-w-sm">
-                {application.portfolio}
-              </span>
+          return (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <span className="text-xs font-bold text-muted uppercase tracking-wider block">
+                    LinkedIn
+                  </span>
+                  {hasLinkedIn ? (
+                    <span className="text-xs text-slate-800 font-medium mt-0.5 block truncate max-w-[170px] sm:max-w-xs md:max-w-sm">
+                      {linkedin}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-muted italic mt-0.5 block">
+                      Not submitted
+                    </span>
+                  )}
+                </div>
+                {hasLinkedIn && (
+                  <a
+                    href={linkedin.startsWith("http") ? linkedin : `https://${linkedin}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold text-primary hover:underline shrink-0 ml-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded px-1"
+                  >
+                    Open &rarr;
+                  </a>
+                )}
+              </div>
+
+              <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
+                <div className="min-w-0 flex-1">
+                  <span className="text-xs font-bold text-muted uppercase tracking-wider block">
+                    Portfolio / Website
+                  </span>
+                  {hasPortfolio ? (
+                    <span className="text-xs text-slate-800 font-medium mt-0.5 block truncate max-w-[170px] sm:max-w-xs md:max-w-sm">
+                      {portfolio}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-muted italic mt-0.5 block">
+                      Not submitted
+                    </span>
+                  )}
+                </div>
+                {hasPortfolio && (
+                  <a
+                    href={portfolio.startsWith("http") ? portfolio : `https://${portfolio}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-semibold text-primary hover:underline shrink-0 ml-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded px-1"
+                  >
+                    Open &rarr;
+                  </a>
+                )}
+              </div>
             </div>
-            <a
-              href={application.portfolio}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-xs font-semibold text-primary hover:underline shrink-0 ml-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded px-1"
-            >
-              Open &rarr;
-            </a>
-          </div>
-        </div>
+          );
+        })()}
       </div>
 
       {/* Opportunity of Interest (General Applications) */}
-      {application.opportunityLookingFor && (
+      {(application.applicationType === "general" || application.opportunityLookingFor) && (
         <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-3">
           <div>
             <h2 className="text-lg font-bold text-heading">Opportunity of Interest</h2>
@@ -278,14 +319,20 @@ export default function ApplicationDetailClient({ application, job }) {
               Role or areas of focus the candidate is seeking.
             </p>
           </div>
-          <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80 text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
-            {application.opportunityLookingFor}
-          </div>
+          {application.opportunityLookingFor?.trim() ? (
+            <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80 text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+              {application.opportunityLookingFor.trim()}
+            </div>
+          ) : (
+            <div className="p-4 rounded-xl bg-slate-50/50 border border-slate-200/80 text-xs text-muted italic">
+              Not submitted
+            </div>
+          )}
         </div>
       )}
 
       {/* About Candidate (General Applications) */}
-      {application.aboutYourself && (
+      {(application.applicationType === "general" || application.aboutYourself) && (
         <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-3">
           <div>
             <h2 className="text-lg font-bold text-heading">About Candidate</h2>
@@ -293,25 +340,47 @@ export default function ApplicationDetailClient({ application, job }) {
               Candidate&apos;s background and personal introduction.
             </p>
           </div>
-          <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80 text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
-            {application.aboutYourself}
-          </div>
+          {application.aboutYourself?.trim() ? (
+            <div className="p-4 rounded-xl bg-slate-50/80 border border-slate-200/80 text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+              {application.aboutYourself.trim()}
+            </div>
+          ) : (
+            <div className="p-4 rounded-xl bg-slate-50/50 border border-slate-200/80 text-xs text-muted italic">
+              Not submitted
+            </div>
+          )}
         </div>
       )}
 
       {/* 6. Cover Letter Section */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-4">
-        <div>
-          <h2 className="text-lg font-bold text-heading">Cover Letter / Note</h2>
-          <p className="text-xs text-muted mt-0.5">
-            Candidate&apos;s statement of interest and background.
-          </p>
-        </div>
+      {(() => {
+        const rawCoverLetter = typeof application.coverLetter === "string" ? application.coverLetter.trim() : "";
+        const isFallbackCoverLetter =
+          application.applicationType === "general" &&
+          rawCoverLetter.toLowerCase() === "general application";
+        const hasCoverLetter = Boolean(rawCoverLetter && !isFallbackCoverLetter);
 
-        <div className="p-5 rounded-xl bg-slate-50/80 border border-slate-200/80 text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
-          &ldquo;{application.coverLetter}&rdquo;
-        </div>
-      </div>
+        return (
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-4">
+            <div>
+              <h2 className="text-lg font-bold text-heading">Cover Letter / Note</h2>
+              <p className="text-xs text-muted mt-0.5">
+                Candidate&apos;s statement of interest and background.
+              </p>
+            </div>
+
+            {hasCoverLetter ? (
+              <div className="p-5 rounded-xl bg-slate-50/80 border border-slate-200/80 text-sm text-slate-800 leading-relaxed font-normal whitespace-pre-line">
+                &ldquo;{rawCoverLetter}&rdquo;
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl bg-slate-50/50 border border-slate-200/80 text-xs text-muted italic">
+                Not submitted
+              </div>
+            )}
+          </div>
+        );
+      })()}
     </div>
   );
 }
