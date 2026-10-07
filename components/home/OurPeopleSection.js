@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 export default function OurPeopleSection() {
   const testimonials = [
@@ -9,7 +10,7 @@ export default function OurPeopleSection() {
       name: "Dipanshu Sandhaki",
       designation: "Full Stack Engineer",
       department: "Engineering",
-      image: "/images/home/people/dipanshu-sandhaki.jpg",
+      image: WEBSITE_IMAGES.people.dipanshuSandhaki,
       imagePosition: "object-[center_25%]",
       quote:
         "Working at GharPadharo has given me the opportunity to build real products, take ownership of meaningful technical challenges, and learn alongside a supportive team. I enjoy seeing the work we build turn into experiences that genuinely help people.",
@@ -24,7 +25,7 @@ export default function OurPeopleSection() {
       name: "Anshika Bisht",
       designation: "HR & Business Growth",
       department: "Growth & Marketing",
-      image: "/images/home/anshika-bisht.jpg",
+      image: WEBSITE_IMAGES.people.anshikaBisht,
       imagePosition: "object-[center_20%]",
       quote:
         "What I enjoy most about GharPadharo is the opportunity to work closely with people while contributing to the growth of the business. Every day brings something new to learn, and the collaborative environment makes it exciting to take ownership and build things together.",
@@ -39,7 +40,7 @@ export default function OurPeopleSection() {
       name: "Rica Rai",
       designation: "Digital Marketing & Business Development",
       department: "Growth & Marketing",
-      image: "/images/home/rica-rai.jpg",
+      image: WEBSITE_IMAGES.people.ricaRai,
       imagePosition: "object-[center_25%]",
       quote:
         "GharPadharo gives me the freedom to experiment, learn from real challenges, and turn ideas into meaningful growth. Working across digital marketing and business development has helped me understand the business better while collaborating with a team that is always open to new ideas.",

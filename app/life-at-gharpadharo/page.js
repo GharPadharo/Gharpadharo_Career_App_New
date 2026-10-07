@@ -1,5 +1,6 @@
 import Image from "next/image";
 import LifeGallery from "@/components/careers/LifeGallery";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 export const metadata = {
   title: {
@@ -127,7 +128,7 @@ export default function LifeAtGharPadharoPage() {
             <div className="lg:col-span-6">
               <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xs border border-slate-200/80 bg-slate-100 group">
                 <Image
-                  src="/images/life-at-gharpadharo/team-gathering.jpg"
+                  src={WEBSITE_IMAGES.life.teamGathering}
                   alt="GharPadharo team gathered together in the office"
                   fill
                   priority
@@ -235,7 +236,7 @@ export default function LifeAtGharPadharoPage() {
             <div className="lg:col-span-5 order-2 lg:order-1">
               <div className="relative w-full aspect-[4/3] sm:aspect-[16/11] rounded-2xl lg:rounded-3xl overflow-hidden shadow-xs border border-slate-200/80 bg-white group">
                 <Image
-                  src="/images/life-at-gharpadharo/team-workspace-work.jpg"
+                  src={WEBSITE_IMAGES.life.teamWorkspaceWork}
                   alt="GharPadharo team members working together in the office"
                   fill
                   className="object-cover object-[center_55%] transition-transform duration-700 group-hover:scale-103"

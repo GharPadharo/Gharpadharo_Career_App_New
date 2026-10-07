@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 export default function WhyGharPadharoSection() {
   const principles = [
@@ -127,7 +128,7 @@ export default function WhyGharPadharoSection() {
               {/* Top Large Image (Wide landscape ratio ~16:9) */}
               <div className="relative w-full aspect-[16/9] rounded-2xl lg:rounded-[22px] overflow-hidden border border-slate-200/80 shadow-2xs bg-slate-100">
                 <Image
-                  src="/images/life-at-gharpadharo/gallery/team-celebration.jpg"
+                  src={WEBSITE_IMAGES.life.teamCelebration}
                   alt="GharPadharo team celebrating together"
                   fill
                   priority
@@ -141,7 +142,7 @@ export default function WhyGharPadharoSection() {
                 {/* Bottom Left: Team member working at desk with laptop */}
                 <div className="relative w-full aspect-[4/3] rounded-2xl lg:rounded-[22px] overflow-hidden border border-slate-200/80 shadow-2xs bg-slate-100">
                   <Image
-                    src="/images/life-at-gharpadharo/gallery/office-desk-single.jpg"
+                    src={WEBSITE_IMAGES.life.officeDeskSingle}
                     alt="GharPadharo team member working at desk with laptop"
                     fill
                     className="object-cover object-[center_48%]"
@@ -152,7 +153,7 @@ export default function WhyGharPadharoSection() {
                 {/* Bottom Right: Team members collaborating at office desk */}
                 <div className="relative w-full aspect-[4/3] rounded-2xl lg:rounded-[22px] overflow-hidden border border-slate-200/80 shadow-2xs bg-slate-100">
                   <Image
-                    src="/images/life-at-gharpadharo/gallery/office-desk-duo.jpg"
+                    src={WEBSITE_IMAGES.life.officeDeskDuo}
                     alt="GharPadharo team members collaborating at office desk"
                     fill
                     className="object-cover object-[40%_center]"

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 /**
  * AboutGharPadharo Component
@@ -19,7 +20,7 @@ export default function AboutGharPadharo() {
           <div className="lg:col-span-6 order-1 lg:order-1 flex justify-center lg:justify-start">
             <div className="relative w-full aspect-[4/3] rounded-2xl lg:rounded-3xl overflow-hidden border border-slate-200/80 bg-white shadow-xs group">
               <Image
-                src="/images/about/about-property.jpg"
+                src={WEBSITE_IMAGES.brand.aboutProperty}
                 alt="Modern residential living environment in Uttarakhand"
                 fill
                 className="object-cover transition-transform duration-700 group-hover:scale-103"

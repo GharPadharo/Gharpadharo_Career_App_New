@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 export default function LifeAtGharPadharoSection() {
   return (
@@ -40,7 +41,7 @@ export default function LifeAtGharPadharoSection() {
               {/* Image 1: Primary Team Photograph (Balanced ~55% width on desktop) */}
               <div className="col-span-2 sm:col-span-1 sm:row-span-2 sm:col-start-1 sm:row-start-1 relative aspect-[16/10] sm:aspect-auto sm:h-full min-h-[240px] sm:min-h-0 rounded-2xl lg:rounded-[22px] overflow-hidden border border-slate-200/80 shadow-xs bg-white">
                 <Image
-                  src="/images/life-at-gharpadharo/gallery/team-group-photo.jpg"
+                  src={WEBSITE_IMAGES.life.teamGroupPhoto}
                   alt="GharPadharo team members together at office"
                   fill
                   className="object-cover object-[center_35%]"
@@ -52,7 +53,7 @@ export default function LifeAtGharPadharoSection() {
               {/* Image 2: Modern Coworking with Colleagues Photograph (Top-Right) */}
               <div className="col-span-1 sm:col-span-1 sm:col-start-2 sm:row-start-1 relative aspect-[16/10] rounded-2xl lg:rounded-[22px] overflow-hidden border border-slate-200/80 shadow-xs bg-white">
                 <Image
-                  src="/images/life-at-gharpadharo/gallery/coworking-colleagues.jpg"
+                  src={WEBSITE_IMAGES.life.coworkingColleagues}
                   alt="GharPadharo colleagues collaborating at office desks"
                   fill
                   className="object-cover object-[center_60%]"
@@ -63,7 +64,7 @@ export default function LifeAtGharPadharoSection() {
               {/* Image 3: Hindu Havan Ceremony Photograph (Bottom-Right) */}
               <div className="col-span-1 sm:col-span-1 sm:col-start-2 sm:row-start-2 relative aspect-[16/10] rounded-2xl lg:rounded-[22px] overflow-hidden border border-slate-200/80 shadow-xs bg-white">
                 <Image
-                  src="/images/life-at-gharpadharo/gallery/havan-ceremony.jpg"
+                  src={WEBSITE_IMAGES.life.havanCeremony}
                   alt="GharPadharo team participating in cultural Havan ceremony"
                   fill
                   className="object-cover object-[center_40%]"

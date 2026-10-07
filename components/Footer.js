@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -26,7 +27,7 @@ export default function Footer() {
               aria-label="GharPadharo Careers Home"
             >
               <Image
-                src="/logo.png"
+                src={WEBSITE_IMAGES.brand.logo}
                 alt="GharPadharo"
                 width={36}
                 height={36}

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 export default function CareersLandingHero() {
   return (
@@ -55,7 +56,7 @@ export default function CareersLandingHero() {
               {/* Single Primary Collaboration Image */}
               <div className="relative w-full aspect-[16/10] rounded-[22px] sm:rounded-[26px] lg:rounded-[28px] overflow-hidden border-[3px] border-white shadow-lg shadow-slate-900/5 bg-slate-100">
                 <Image
-                  src="/images/home/hero-office-team.jpg"
+                  src={WEBSITE_IMAGES.home.heroOfficeTeam}
                   alt="GharPadharo team working at the office workspace"
                   fill
                   priority

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 /**
  * CareersHero Component
@@ -35,7 +36,7 @@ export default function CareersHero({ searchQuery = "", onSearchChange }) {
         aria-hidden="true"
       >
         <Image
-          src="/images/careers/careers-hero-office.jpg"
+          src={WEBSITE_IMAGES.brand.careersHeroOffice}
           alt="GharPadharo team collaborating in a modern office"
           fill
           priority

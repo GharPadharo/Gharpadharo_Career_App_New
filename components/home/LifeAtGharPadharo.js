@@ -1,16 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 /**
  * Centralized image configuration for homepage preview
  */
 const previewImages = {
   team: {
-    src: "/images/home/gharpadharo-team-2.jpg",
+    src: WEBSITE_IMAGES.home.gharpadharoTeam2,
     alt: "GharPadharo team celebrating together with company gifts",
   },
   place: {
-    src: "/images/home/gharpadharo-office.jpg",
+    src: WEBSITE_IMAGES.home.gharpadharoOffice,
     alt: "GharPadharo office workspace with team member and wall logo",
   },
 };

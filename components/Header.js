@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 const NAV_LINKS = [
   {
@@ -130,7 +131,7 @@ export default function Header() {
             aria-label="GharPadharo Careers Home"
           >
             <Image
-              src="/logo.png"
+              src={WEBSITE_IMAGES.brand.logo}
               alt="GharPadharo"
               width={42}
               height={42}
@@ -221,7 +222,7 @@ export default function Header() {
                 aria-label="GharPadharo Careers Home"
               >
                 <Image
-                  src="/logo.png"
+                  src={WEBSITE_IMAGES.brand.logo}
                   alt="GharPadharo"
                   width={38}
                   height={38}

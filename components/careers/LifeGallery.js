@@ -2,30 +2,31 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 const galleryImages = [
   {
-    src: "/images/life-at-gharpadharo/gallery/gallery-team-gifts.jpg",
+    src: WEBSITE_IMAGES.life.galleryTeamGifts,
     alt: "GharPadharo team celebrating together with gifts",
     position: "object-[center_35%]",
   },
   {
-    src: "/images/life-at-gharpadharo/gallery/gallery-havan.jpg",
+    src: WEBSITE_IMAGES.life.galleryHavan,
     alt: "GharPadharo team cultural havan ceremony celebration",
     position: "object-[center_40%]",
   },
   {
-    src: "/images/life-at-gharpadharo/gallery/gallery-coworking.jpg",
+    src: WEBSITE_IMAGES.life.galleryCoworking,
     alt: "Colleagues working together in modern coworking space",
     position: "object-[center_60%]",
   },
   {
-    src: "/images/life-at-gharpadharo/gallery/gallery-team-gathering.jpg",
+    src: WEBSITE_IMAGES.life.galleryTeamGathering,
     alt: "GharPadharo team gathered together in the conference room",
     position: "object-[center_35%]",
   },
   {
-    src: "/images/life-at-gharpadharo/gallery/gallery-team-working.jpg",
+    src: WEBSITE_IMAGES.life.galleryTeamWorking,
     alt: "GharPadharo team members collaborating at work along the mission wall",
     position: "object-[center_55%]",
   },

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 
@@ -131,7 +132,7 @@ export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
             className="flex items-center gap-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded-lg py-1"
           >
             <Image
-              src="/logo.png"
+              src={WEBSITE_IMAGES.brand.logo}
               alt="GharPadharo"
               width={38}
               height={38}

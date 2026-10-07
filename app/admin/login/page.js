@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import GoogleSignInButton from "@/components/admin/GoogleSignInButton";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
 export const metadata = {
   title: "Admin Login | GharPadharo Careers",
@@ -43,7 +44,7 @@ export default async function AdminLoginPage({ searchParams }) {
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-slate-50 border border-slate-100 shadow-2xs mb-4 overflow-hidden">
               <Image
-                src="/logo.png"
+                src={WEBSITE_IMAGES.brand.logo}
                 alt="GharPadharo Official Logo"
                 width={48}
                 height={48}
