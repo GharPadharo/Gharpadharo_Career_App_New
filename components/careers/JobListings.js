@@ -191,15 +191,15 @@ export default function JobListings({
               </h2>
 
               <p className="text-sm sm:text-base text-body leading-relaxed max-w-lg mx-auto font-normal">
-                We don&apos;t have any open positions at the moment, but we&apos;re always looking for great people to join GharPadharo.
+                We don&apos;t have any open roles at the moment. You can still share your resume and we&apos;ll keep you in mind for future opportunities.
               </p>
 
               <div className="pt-2 flex justify-center">
                 <Link
-                  href="/life-at-gharpadharo"
+                  href="/jobs/general-application"
                   className="inline-flex items-center gap-2 bg-[#525599] hover:bg-[#46477f] text-white text-sm sm:text-base font-semibold px-6 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
                 >
-                  <span>Explore Life at GharPadharo</span>
+                  <span>Submit Your Resume</span>
                   <span aria-hidden="true">&rarr;</span>
                 </Link>
               </div>

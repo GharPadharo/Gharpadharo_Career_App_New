@@ -17,6 +17,15 @@ export default function OpenPositionsPreview({ jobs = [] }) {
   const previewJobs = (jobs || [])
     .filter((job) => !job.status || job.status === "active")
     .slice(0, 3);
+  const count = previewJobs.length;
+
+  // Adapt grid layout cleanly according to available job count
+  let gridClasses = "grid grid-cols-1 md:grid-cols-3 gap-6";
+  if (count === 2) {
+    gridClasses = "grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto";
+  } else if (count === 1) {
+    gridClasses = "grid grid-cols-1 gap-6 max-w-[560px] mx-auto";
+  }
 
   return (
     <section className="w-full py-16 lg:py-20 bg-white border-b border-border/60">
@@ -28,10 +37,10 @@ export default function OpenPositionsPreview({ jobs = [] }) {
               OPEN POSITIONS
             </span>
             <h2 className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight">
-              Work on problems that matter in everyday life.
+              Find your next opportunity at GharPadharo.
             </h2>
             <p className="text-sm sm:text-base text-body mt-1.5 font-normal leading-relaxed">
-              From technology and product to operations, growth and community, we&apos;re building the systems that make property discovery simpler for people and property owners.
+              Explore our current openings across technology, product, operations, growth, and community.
             </p>
           </div>
 
@@ -39,13 +48,46 @@ export default function OpenPositionsPreview({ jobs = [] }) {
             href="/jobs"
             className="hidden sm:inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-primary-hover hover:underline transition-colors shrink-0"
           >
-            <span>View all open positions</span>
+            <span>View all jobs</span>
             <span aria-hidden="true">&rarr;</span>
           </Link>
         </div>
 
-        {/* 3 Compact Job Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Jobs Layout: Adapts dynamically based on count (3+ cols, 2 centered, 1 centered, or empty state) */}
+        {count === 0 ? (
+          <div className="bg-slate-50/80 rounded-2xl border border-slate-200/80 p-8 sm:p-12 text-center max-w-xl mx-auto">
+            <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary mx-auto flex items-center justify-center mb-4">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.8}
+                  d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2">
+              No open positions right now
+            </h3>
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed mb-6 max-w-lg mx-auto font-normal">
+              We don&apos;t have any open roles at the moment. You can still share your resume and we&apos;ll keep you in mind for future opportunities.
+            </p>
+            <Link
+              href="/jobs/general-application"
+              className="inline-flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+            >
+              <span>Submit Your Resume</span>
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </div>
+        ) : (
+          <div className={gridClasses}>
           {previewJobs.map((job) => {
             const badgeClasses =
               badgeColorMap[job.type] || "bg-slate-50 text-slate-700 border-slate-200";
@@ -94,9 +136,20 @@ export default function OpenPositionsPreview({ jobs = [] }) {
 
                     {/* Experience */}
                     <div className="flex items-center gap-2">
-                      <svg className="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z" />
-                      </svg>
+                      <svg
+            className="w-4 h-4 text-slate-400 shrink-0"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.8}
+              d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+            />
+          </svg>
                       <span>{job.experience}</span>
                     </div>
                   </div>
@@ -119,18 +172,21 @@ export default function OpenPositionsPreview({ jobs = [] }) {
               </article>
             );
           })}
-        </div>
+          </div>
+        )}
 
         {/* Mobile View All Link */}
-        <div className="mt-8 text-center sm:hidden">
-          <Link
-            href="/jobs"
-            className="w-full inline-flex items-center justify-center gap-2 btn-primary px-6 py-3 rounded-xl shadow-xs text-sm font-bold"
-          >
-            <span>View all open positions</span>
-            <span aria-hidden="true">&rarr;</span>
-          </Link>
-        </div>
+        {count > 0 && (
+          <div className="mt-8 text-center sm:hidden">
+            <Link
+              href="/jobs"
+              className="w-full inline-flex items-center justify-center gap-2 btn-primary px-6 py-3 rounded-xl shadow-xs text-sm font-bold"
+            >
+              <span>View all jobs</span>
+              <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </div>
+        )}
       </div>
     </section>
   );

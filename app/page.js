@@ -2,10 +2,13 @@ import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import { serializeJob } from "@/lib/jobSerializer";
 import CareersLandingHero from "@/components/home/CareersLandingHero";
-import OpenPositionsPreview from "@/components/home/OpenPositionsPreview";
-import WhyGharPadharo from "@/components/home/WhyGharPadharo";
-import LifeAtGharPadharo from "@/components/home/LifeAtGharPadharo";
-import AboutGharPadharo from "@/components/home/AboutGharPadharo";
+import ValuePropositionStrip from "@/components/home/ValuePropositionStrip";
+import OpenPositionsSection from "@/components/home/OpenPositionsSection";
+import WhyGharPadharoSection from "@/components/home/WhyGharPadharoSection";
+import ExploreTeamsSection from "@/components/home/ExploreTeamsSection";
+import LifeAtGharPadharoSection from "@/components/home/LifeAtGharPadharoSection";
+import WhatYouCanExpectSection from "@/components/home/WhatYouCanExpectSection";
+import OurPeopleSection from "@/components/home/OurPeopleSection";
 import CareersCTA from "@/components/home/CareersCTA";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +19,7 @@ export const metadata = {
       "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
   },
   description:
-    "GharPadharo is a property and rental technology platform connecting property seekers and owners. Explore career opportunities across technology, product, operations, and growth.",
+    "Join a team building technology that makes finding a place simpler. Explore career opportunities across engineering, product, design, growth, and operations.",
   alternates: {
     canonical: "https://career.gharpadharo.com/",
   },
@@ -24,7 +27,7 @@ export const metadata = {
     title:
       "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
     description:
-      "GharPadharo is a property and rental technology platform connecting property seekers and owners. Explore career opportunities across technology, product, operations, and growth.",
+      "Join a team building technology that makes finding a place simpler. Explore career opportunities across engineering, product, design, growth, and operations.",
     url: "https://career.gharpadharo.com/",
     siteName: "GharPadharo Careers",
     locale: "en_IN",
@@ -35,7 +38,7 @@ export const metadata = {
     title:
       "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
     description:
-      "GharPadharo is a property and rental technology platform connecting property seekers and owners. Explore career opportunities across technology, product, operations, and growth.",
+      "Join a team building technology that makes finding a place simpler. Explore career opportunities across engineering, product, design, growth, and operations.",
   },
 };
 
@@ -45,11 +48,10 @@ export default async function HomePage() {
     await connectDB();
     const docs = await Job.find({ status: "active" })
       .sort({ postedAt: -1, createdAt: -1 })
-      .limit(3)
       .lean();
     activeJobs = docs.map(serializeJob);
   } catch (error) {
-    console.error("Failed to load featured jobs for homepage from database:", error);
+    console.error("Failed to load active jobs for homepage from database:", error);
     activeJobs = [];
   }
 
@@ -58,19 +60,28 @@ export default async function HomePage() {
       {/* 1. Hero Section */}
       <CareersLandingHero />
 
-      {/* 2. Open Positions Preview (3 compact roles from MongoDB) */}
-      <OpenPositionsPreview jobs={activeJobs} />
+      {/* 2. Value Proposition Strip */}
+      <ValuePropositionStrip />
 
-      {/* 3. Why GharPadharo / Values (4 compact cards) */}
-      <WhyGharPadharo />
+      {/* 3. Open Positions with Search & Filter Bar */}
+      <OpenPositionsSection jobs={activeJobs} />
 
-      {/* 4. Life at GharPadharo (Asymmetric photo collage, id="life-at-gharpadharo") */}
-      <LifeAtGharPadharo />
+      {/* 4. Why GharPadharo (Asymmetric editorial layout + principles) */}
+      <WhyGharPadharoSection />
 
-      {/* 5. About GharPadharo (Line art + narrative, id="about") */}
-      <AboutGharPadharo />
+      {/* 5. Explore Our Teams (5 horizontal team cards) */}
+      <ExploreTeamsSection />
 
-      {/* 6. Final Hiring CTA Banner */}
+      {/* 6. Life at GharPadharo (Editorial photo mosaic with real photos) */}
+      <LifeAtGharPadharoSection />
+
+      {/* 7. What We Offer (People, benefits and support) */}
+      <WhatYouCanExpectSection />
+
+      {/* 8. Our People (Team perspectives & culture voices) */}
+      <OurPeopleSection />
+
+      {/* 9. Work With Us / Final Careers CTA */}
       <CareersCTA />
     </>
   );

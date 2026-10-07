@@ -356,21 +356,21 @@ export default function GeneralApplicationForm() {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-10 shadow-xs space-y-8"
+      className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 px-5 py-6 sm:p-10 shadow-xs space-y-6 sm:space-y-8"
       aria-label="General Application form"
     >
       {/* SECTION 1: Personal Information */}
-      <fieldset className="space-y-4">
-        <legend className="text-base font-bold text-slate-900 pb-2 border-b border-slate-100 w-full">
+      <fieldset className="space-y-3.5 sm:space-y-4">
+        <legend className="text-sm sm:text-base font-bold text-slate-900 pb-2.5 sm:pb-3 border-b border-slate-100 w-full">
           Personal Information
         </legend>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 pt-3.5 sm:pt-4">
           {/* First Name */}
           <div>
             <label
               htmlFor="firstName"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
             >
               First Name <span className="text-red-500">*</span>
             </label>
@@ -401,7 +401,7 @@ export default function GeneralApplicationForm() {
           <div>
             <label
               htmlFor="lastName"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
             >
               Last Name <span className="text-red-500">*</span>
             </label>
@@ -429,12 +429,12 @@ export default function GeneralApplicationForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
           {/* Email */}
           <div>
             <label
               htmlFor="email"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
             >
               Email Address <span className="text-red-500">*</span>
             </label>
@@ -465,7 +465,7 @@ export default function GeneralApplicationForm() {
           <div>
             <label
               htmlFor="phone"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
             >
               Phone Number <span className="text-slate-400 font-normal lowercase">(optional)</span>
             </label>
@@ -494,17 +494,17 @@ export default function GeneralApplicationForm() {
       </fieldset>
 
       {/* SECTION 2: Professional Background */}
-      <fieldset className="space-y-4">
-        <legend className="text-base font-bold text-slate-900 pb-2 border-b border-slate-100 w-full">
+      <fieldset className="space-y-3.5 sm:space-y-4">
+        <legend className="text-sm sm:text-base font-bold text-slate-900 pb-2.5 sm:pb-3 border-b border-slate-100 w-full">
           Professional Background
         </legend>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 pt-3.5 sm:pt-4">
           {/* Current Job Title */}
           <div>
             <label
               htmlFor="currentJobTitle"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
             >
               Current Job Title <span className="text-slate-400 font-normal lowercase">(optional)</span>
             </label>
@@ -523,7 +523,7 @@ export default function GeneralApplicationForm() {
           <div>
             <label
               htmlFor="experience"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
             >
               Years of Experience <span className="text-slate-400 font-normal lowercase">(optional)</span>
             </label>
@@ -544,12 +544,12 @@ export default function GeneralApplicationForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
           {/* LinkedIn URL */}
           <div>
             <label
               htmlFor="linkedin"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
             >
               LinkedIn Profile <span className="text-slate-400 font-normal lowercase">(optional)</span>
             </label>
@@ -568,7 +568,7 @@ export default function GeneralApplicationForm() {
           <div>
             <label
               htmlFor="portfolio"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
             >
               Portfolio / GitHub / Website <span className="text-slate-400 font-normal lowercase">(optional)</span>
             </label>
@@ -586,69 +586,73 @@ export default function GeneralApplicationForm() {
       </fieldset>
 
       {/* SECTION 3: Opportunity of Interest & Background */}
-      <fieldset className="space-y-4">
-        <legend className="text-base font-bold text-slate-900 pb-2 border-b border-slate-100 w-full">
+      <fieldset className="space-y-3.5 sm:space-y-4">
+        <legend className="text-sm sm:text-base font-bold text-slate-900 pb-2.5 sm:pb-3 border-b border-slate-100 w-full">
           Your Interests & Goals
         </legend>
 
-        {/* What kind of opportunity are you looking for? */}
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label
-              htmlFor="opportunityLookingFor"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider"
-            >
-              What kind of opportunity are you looking for? <span className="text-slate-400 font-normal lowercase">(optional)</span>
-            </label>
-            <span className="text-[11px] text-slate-400">
-              {formData.opportunityLookingFor.length}/1000
-            </span>
+        <div className="pt-3.5 sm:pt-4 space-y-3.5 sm:space-y-4">
+          {/* What kind of opportunity are you looking for? */}
+          <div>
+            <div className="flex items-baseline justify-between gap-2 mb-1 sm:mb-1.5">
+              <label
+                htmlFor="opportunityLookingFor"
+                className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider leading-snug"
+              >
+                What kind of opportunity are you looking for?{" "}
+                <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              </label>
+              <span className="text-[11px] text-slate-400 shrink-0 font-medium">
+                {formData.opportunityLookingFor.length}/1000
+              </span>
+            </div>
+            <textarea
+              id="opportunityLookingFor"
+              name="opportunityLookingFor"
+              rows={3}
+              maxLength={1000}
+              value={formData.opportunityLookingFor}
+              onChange={handleChange}
+              className="w-full p-3 sm:p-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors resize-y leading-relaxed min-h-[105px] sm:min-h-[115px]"
+              placeholder="Tell us what teams, technologies, or roles interest you most (e.g., Full Stack Development, AI Research, Product Management)..."
+            />
           </div>
-          <textarea
-            id="opportunityLookingFor"
-            name="opportunityLookingFor"
-            rows={3}
-            maxLength={1000}
-            value={formData.opportunityLookingFor}
-            onChange={handleChange}
-            className="w-full p-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors resize-y leading-relaxed"
-            placeholder="Tell us what teams, technologies, or roles interest you most (e.g., Full Stack Development, AI Research, Product Management)..."
-          />
-        </div>
 
-        {/* Tell us about yourself */}
-        <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label
-              htmlFor="aboutYourself"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wider"
-            >
-              Tell us about yourself <span className="text-slate-400 font-normal lowercase">(optional)</span>
-            </label>
-            <span className="text-[11px] text-slate-400">
-              {formData.aboutYourself.length}/3000
-            </span>
+          {/* Tell us about yourself */}
+          <div>
+            <div className="flex items-baseline justify-between gap-2 mb-1 sm:mb-1.5">
+              <label
+                htmlFor="aboutYourself"
+                className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider leading-snug"
+              >
+                Tell us about yourself{" "}
+                <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              </label>
+              <span className="text-[11px] text-slate-400 shrink-0 font-medium">
+                {formData.aboutYourself.length}/3000
+              </span>
+            </div>
+            <textarea
+              id="aboutYourself"
+              name="aboutYourself"
+              rows={3}
+              maxLength={3000}
+              value={formData.aboutYourself}
+              onChange={handleChange}
+              className="w-full p-3 sm:p-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors resize-y leading-relaxed min-h-[105px] sm:min-h-[115px]"
+              placeholder="A brief overview of your journey, key accomplishments, or what makes you excited about joining GharPadharo..."
+            />
           </div>
-          <textarea
-            id="aboutYourself"
-            name="aboutYourself"
-            rows={4}
-            maxLength={3000}
-            value={formData.aboutYourself}
-            onChange={handleChange}
-            className="w-full p-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors resize-y leading-relaxed"
-            placeholder="A brief overview of your journey, key accomplishments, or what makes you excited about joining GharPadharo..."
-          />
         </div>
       </fieldset>
 
       {/* SECTION 4: Resume Upload */}
-      <fieldset className="space-y-4">
-        <legend className="text-base font-bold text-slate-900 pb-2 border-b border-slate-100 w-full">
+      <fieldset className="space-y-3.5 sm:space-y-4">
+        <legend className="text-sm sm:text-base font-bold text-slate-900 pb-2.5 sm:pb-3 border-b border-slate-100 w-full">
           Resume / CV <span className="text-red-500">*</span>
         </legend>
 
-        <div>
+        <div className="pt-3.5 sm:pt-4">
           {/* Hidden native input */}
           <input
             ref={fileInputRef}
@@ -668,7 +672,7 @@ export default function GeneralApplicationForm() {
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-2xl p-6 sm:p-8 text-center cursor-pointer transition-colors ${
+              className={`border-2 border-dashed rounded-2xl py-5 px-4 sm:p-8 text-center cursor-pointer transition-colors ${
                 isDragging
                   ? "border-primary bg-primary/5"
                   : errors.resume || resumeError
@@ -676,8 +680,8 @@ export default function GeneralApplicationForm() {
                   : "border-slate-200 hover:border-primary/50 hover:bg-slate-50/50"
               }`}
             >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-2.5 sm:mb-3">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -686,25 +690,25 @@ export default function GeneralApplicationForm() {
                   />
                 </svg>
               </div>
-              <p className="text-sm font-semibold text-slate-800">
+              <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
                 <span className="text-primary font-bold hover:underline">Click to upload</span> or drag and drop your resume
               </p>
-              <p id="resume-help" className="text-xs text-muted mt-1">
+              <p id="resume-help" className="text-[11px] sm:text-xs text-muted mt-1">
                 PDF, DOC, DOCX up to 10 MB
               </p>
             </div>
           ) : (
             /* Selected file display */
             <div
-              className={`flex items-center justify-between p-4 rounded-xl border transition-colors ${
+              className={`flex items-center justify-between p-3.5 sm:p-4 rounded-xl border transition-colors ${
                 errors.resume || resumeError
                   ? "border-red-300 bg-red-50/30"
                   : "border-slate-200 bg-slate-50/60"
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -714,10 +718,10 @@ export default function GeneralApplicationForm() {
                   </svg>
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-semibold text-slate-800 truncate">
+                  <p className="text-xs sm:text-sm font-semibold text-slate-800 truncate">
                     {resumeFile.name}
                   </p>
-                  <p className="text-xs text-muted">
+                  <p className="text-[11px] sm:text-xs text-muted">
                     {formatFileSize(resumeFile.size)}
                   </p>
                 </div>
@@ -737,7 +741,7 @@ export default function GeneralApplicationForm() {
           )}
 
           {(errors.resume || resumeError) && (
-            <p id="resume-error" className="text-xs text-red-600 mt-2 font-medium">
+            <p id="resume-error" className="text-xs text-red-600 mt-1.5 font-medium">
               {errors.resume || resumeError}
             </p>
           )}
@@ -745,8 +749,8 @@ export default function GeneralApplicationForm() {
       </fieldset>
 
       {/* SECTION 5: Consent & Legal */}
-      <fieldset className="space-y-4 pt-1">
-        <div className="flex items-start gap-3">
+      <fieldset className="space-y-3 pt-0.5 sm:pt-1">
+        <div className="flex items-start gap-2.5 sm:gap-3">
           <input
             id="consent"
             name="consent"
@@ -756,7 +760,7 @@ export default function GeneralApplicationForm() {
             onChange={handleChange}
             aria-invalid={!!errors.consent}
             aria-describedby={errors.consent ? "consent-error" : undefined}
-            className="w-4 h-4 mt-1 rounded border-slate-300 text-primary focus:ring-primary/20 cursor-pointer"
+            className="w-4 h-4 mt-0.5 sm:mt-1 rounded border-slate-300 text-primary focus:ring-primary/20 cursor-pointer shrink-0"
           />
           <label htmlFor="consent" className="text-xs sm:text-sm text-slate-600 leading-relaxed cursor-pointer">
             I confirm that the information provided is accurate and consent to GharPadharo retaining my resume and details for prospective career opportunities. <span className="text-red-500">*</span>
@@ -783,7 +787,7 @@ export default function GeneralApplicationForm() {
       )}
 
       {/* Submit Button */}
-      <div className="pt-2">
+      <div className="pt-1 sm:pt-2">
         <button
           type="submit"
           disabled={isSubmitting}

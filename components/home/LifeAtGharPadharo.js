@@ -6,12 +6,12 @@ import Link from "next/link";
  */
 const previewImages = {
   team: {
-    src: "/images/life-at-gharpadharo/placeholder-collaboration.jpg",
-    alt: "GharPadharo team collaborating around a desk",
+    src: "/images/home/gharpadharo-team-2.jpg",
+    alt: "GharPadharo team celebrating together with company gifts",
   },
   place: {
-    src: "/images/life-at-gharpadharo/placeholder-mountains.jpg",
-    alt: "Mountain landscape in Uttarakhand",
+    src: "/images/home/gharpadharo-office.jpg",
+    alt: "GharPadharo office workspace with team member and wall logo",
   },
 };
 
@@ -73,29 +73,18 @@ export default function LifeAtGharPadharo() {
                   className="object-cover transition-transform duration-500 group-hover:scale-103"
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 380px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-3.5 left-4 right-4 text-white">
-                  <span className="inline-block text-[11px] font-semibold uppercase tracking-wider bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-md">
-                    People
-                  </span>
-                </div>
               </div>
 
-              {/* Uttarakhand Himalayan Landscape Photo Card */}
+              {/* GharPadharo Office Photo Card */}
               <div className="sm:col-span-5 relative rounded-2xl overflow-hidden shadow-xs border border-slate-200/80 aspect-[4/3] group">
                 <Image
                   src={previewImages.place.src}
                   alt={previewImages.place.alt}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-103"
+                  style={{ objectPosition: "center 60%" }}
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 35vw, 260px"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none" />
-                <div className="absolute bottom-3.5 left-4 right-4 text-white">
-                  <span className="inline-block text-[11px] font-semibold uppercase tracking-wider bg-white/20 backdrop-blur-xs px-2.5 py-0.5 rounded-md">
-                    Place
-                  </span>
-                </div>
               </div>
             </div>
           </div>

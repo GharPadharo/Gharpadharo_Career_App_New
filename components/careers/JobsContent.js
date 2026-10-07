@@ -14,6 +14,10 @@ import GeneralApplicationCTA from "./GeneralApplicationCTA";
 export default function JobsContent({ allJobs }) {
   const [searchQuery, setSearchQuery] = useState("");
 
+  const hasJobs = (allJobs || []).some(
+    (job) => !job.status || job.status === "active"
+  );
+
   return (
     <>
       <CareersHero
@@ -25,7 +29,7 @@ export default function JobsContent({ allJobs }) {
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
       />
-      <GeneralApplicationCTA />
+      {hasJobs && <GeneralApplicationCTA />}
     </>
   );
 }
