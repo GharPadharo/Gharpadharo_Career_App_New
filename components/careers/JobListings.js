@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import JobFilters from "./JobFilters";
 import JobCard from "./JobCard";
@@ -61,9 +61,11 @@ export default function JobListings({
   };
 
   // Reset page when searchQuery prop changes externally
-  useEffect(() => {
+  const [prevSearchQuery, setPrevSearchQuery] = useState(searchQuery);
+  if (searchQuery !== prevSearchQuery) {
+    setPrevSearchQuery(searchQuery);
     setCurrentPage(1);
-  }, [searchQuery]);
+  }
 
   // Global Zero Openings Check (Only active jobs are publicly visible)
   const activeJobsList = useMemo(() => {
@@ -135,7 +137,7 @@ export default function JobListings({
     });
 
     return result;
-  }, [allJobs, isGlobalZeroOpenings, searchQuery, selectedTeam, selectedJobTypes, selectedExperience, sortBy]);
+  }, [activeJobsList, isGlobalZeroOpenings, searchQuery, selectedTeam, selectedJobTypes, selectedExperience, sortBy]);
 
   // Pagination calculations
   const totalPages = Math.ceil(filteredAndSortedJobs.length / PAGE_SIZE);

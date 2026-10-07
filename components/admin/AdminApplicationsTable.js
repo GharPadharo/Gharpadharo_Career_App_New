@@ -1,12 +1,24 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
 import ApplicationStatusBadge from "./ApplicationStatusBadge";
 import {
-  getViewedApplicationIds,
   markApplicationAsViewed,
 } from "@/lib/viewedApplications";
+
+const emptySubscribe = () => () => {};
+function getSessionViewedSnapshot() {
+  if (typeof window === "undefined") return "";
+  try {
+    return sessionStorage.getItem("gharpadharo_viewed_applications") || "";
+  } catch {
+    return "";
+  }
+}
+function getServerSnapshot() {
+  return "";
+}
 
 /**
  * AdminApplicationsTable Component
@@ -52,17 +64,21 @@ export default function AdminApplicationsTable({
   const headerCheckboxRef = useRef(null);
   const isFirstRender = useRef(true);
 
-  // Sync frontend session viewed applications on client mount
-  useEffect(() => {
-    const viewedIds = getViewedApplicationIds();
-    if (viewedIds.size > 0) {
-      setApplications((prev) =>
-        prev.map((app) =>
-          viewedIds.has(app.id) ? { ...app, status: "viewed" } : app
-        )
-      );
+  // Read frontend session viewed applications via external store
+  const sessionViewedRaw = useSyncExternalStore(
+    emptySubscribe,
+    getSessionViewedSnapshot,
+    getServerSnapshot
+  );
+
+  const sessionViewedSet = useMemo(() => {
+    if (!sessionViewedRaw) return new Set();
+    try {
+      return new Set(JSON.parse(sessionViewedRaw));
+    } catch {
+      return new Set();
     }
-  }, []);
+  }, [sessionViewedRaw]);
 
   // Sync sidebar applications count when applications length changes after mutations (skip initial mount)
   useEffect(() => {
@@ -97,7 +113,13 @@ export default function AdminApplicationsTable({
 
   // Derived filtered list
   const filteredApplications = useMemo(() => {
-    return applications.filter((app) => {
+    return applications
+      .map((app) =>
+        sessionViewedSet.has(app.id) && app.status !== "viewed"
+          ? { ...app, status: "viewed" }
+          : app
+      )
+      .filter((app) => {
       const isGeneral =
         app.applicationType === "general" ||
         app.jobId === "general" ||
@@ -138,28 +160,17 @@ export default function AdminApplicationsTable({
 
       return matchesType && matchesStatus && matchesJob && matchesSearch;
     });
-  }, [applications, searchTerm, selectedType, selectedStatus, selectedJobId, jobsById]);
+  }, [applications, sessionViewedSet, searchTerm, selectedType, selectedStatus, selectedJobId, jobsById]);
 
-  // Reset page when filters change
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, selectedType, selectedStatus, selectedJobId]);
-
-  // Total pages calculation
+  // Total pages calculation and derived safe clamped page
   const totalPages = Math.max(1, Math.ceil(filteredApplications.length / pageSize));
-
-  // If current page becomes empty after deletion, step back
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
+  const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
 
   // Current page items
   const paginatedApplications = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
+    const start = (safeCurrentPage - 1) * pageSize;
     return filteredApplications.slice(start, start + pageSize);
-  }, [filteredApplications, currentPage, pageSize]);
+  }, [filteredApplications, safeCurrentPage, pageSize]);
 
   // Checkbox states for current page
   const allCurrentPageSelected =
@@ -274,11 +285,32 @@ export default function AdminApplicationsTable({
       selectedJobId !== "All"
   );
 
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    setCurrentPage(1);
+  };
+
+  const handleTypeChange = (value) => {
+    setSelectedType(value);
+    setCurrentPage(1);
+  };
+
+  const handleStatusChange = (value) => {
+    setSelectedStatus(value);
+    setCurrentPage(1);
+  };
+
+  const handleJobChange = (value) => {
+    setSelectedJobId(value);
+    setCurrentPage(1);
+  };
+
   const handleClearFilters = () => {
     setSearchTerm("");
     setSelectedType("All");
     setSelectedStatus("All");
     setSelectedJobId("All");
+    setCurrentPage(1);
   };
 
   return (
@@ -383,7 +415,7 @@ export default function AdminApplicationsTable({
             <input
               type="text"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
               placeholder="Search candidates, roles, or notes..."
               className="w-full h-11 pl-10 pr-9 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition-colors"
               aria-label="Search candidates or jobs"
@@ -391,7 +423,7 @@ export default function AdminApplicationsTable({
             {searchTerm && (
               <button
                 type="button"
-                onClick={() => setSearchTerm("")}
+                onClick={() => handleSearchChange("")}
                 className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer"
                 aria-label="Clear search input"
               >
@@ -406,7 +438,7 @@ export default function AdminApplicationsTable({
           <div className="col-span-1 md:col-auto relative w-full md:w-[170px] md:shrink-0">
             <select
               value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
+              onChange={(e) => handleTypeChange(e.target.value)}
               className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
               aria-label="Filter by Type"
             >
@@ -425,7 +457,7 @@ export default function AdminApplicationsTable({
           <div className="col-span-1 md:col-auto relative w-full md:w-[150px] md:shrink-0">
             <select
               value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
+              onChange={(e) => handleStatusChange(e.target.value)}
               className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
               aria-label="Filter by Status"
             >
@@ -444,7 +476,7 @@ export default function AdminApplicationsTable({
           <div className="col-span-2 md:col-auto relative w-full md:w-[200px] md:shrink-0">
             <select
               value={selectedJobId}
-              onChange={(e) => setSelectedJobId(e.target.value)}
+              onChange={(e) => handleJobChange(e.target.value)}
               className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden truncate"
               aria-label="Filter by Job"
             >
@@ -786,11 +818,11 @@ export default function AdminApplicationsTable({
                 <div>
                   Showing{" "}
                   <span className="font-semibold text-slate-700">
-                    {(currentPage - 1) * pageSize + 1}
+                    {(safeCurrentPage - 1) * pageSize + 1}
                   </span>{" "}
                   to{" "}
                   <span className="font-semibold text-slate-700">
-                    {Math.min(currentPage * pageSize, filteredApplications.length)}
+                    {Math.min(safeCurrentPage * pageSize, filteredApplications.length)}
                   </span>{" "}
                   of{" "}
                   <span className="font-semibold text-slate-700">
@@ -802,21 +834,21 @@ export default function AdminApplicationsTable({
                 <div className="flex items-center gap-2">
                   <button
                     type="button"
-                    disabled={currentPage <= 1}
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    disabled={safeCurrentPage <= 1}
+                    onClick={() => setCurrentPage((p) => Math.max(1, Math.min(totalPages, p) - 1))}
                     className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors shadow-2xs"
                   >
                     Previous
                   </button>
 
                   <span className="px-2 font-medium text-slate-600">
-                    Page {currentPage} of {totalPages}
+                    Page {safeCurrentPage} of {totalPages}
                   </span>
 
                   <button
                     type="button"
-                    disabled={currentPage >= totalPages}
-                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={safeCurrentPage >= totalPages}
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, Math.max(1, p) + 1))}
                     className="px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 font-semibold disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer transition-colors shadow-2xs"
                   >
                     Next

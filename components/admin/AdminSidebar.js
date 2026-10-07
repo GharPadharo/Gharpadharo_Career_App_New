@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 import { usePathname } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 
 /**
  * AdminSidebar Component
@@ -18,56 +18,76 @@ import { useEffect, useState, useCallback } from "react";
  */
 export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
   const pathname = usePathname();
-  const [count, setCount] = useState(
-    typeof applicationsCount === "number" ? applicationsCount : null
-  );
+  const [localCount, setLocalCount] = useState(null);
 
-  // Sync with prop when passed from server layout
+  const displayCount =
+    typeof localCount === "number"
+      ? localCount
+      : typeof applicationsCount === "number"
+      ? applicationsCount
+      : null;
+
+  // Refresh count on pathname navigation
   useEffect(() => {
-    if (typeof applicationsCount === "number") {
-      setCount(applicationsCount);
-    }
-  }, [applicationsCount]);
-
-  // Fetch count from dashboard stats API
-  const fetchCount = useCallback(async () => {
-    try {
-      const res = await fetch("/api/admin/dashboard/stats");
-      if (res.ok) {
-        const json = await res.json();
-        const total = json?.data?.applications?.total ?? json?.applications?.total;
-        if (typeof total === "number") {
-          setCount(total);
+    let ignore = false;
+    async function refresh() {
+      try {
+        const res = await fetch("/api/admin/dashboard/stats");
+        if (res.ok) {
+          const json = await res.json();
+          const total = json?.data?.applications?.total ?? json?.applications?.total;
+          if (typeof total === "number" && !ignore) {
+            setLocalCount(total);
+          }
         }
+      } catch (err) {
+        console.error("Failed to load application count for sidebar:", err);
       }
-    } catch (err) {
-      console.error("Failed to load application count for sidebar:", err);
     }
-  }, []);
-
-  // Refresh on pathname change (navigation)
-  useEffect(() => {
-    fetchCount();
-  }, [pathname, fetchCount]);
+    refresh();
+    return () => {
+      ignore = true;
+    };
+  }, [pathname]);
 
   // Real-time synchronization via custom event and window focus
   useEffect(() => {
     const handleUpdate = (e) => {
       if (typeof e.detail?.count === "number") {
-        setCount((prev) => (prev === e.detail.count ? prev : e.detail.count));
+        setLocalCount(e.detail.count);
       } else {
-        fetchCount();
+        fetch("/api/admin/dashboard/stats")
+          .then((res) => res.json())
+          .then((json) => {
+            const total = json?.data?.applications?.total ?? json?.applications?.total;
+            if (typeof total === "number") {
+              setLocalCount(total);
+            }
+          })
+          .catch(() => {});
       }
     };
 
+    const handleFocus = () => {
+      fetch("/api/admin/dashboard/stats")
+        .then((res) => res.json())
+        .then((json) => {
+          const total = json?.data?.applications?.total ?? json?.applications?.total;
+          if (typeof total === "number") {
+            setLocalCount(total);
+          }
+        })
+        .catch(() => {});
+    };
+
     window.addEventListener("applications-updated", handleUpdate);
-    window.addEventListener("focus", fetchCount);
+    window.addEventListener("focus", handleFocus);
 
     return () => {
       window.removeEventListener("applications-updated", handleUpdate);
-      window.removeEventListener("focus", fetchCount);
+      window.removeEventListener("focus", handleFocus);
     };
-  }, [fetchCount]);
+  }, []);
 
   // Close mobile drawer on Escape key
   useEffect(() => {
@@ -113,7 +133,7 @@ export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
       label: "Applications",
       href: "/admin/dashboard/applications",
       active: pathname === "/admin/dashboard/applications" || pathname?.startsWith("/admin/dashboard/applications/"),
-      badge: typeof count === "number" ? String(count) : undefined,
+      badge: typeof displayCount === "number" ? String(displayCount) : undefined,
       icon: (
         <svg className="w-5 h-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />

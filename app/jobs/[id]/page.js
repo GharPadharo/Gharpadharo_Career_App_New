@@ -98,9 +98,9 @@ export default async function JobDetailsPage({ params }) {
     "@type": "JobPosting",
     title: job.title,
     description: job.description,
-    datePosted: new Date(Date.now() - job.postedDays * 24 * 60 * 60 * 1000)
-      .toISOString()
-      .split("T")[0],
+    datePosted: job.postedAt
+      ? job.postedAt.split("T")[0]
+      : undefined,
     employmentType: employmentTypeMap[job.type] || "FULL_TIME",
     hiringOrganization: {
       "@type": "Organization",

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import AdminStats from "@/components/admin/AdminStats";
 import RecentActivityCard from "@/components/admin/RecentActivityCard";
 
@@ -17,7 +17,7 @@ export default function AdminDashboardOverview() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchStats = useCallback(async () => {
+  const fetchStats = async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -37,11 +37,40 @@ export default function AdminDashboardOverview() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
-    fetchStats();
-  }, [fetchStats]);
+    let ignore = false;
+    async function load() {
+      try {
+        const res = await fetch("/api/admin/dashboard/stats");
+        if (!res.ok) {
+          const errorJson = await res.json().catch(() => ({}));
+          throw new Error(errorJson.error || `HTTP error ${res.status}`);
+        }
+        const json = await res.json();
+        if (!json.success || !json.data) {
+          throw new Error(json.error || "Malformed response payload from stats API");
+        }
+        if (!ignore) {
+          setStatsData(json.data);
+        }
+      } catch (err) {
+        if (!ignore) {
+          console.error("Failed to load dashboard statistics:", err);
+          setError(err.message || "Failed to load dashboard statistics");
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      }
+    }
+    load();
+    return () => {
+      ignore = true;
+    };
+  }, []);
 
   if (error) {
     return (

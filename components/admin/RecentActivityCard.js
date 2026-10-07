@@ -210,8 +210,38 @@ export default function RecentActivityCard({ limit = 5, isFullPage = false }) {
 
   // Initial load
   useEffect(() => {
-    fetchActivities(false);
-  }, [fetchActivities]);
+    let ignore = false;
+    async function load() {
+      try {
+        const res = await fetch(`/api/admin/dashboard/activity?limit=${limit}`);
+        if (!res.ok) {
+          const errorJson = await res.json().catch(() => ({}));
+          throw new Error(errorJson.error || `HTTP ${res.status}`);
+        }
+        const json = await res.json();
+        if (!json.success || !Array.isArray(json.activities)) {
+          throw new Error("Malformed activity payload from API");
+        }
+        if (!ignore) {
+          setActivities(json.activities.slice(0, limit));
+          setLastUpdated(new Date());
+        }
+      } catch (err) {
+        if (!ignore) {
+          console.error("Failed to load recruitment activities:", err);
+          setError(err.message || "Activity couldn't be loaded.");
+        }
+      } finally {
+        if (!ignore) {
+          setIsLoading(false);
+        }
+      }
+    }
+    load();
+    return () => {
+      ignore = true;
+    };
+  }, [limit]);
 
   // Periodic polling & event-based revalidation
   useEffect(() => {

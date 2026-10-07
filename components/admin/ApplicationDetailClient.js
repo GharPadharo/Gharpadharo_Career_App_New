@@ -14,7 +14,9 @@ import { markApplicationAsViewed } from "@/lib/viewedApplications";
  * - Cover letter & profile links
  */
 export default function ApplicationDetailClient({ application, job }) {
-  const [wasJustViewed, setWasJustViewed] = useState(false);
+  const [wasJustViewed, setWasJustViewed] = useState(
+    () => application?.status === "new"
+  );
   const viewedAppIdRef = useRef(null);
 
   useEffect(() => {
@@ -26,7 +28,6 @@ export default function ApplicationDetailClient({ application, job }) {
 
     markApplicationAsViewed(application.id);
     if (application.status === "new") {
-      setWasJustViewed(true);
 
       // Persist to MongoDB only if it transitioned from "new"
       fetch(`/api/admin/applications/${application.id}`, {
