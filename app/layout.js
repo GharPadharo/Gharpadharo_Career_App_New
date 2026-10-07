@@ -44,6 +44,13 @@ export const metadata = {
       "Explore career opportunities at GharPadharo. Discover jobs, teams, and opportunities to build your career with us.",
     images: ["/logo.png"],
   },
+  icons: {
+    icon: [
+      { url: "/logo.png", type: "image/png" },
+    ],
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
 };
 
 export default function RootLayout({ children }) {
