@@ -7,6 +7,13 @@ import {
   uploadResumeBuffer,
   validateMagicBytes,
 } from "@/lib/cloudinary";
+import {
+  RATE_LIMIT_RULES,
+  addRateLimitHeaders,
+  checkRateLimit,
+  createRateLimitResponse,
+  getClientIp,
+} from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +21,7 @@ export const dynamic = "force-dynamic";
  * POST /api/uploads/resume
  * 
  * Secure endpoint to upload candidate resumes to Cloudinary.
+ * - Enforces IP rate limiting (8 uploads / 15 min) BEFORE parsing multipart payload
  * - Accepts multipart/form-data with a "file" or "resume" field
  * - Validates file size (<= 10MB)
  * - Validates extension (.pdf, .doc, .docx)
@@ -24,6 +32,19 @@ export const dynamic = "force-dynamic";
  */
 export async function POST(request) {
   try {
+    // 1. Enforce rate limiting before reading the request body or buffering the 10MB file
+    const clientIp = getClientIp(request);
+    const rateLimit = await checkRateLimit({
+      endpointScope: "resume_upload",
+      identifier: clientIp,
+      limit: RATE_LIMIT_RULES.resumeUpload.limit,
+      windowSeconds: RATE_LIMIT_RULES.resumeUpload.windowSeconds,
+    });
+
+    if (!rateLimit.allowed) {
+      return createRateLimitResponse(rateLimit);
+    }
+
     let formData;
     try {
       formData = await request.formData();
@@ -116,7 +137,7 @@ export async function POST(request) {
     // 4. Upload buffer to Cloudinary
     const uploadResult = await uploadResumeBuffer(buffer, fileName, extension);
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         success: true,
         resume: {
@@ -129,6 +150,9 @@ export async function POST(request) {
       },
       { status: 201 }
     );
+
+    addRateLimitHeaders(response, rateLimit);
+    return response;
   } catch (error) {
     console.error("Error in POST /api/uploads/resume:", error);
     return NextResponse.json(

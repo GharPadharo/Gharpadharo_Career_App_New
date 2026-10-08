@@ -8,6 +8,13 @@ import { deleteResume } from "@/lib/cloudinary";
 import { logActivity } from "@/lib/activityLogger";
 import { appendApplicationToSheet } from "@/lib/googleSheets";
 import { getNextApplicationNumber } from "@/lib/applicationCounter";
+import {
+  RATE_LIMIT_RULES,
+  addRateLimitHeaders,
+  checkRateLimit,
+  createRateLimitResponse,
+  getClientIp,
+} from "@/lib/rateLimit";
 
 export const dynamic = "force-dynamic";
 
@@ -106,6 +113,19 @@ export async function POST(request) {
   try {
     await connectDB();
 
+    // 1. Enforce IP rate limiting (5 submissions / 15 min) before processing body
+    const clientIp = getClientIp(request);
+    const ipRateLimit = await checkRateLimit({
+      endpointScope: "application_submit_ip",
+      identifier: clientIp,
+      limit: RATE_LIMIT_RULES.applicationSubmissionIp.limit,
+      windowSeconds: RATE_LIMIT_RULES.applicationSubmissionIp.windowSeconds,
+    });
+
+    if (!ipRateLimit.allowed) {
+      return createRateLimitResponse(ipRateLimit);
+    }
+
     const body = await request.json();
 
     const {
@@ -178,6 +198,18 @@ export async function POST(request) {
         },
         { status: 400 }
       );
+    }
+
+    // 2. Enforce email rate limiting (3 submissions / 1 hour) before duplicate checks and database operations
+    const emailRateLimit = await checkRateLimit({
+      endpointScope: "application_submit_email",
+      identifier: normalizedEmail,
+      limit: RATE_LIMIT_RULES.applicationSubmissionEmail.limit,
+      windowSeconds: RATE_LIMIT_RULES.applicationSubmissionEmail.windowSeconds,
+    });
+
+    if (!emailRateLimit.allowed) {
+      return createRateLimitResponse(emailRateLimit);
     }
 
     // candidate full name
@@ -293,7 +325,7 @@ export async function POST(request) {
         console.error("Google Sheets sync error (general):", syncErr?.message || syncErr);
       });
 
-      return NextResponse.json(
+      const response = NextResponse.json(
         {
           success: true,
           message: "General application submitted successfully.",
@@ -301,6 +333,8 @@ export async function POST(request) {
         },
         { status: 201 }
       );
+      addRateLimitHeaders(response, ipRateLimit);
+      return response;
     }
 
     // ==================================================
@@ -478,7 +512,7 @@ export async function POST(request) {
       console.error("Google Sheets sync error (job):", syncErr?.message || syncErr);
     });
 
-    return NextResponse.json(
+    const response = NextResponse.json(
       {
         success: true,
         message: "Application submitted successfully.",
@@ -486,6 +520,8 @@ export async function POST(request) {
       },
       { status: 201 }
     );
+    addRateLimitHeaders(response, ipRateLimit);
+    return response;
   } catch (error) {
     console.error("Error in POST /api/applications:", error);
     return NextResponse.json(
