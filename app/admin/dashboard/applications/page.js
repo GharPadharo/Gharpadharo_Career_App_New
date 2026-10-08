@@ -3,8 +3,6 @@ import Application from "@/models/Application";
 import Job from "@/models/Job";
 import { serializeApplication } from "@/lib/applicationSerializer";
 import { serializeJob } from "@/lib/jobSerializer";
-import { mockApplications } from "@/lib/mockApplications";
-import { mockJobs } from "@/lib/mockJobs";
 import AdminApplicationsTable from "@/components/admin/AdminApplicationsTable";
 
 export const dynamic = "force-dynamic";
@@ -21,6 +19,7 @@ export const metadata = {
 export default async function AdminApplicationsPage() {
   let allApplications = [];
   let allJobs = [];
+  let loadError = false;
 
   try {
     await connectDB();
@@ -32,9 +31,8 @@ export default async function AdminApplicationsPage() {
     allApplications = appDocs.map(serializeApplication);
     allJobs = jobDocs.map(serializeJob);
   } catch (error) {
-    console.error("Failed to load applications from database, using fallback:", error);
-    allApplications = mockApplications;
-    allJobs = mockJobs;
+    console.error("Failed to load applications from database:", error);
+    loadError = true;
   }
 
   return (
@@ -57,11 +55,42 @@ export default async function AdminApplicationsPage() {
         </div>
       </div>
 
-      {/* Main Applications Table */}
-      <AdminApplicationsTable
-        initialApplications={allApplications}
-        jobs={allJobs}
-      />
+      {/* Main Applications Table or Error Notice */}
+      {loadError ? (
+        <div className="rounded-2xl border border-red-200 bg-red-50/60 p-6 text-slate-800 shadow-2xs">
+          <div className="flex items-start gap-4">
+            <div className="rounded-xl bg-red-100 p-2.5 text-red-600 shrink-0">
+              <svg
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
+              </svg>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-red-900">
+                Unable to load candidate applications
+              </h3>
+              <p className="mt-1 text-sm text-red-700">
+                A connection error occurred while retrieving applications from the recruitment database. Please refresh the page or try again in a few moments.
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <AdminApplicationsTable
+          initialApplications={allApplications}
+          jobs={allJobs}
+        />
+      )}
     </div>
   );
 }

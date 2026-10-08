@@ -5,8 +5,6 @@ import Application from "@/models/Application";
 import Job from "@/models/Job";
 import { serializeApplication } from "@/lib/applicationSerializer";
 import { serializeJob } from "@/lib/jobSerializer";
-import { mockApplications } from "@/lib/mockApplications";
-import { mockJobs } from "@/lib/mockJobs";
 import ApplicationDetailClient from "@/components/admin/ApplicationDetailClient";
 
 export const dynamic = "force-dynamic";
@@ -32,13 +30,6 @@ async function getApplicationData(id) {
     }
   } catch (error) {
     console.error("Error loading application detail from database:", error);
-  }
-
-  // Fallback to mock data for development
-  const mockApp = mockApplications.find((a) => a.id === id);
-  if (mockApp) {
-    const mockJob = mockJobs.find((j) => j.id === mockApp.jobId);
-    return { application: mockApp, job: mockJob };
   }
 
   return { application: null, job: null };

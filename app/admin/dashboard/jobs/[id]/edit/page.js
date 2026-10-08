@@ -4,7 +4,6 @@ import mongoose from "mongoose";
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import { serializeJob } from "@/lib/jobSerializer";
-import { mockJobs } from "@/lib/mockJobs";
 import JobForm from "@/components/admin/JobForm";
 
 export const dynamic = "force-dynamic";
@@ -21,7 +20,7 @@ async function getJobForEdit(id) {
   } catch (error) {
     console.error("Error fetching job for edit:", error);
   }
-  return mockJobs.find((j) => j.id === id) || null;
+  return null;
 }
 
 export async function generateMetadata({ params }) {
