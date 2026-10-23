@@ -2,6 +2,7 @@ import { Manrope } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ScrollRevealInit from "@/components/common/ScrollRevealInit";
 
 const manrope = Manrope({
   variable: "--font-manrope",
@@ -46,12 +47,42 @@ export const metadata = {
   },
   icons: {
     icon: [
-      { url: "/logo.png", type: "image/png" },
+      { url: "/icon.png", sizes: "192x192", type: "image/png" },
     ],
-    shortcut: "/logo.png",
-    apple: "/logo.png",
+    shortcut: "/favicon.ico",
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
   },
 };
+
+const globalJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://career.gharpadharo.com/#organization",
+      name: "GharPadharo",
+      url: "https://career.gharpadharo.com",
+      sameAs: "https://www.gharpadharo.com",
+      logo: "https://career.gharpadharo.com/logo.png",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://career.gharpadharo.com/#website",
+      url: "https://career.gharpadharo.com",
+      name: "GharPadharo Careers",
+      description:
+        "Explore career opportunities at GharPadharo. Discover jobs, teams, and opportunities to build your career with us.",
+      publisher: {
+        "@id": "https://career.gharpadharo.com/#organization",
+      },
+      inLanguage: "en-IN",
+    },
+  ],
+};
+
+const safeJsonLdString = JSON.stringify(globalJsonLd).replace(/</g, "\\u003c");
 
 export default function RootLayout({ children }) {
   return (
@@ -59,7 +90,23 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${manrope.variable} h-full antialiased`}
     >
+      <head>
+        <link
+          rel="preconnect"
+          href="https://res.cloudinary.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="dns-prefetch"
+          href="https://res.cloudinary.com"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: safeJsonLdString }}
+        />
+      </head>
       <body className="min-h-full flex flex-col font-sans bg-background text-body">
+        <ScrollRevealInit />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />

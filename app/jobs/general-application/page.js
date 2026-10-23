@@ -1,5 +1,8 @@
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import SectionBadge from "@/components/common/SectionBadge";
 import GeneralApplicationForm from "@/components/careers/GeneralApplicationForm";
+import ScrollReveal from "@/components/common/ScrollReveal";
 
 export const metadata = {
   title: "General Application | GharPadharo Careers",
@@ -27,28 +30,32 @@ export const metadata = {
 
 export default function GeneralApplicationPage() {
   return (
-    <div className="w-full bg-[#f8fafc] min-h-screen py-6 sm:py-10 lg:py-16 border-b border-slate-200/60">
-      <div className="container-custom max-w-3xl mx-auto">
+    <div className="w-full bg-[#F8F7FC] min-h-screen py-8 sm:py-10 lg:py-14 border-b border-slate-200/60">
+      <div className="w-full max-w-[800px] mx-auto px-4 sm:px-6">
         {/* Navigation / Back link */}
-        <div className="mb-3 sm:mb-4">
+        <nav aria-label="Breadcrumb" className="mb-4">
           <Link
             href="/jobs"
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-[#46477f] transition-colors focus:outline-none focus:underline"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#5929D6] hover:text-[#4D20BE] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6]/30 rounded px-1 py-0.5"
           >
-            <span aria-hidden="true">&larr;</span>
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             <span>Back to all jobs</span>
           </Link>
-        </div>
+        </nav>
 
-        {/* Badge */}
-        <div className="mb-4 sm:mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-bold tracking-wider uppercase">
-            <span>GENERAL APPLICATION</span>
+        {/* Compact Lavender Eyebrow Badge */}
+        <ScrollReveal variant="fade-up">
+          <div className="mb-5 sm:mb-6">
+            <SectionBadge>
+              General Application
+            </SectionBadge>
           </div>
-        </div>
+        </ScrollReveal>
 
         {/* Form Container */}
-        <GeneralApplicationForm />
+        <ScrollReveal variant="fade-up" delay={60}>
+          <GeneralApplicationForm />
+        </ScrollReveal>
       </div>
     </div>
   );

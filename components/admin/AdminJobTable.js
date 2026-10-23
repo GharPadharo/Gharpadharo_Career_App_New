@@ -138,7 +138,7 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
 
           <Link
             href="/admin/dashboard/jobs/new"
-            className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#46477f] text-white text-sm font-semibold px-4 sm:px-5 py-2.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 shrink-0"
+            className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#4D20BE] text-white text-sm font-semibold px-4 sm:px-5 py-2.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 shrink-0"
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
@@ -190,7 +190,7 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
             <div className="mt-5">
               <Link
                 href="/admin/dashboard/jobs/new"
-                className="inline-flex items-center gap-2 bg-primary hover:bg-[#46477f] text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                className="inline-flex items-center gap-2 bg-primary hover:bg-[#4D20BE] text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
               >
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
@@ -238,7 +238,7 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
             <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200/80 bg-slate-50/70 text-[11px] font-bold text-muted uppercase tracking-wider">
+                  <tr className="border-b border-slate-200/80 bg-slate-50/70 text-[11px] font-bold text-heading uppercase tracking-wider">
                     <th scope="col" className="py-3.5 px-4 lg:px-6 w-[34%]">Job</th>
                     <th scope="col" className="py-3.5 px-4 w-[18%]">Team</th>
                     <th scope="col" className="py-3.5 px-4 w-[14%]">Experience</th>
@@ -258,23 +258,23 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
                         <div className="min-w-0 pr-2">
                           <Link
                             href={`/admin/dashboard/jobs/${job.id}/edit`}
-                            className="font-bold text-slate-900 text-sm sm:text-[15px] hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline leading-snug block truncate"
+                            className="font-bold text-heading text-sm sm:text-[15px] hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline leading-snug block truncate"
                           >
                             {job.title}
                           </Link>
-                          <span className="block text-xs text-slate-500 mt-1 truncate font-normal">
+                          <span className="block text-xs text-muted mt-1 truncate font-normal">
                             {job.location} &bull; {job.type}
                           </span>
                         </div>
                       </td>
 
                       {/* TEAM */}
-                      <td className="py-4 px-4 text-slate-700 font-medium whitespace-nowrap">
+                      <td className="py-4 px-4 text-body font-medium whitespace-nowrap">
                         {job.team}
                       </td>
 
                       {/* EXPERIENCE */}
-                      <td className="py-4 px-4 text-slate-600 text-sm whitespace-nowrap">
+                      <td className="py-4 px-4 text-body text-sm font-medium whitespace-nowrap">
                         {job.experience}
                       </td>
 
@@ -284,7 +284,7 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
                       </td>
 
                       {/* POSTED */}
-                      <td className="py-4 px-4 text-xs text-slate-500 whitespace-nowrap">
+                      <td className="py-4 px-4 text-xs text-muted whitespace-nowrap">
                         {job.postedText}
                       </td>
 
@@ -294,7 +294,7 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
                           {/* Primary Action: Edit */}
                           <Link
                             href={`/admin/dashboard/jobs/${job.id}/edit`}
-                            className="text-primary hover:text-[#46477f] transition-colors focus-visible:outline-none focus-visible:underline"
+                            className="text-primary hover:text-[#4D20BE] transition-colors focus-visible:outline-none focus-visible:underline"
                             aria-label={`Edit ${job.title}`}
                           >
                             Edit
@@ -394,7 +394,7 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
                   <div className="pt-2.5 border-t border-slate-100 flex items-center justify-end gap-3 text-xs font-semibold">
                     <Link
                       href={`/admin/dashboard/jobs/${job.id}/edit`}
-                      className="text-primary hover:text-[#46477f] transition-colors"
+                      className="text-primary hover:text-[#4D20BE] transition-colors"
                     >
                       Edit
                     </Link>

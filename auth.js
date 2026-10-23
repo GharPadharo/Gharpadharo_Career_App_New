@@ -9,6 +9,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID || process.env.AUTH_GOOGLE_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || process.env.AUTH_GOOGLE_SECRET || "",
+      authorization: {
+        params: {
+          prompt: "select_account",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
     }),
   ],
   callbacks: {
@@ -27,8 +34,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // Record successful login timestamp and update profile info if available
       try {
         adminUser.lastLoginAt = new Date();
-        if (user.name && !adminUser.name) adminUser.name = user.name;
-        if (user.image && !adminUser.image) adminUser.image = user.image;
+        if (user.name) adminUser.name = user.name;
+        if (user.image) adminUser.image = user.image;
         await adminUser.save();
       } catch (err) {
         console.error("Failed to update lastLoginAt on admin login:", err);
@@ -45,10 +52,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.isAdmin = true;
           token.role = adminUser.role || "admin";
           token.dbUserId = adminUser._id.toString();
+          if (!token.picture && adminUser.image) {
+            token.picture = adminUser.image;
+          }
         } else {
           token.isAdmin = false;
           token.role = "user";
         }
+      }
+      if (user?.image || user?.picture) {
+        token.picture = user.image || user.picture;
+      }
+      if (user?.name) {
+        token.name = user.name;
       }
       return token;
     },
@@ -57,6 +73,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.dbUserId || token.sub;
         session.user.isAdmin = Boolean(token.isAdmin);
         session.user.role = token.role || "user";
+        if (token.picture) {
+          session.user.image = token.picture;
+          session.user.picture = token.picture;
+        }
+        if (token.name) {
+          session.user.name = token.name;
+        }
       }
       return session;
     },
@@ -64,5 +87,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: "jwt",
   },
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "build-time-secret-placeholder-at-least-32-chars-long",
+  secret: authConfig.secret,
 });

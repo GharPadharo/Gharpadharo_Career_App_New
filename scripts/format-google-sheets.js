@@ -53,7 +53,7 @@ async function formatSheet() {
     }
   }
 
-  // 4. Clear all data validation rules across A:R (no people chips, dropdowns)
+  // 4. Clear all data validation rules across A:Q (no people chips, dropdowns)
   requests.push({
     setDataValidation: {
       range: {
@@ -61,7 +61,7 @@ async function formatSheet() {
         startRowIndex: 0,
         endRowIndex: 2000,
         startColumnIndex: 0,
-        endColumnIndex: 18,
+        endColumnIndex: 17,
       },
       rule: null,
     },
@@ -80,15 +80,41 @@ async function formatSheet() {
     },
   });
 
-  // 6. Merge A1:R1 for Title Banner (check if already merged)
-  const isAlreadyMerged = targetSheet.merges?.some(
-    (m) =>
-      m.startRowIndex === 0 &&
-      m.endRowIndex === 1 &&
-      m.startColumnIndex === 0 &&
-      m.endColumnIndex === 18
+  // 6. Merge A1:Q1 for Title Banner (handle unmerging if bounds changed)
+  const existingRow0Merge = targetSheet.merges?.find(
+    (m) => m.startRowIndex === 0 && m.endRowIndex === 1
   );
-  if (!isAlreadyMerged) {
+
+  if (existingRow0Merge) {
+    if (existingRow0Merge.startColumnIndex === 0 && existingRow0Merge.endColumnIndex === 17) {
+      // Already accurately merged A1:Q1
+    } else {
+      // Old merge width (e.g. A1:R1 or A1:S1) -> unmerge first, then merge A1:Q1
+      requests.push({
+        unmergeCells: {
+          range: {
+            sheetId,
+            startRowIndex: existingRow0Merge.startRowIndex,
+            endRowIndex: existingRow0Merge.endRowIndex,
+            startColumnIndex: existingRow0Merge.startColumnIndex,
+            endColumnIndex: existingRow0Merge.endColumnIndex,
+          },
+        },
+      });
+      requests.push({
+        mergeCells: {
+          range: {
+            sheetId,
+            startRowIndex: 0,
+            endRowIndex: 1,
+            startColumnIndex: 0,
+            endColumnIndex: 17,
+          },
+          mergeType: "MERGE_ALL",
+        },
+      });
+    }
+  } else {
     requests.push({
       mergeCells: {
         range: {
@@ -96,7 +122,7 @@ async function formatSheet() {
           startRowIndex: 0,
           endRowIndex: 1,
           startColumnIndex: 0,
-          endColumnIndex: 18,
+          endColumnIndex: 17,
         },
         mergeType: "MERGE_ALL",
       },
@@ -152,7 +178,6 @@ async function formatSheet() {
     { index: 14, width: 300 }, // O: About
     { index: 15, width: 320 }, // P: Cover Letter
     { index: 16, width: 220 }, // Q: Resume
-    { index: 17, width: 100 }, // R: Status
   ];
 
   for (const col of COLUMN_WIDTHS) {
@@ -249,7 +274,7 @@ async function formatSheet() {
         startRowIndex: 0,
         endRowIndex: 1,
         startColumnIndex: 1,
-        endColumnIndex: 18,
+        endColumnIndex: 17,
       },
       cell: {
         userEnteredFormat: {
@@ -265,7 +290,7 @@ async function formatSheet() {
   // 10. Format Row 2: Table Column Headers
   // Background: Primary Dark Green #245C4A
   const headerValues = GOOGLE_SHEETS_HEADERS.map((h, idx) => {
-    const isCenter = [0, 1, 2, 17].includes(idx);
+    const isCenter = [0, 1, 2].includes(idx);
     return {
       userEnteredValue: {
         stringValue: h,
@@ -294,7 +319,7 @@ async function formatSheet() {
         startRowIndex: 1,
         endRowIndex: 2,
         startColumnIndex: 0,
-        endColumnIndex: 18,
+        endColumnIndex: 17,
       },
       rows: [
         {
@@ -314,7 +339,7 @@ async function formatSheet() {
           startRowIndex: 1,
           endRowIndex: 2000,
           startColumnIndex: 0,
-          endColumnIndex: 18,
+          endColumnIndex: 17,
         },
         rowProperties: {
           headerColorStyle: {
@@ -340,7 +365,7 @@ async function formatSheet() {
           startRowIndex: 1,
           endRowIndex: 2000,
           startColumnIndex: 0,
-          endColumnIndex: 18,
+          endColumnIndex: 17,
         },
       },
     },
@@ -355,7 +380,7 @@ async function formatSheet() {
         startRowIndex: 2,
         endRowIndex: 2000,
         startColumnIndex: 0,
-        endColumnIndex: 18,
+        endColumnIndex: 17,
       },
       cell: {
         userEnteredFormat: {
@@ -397,8 +422,8 @@ async function formatSheet() {
     },
   });
 
-  // Center alignment for Column B (Submitted At), Column C (Application Type), Column R (Status)
-  for (const cIdx of [1, 2, 17]) {
+  // Center alignment for Column B (Submitted At) and Column C (Application Type)
+  for (const cIdx of [1, 2]) {
     requests.push({
       repeatCell: {
         range: {
@@ -438,6 +463,14 @@ async function formatSheet() {
       },
     });
   }
+
+  // Ensure any leftover content in Column R and beyond is cleared
+  await sheets.spreadsheets.values
+    .clear({
+      spreadsheetId,
+      range: `${tabName}!R1:Z2000`,
+    })
+    .catch(() => {});
 
   console.log(`Sending batchUpdate with ${requests.length} requests...`);
   const res = await sheets.spreadsheets.batchUpdate({

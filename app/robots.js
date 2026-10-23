@@ -3,8 +3,8 @@ export default function robots() {
     rules: [
       {
         userAgent: "*",
-        allow: ["/", "/jobs", "/life-at-gharpadharo"],
-        disallow: ["/admin/", "/jobs/*/apply"],
+        allow: ["/", "/jobs", "/life-at-gharpadharo", "/resources"],
+        disallow: ["/admin/", "/jobs/*/apply", "/api/"],
       },
     ],
     sitemap: "https://career.gharpadharo.com/sitemap.xml",

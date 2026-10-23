@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import { serializeJob } from "@/lib/jobSerializer";
+import { escapeRegex } from "@/lib/searchUtils";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +39,8 @@ export async function GET(request) {
     }
 
     if (search.trim()) {
-      const searchRegex = new RegExp(search.trim(), "i");
+      const sanitizedSearch = escapeRegex(search.trim());
+      const searchRegex = new RegExp(sanitizedSearch, "i");
       query.$or = [
         { title: searchRegex },
         { team: searchRegex },

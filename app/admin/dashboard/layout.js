@@ -1,6 +1,8 @@
 import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
 import AdminDashboardShell from "@/components/admin/AdminDashboardShell";
+import { auth } from "@/auth";
+import { SessionProvider } from "next-auth/react";
 
 export const dynamic = "force-dynamic";
 
@@ -20,7 +22,9 @@ export const metadata = {
 
 export default async function AdminDashboardLayout({ children }) {
   let initialApplicationsCount = null;
+  let session = null;
   try {
+    session = await auth();
     await connectDB();
     initialApplicationsCount = await Application.countDocuments({});
   } catch (err) {
@@ -28,8 +32,13 @@ export default async function AdminDashboardLayout({ children }) {
   }
 
   return (
-    <AdminDashboardShell initialApplicationsCount={initialApplicationsCount}>
-      {children}
-    </AdminDashboardShell>
+    <SessionProvider session={session}>
+      <AdminDashboardShell
+        initialApplicationsCount={initialApplicationsCount}
+        user={session?.user}
+      >
+        {children}
+      </AdminDashboardShell>
+    </SessionProvider>
   );
 }

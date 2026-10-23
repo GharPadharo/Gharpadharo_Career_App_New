@@ -10,25 +10,23 @@ import Link from "next/link";
  */
 export default function AdminQuickActions() {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-2xs">
+    <div className="bg-white rounded-2xl border border-slate-200/90 p-3.5 sm:p-5 shadow-2xs">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div>
-          <h2 className="text-sm font-bold text-slate-900 tracking-tight">
+          <h2 className="text-lg font-bold text-heading tracking-tight">
             Quick actions
           </h2>
-          <p className="text-xs text-muted mt-0.5">
-            Common recruitment and job management tasks.
-          </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2.5">
+        {/* Buttons: Fixed Single Horizontal Row on Mobile (>= 440px) & Desktop */}
+        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-nowrap w-full sm:w-auto overflow-x-auto sm:overflow-visible no-scrollbar pb-0.5 sm:pb-0">
           {/* Primary Action: Add New Job */}
           <Link
             href="/admin/dashboard/jobs/new"
-            className="inline-flex items-center gap-2 bg-primary hover:bg-[#46477f] text-white text-xs sm:text-sm font-semibold px-4 py-2.5 rounded-xl shadow-xs transition-all duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-primary hover:bg-[#4D20BE] text-white text-[11.5px] sm:text-sm font-semibold px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-xs transition-all duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 shrink-0 whitespace-nowrap"
           >
             <svg
-              className="w-4 h-4 shrink-0"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -47,10 +45,10 @@ export default function AdminQuickActions() {
           {/* Secondary Action: Manage Jobs */}
           <Link
             href="/admin/dashboard/jobs"
-            className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl shadow-2xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-[11.5px] sm:text-sm font-semibold px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl shadow-2xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 shrink-0 whitespace-nowrap"
           >
             <svg
-              className="w-4 h-4 text-slate-500 shrink-0"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -71,10 +69,10 @@ export default function AdminQuickActions() {
             href="/jobs"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-xs sm:text-sm font-semibold px-3.5 py-2.5 rounded-xl shadow-2xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 sm:gap-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200/90 text-[11.5px] sm:text-sm font-semibold px-2 sm:px-3.5 py-2 sm:py-2.5 rounded-xl shadow-2xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 shrink-0 whitespace-nowrap"
           >
             <svg
-              className="w-4 h-4 text-slate-500 shrink-0"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-500 shrink-0"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"

@@ -129,7 +129,7 @@ export default function AdminStats({
           />
         </svg>
       ),
-      badgeBg: "bg-[#525599]/10",
+      badgeBg: "bg-[#5929D6]/10",
       accentBorder: "border-l-4 border-l-primary",
     },
   ];
@@ -138,9 +138,8 @@ export default function AdminStats({
     return (
       <div className="space-y-3">
         {/* Skeleton Top Meta Line */}
-        <div className="flex items-center justify-between text-xs px-0.5 animate-pulse">
-          <div className="h-3.5 w-32 bg-slate-200 rounded" />
-          <div className="h-5 w-28 bg-slate-100 rounded-full" />
+        <div className="px-0.5 animate-pulse">
+          <div className="h-3.5 w-28 bg-slate-200 rounded" />
         </div>
 
         {/* Skeleton 4 Cards Grid */}
@@ -171,21 +170,11 @@ export default function AdminStats({
 
   return (
     <div className="space-y-3">
-      {/* Top Meta Line with Live MongoDB Data Indicator */}
-      <div className="flex items-center justify-between text-xs text-muted px-0.5">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold uppercase tracking-wider text-slate-500">
-            Platform Overview
-          </span>
-          <span className="text-slate-300">·</span>
-          <span className="font-medium text-slate-600">
-            {totalJobs} Total Jobs ({activeJobs} Active, {draftJobs} Draft, {closedJobs} Closed)
-          </span>
-        </div>
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 font-medium text-[11px]">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" aria-hidden="true" />
-          Live MongoDB data
-        </span>
+      {/* Platform Overview Heading */}
+      <div className="px-0.5">
+        <h2 className="font-bold text-xs uppercase tracking-wider text-heading">
+          Platform Overview
+        </h2>
       </div>
 
       {/* 4 Cards Grid */}
@@ -197,7 +186,7 @@ export default function AdminStats({
           >
             <div>
               <div className="flex items-start justify-between gap-3">
-                <span className="text-xs font-bold text-muted uppercase tracking-wider">
+                <span className="text-[11px] font-bold text-heading uppercase tracking-wider">
                   {card.title}
                 </span>
                 <div
@@ -208,18 +197,18 @@ export default function AdminStats({
               </div>
 
               <div className="mt-3 flex items-baseline gap-2">
-                <span className="text-3xl font-extrabold text-heading tracking-tight">
+                <span className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight">
                   {card.value}
                 </span>
                 {card.badgeText && (
-                  <span className="text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
+                  <span className="text-[11px] font-semibold text-slate-700 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
                     {card.badgeText}
                   </span>
                 )}
               </div>
             </div>
 
-            <p className="text-xs text-muted leading-relaxed mt-3 pt-3 border-t border-slate-100 font-normal">
+            <p className="text-xs text-body leading-relaxed mt-3 pt-3 border-t border-slate-100 font-normal">
               {card.supporting}
             </p>
           </div>

@@ -67,13 +67,13 @@ export default async function EditJobPage({ params }) {
 
       {/* Page Header */}
       <div className="space-y-1">
-        <span className="text-xs font-bold text-primary tracking-widest uppercase inline-block">
+        <span className="admin-eyebrow">
           JOB MANAGEMENT
         </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight leading-tight">
+        <h1 className="admin-page-title">
           Edit Job: {job.title}
         </h1>
-        <p className="text-sm text-muted font-normal max-w-2xl mt-0.5 leading-relaxed">
+        <p className="admin-subtitle max-w-2xl mt-0.5">
           Update this career opening and its application settings.
         </p>
       </div>

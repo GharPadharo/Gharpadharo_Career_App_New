@@ -33,20 +33,20 @@ export default async function AdminJobsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
-          <span className="text-xs font-bold text-primary tracking-widest uppercase inline-block">
+          <span className="admin-eyebrow">
             JOB MANAGEMENT
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight leading-tight">
+          <h1 className="admin-page-title">
             Jobs
           </h1>
-          <p className="text-sm text-muted font-normal max-w-2xl mt-1 leading-relaxed">
+          <p className="admin-subtitle max-w-2xl mt-1">
             Create, edit and manage the positions shown on the GharPadharo careers site.
           </p>
         </div>
 
         <Link
           href="/admin/dashboard/jobs/new"
-          className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#46477f] text-white text-sm font-semibold px-4 sm:px-5 py-2.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 shrink-0 self-start sm:self-auto"
+          className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#4D20BE] text-white text-sm font-semibold px-4 sm:px-5 py-2.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 shrink-0 self-start sm:self-auto"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />

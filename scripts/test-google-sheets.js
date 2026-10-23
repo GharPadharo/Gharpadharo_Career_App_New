@@ -109,13 +109,12 @@ async function runTests() {
       "About",
       "Cover Letter",
       "Resume",
-      "Status",
     ];
 
-    assert(GOOGLE_SHEETS_HEADERS.length === 18, `Req 12: Exactly 18 columns defined in GOOGLE_SHEETS_HEADERS (got ${GOOGLE_SHEETS_HEADERS.length})`);
+    assert(GOOGLE_SHEETS_HEADERS.length === 17, `Req 12: Exactly 17 columns defined in GOOGLE_SHEETS_HEADERS (got ${GOOGLE_SHEETS_HEADERS.length})`);
 
     const headersMatch = expectedHeaders.every((h, i) => GOOGLE_SHEETS_HEADERS[i] === h);
-    assert(headersMatch, "Req 12: Columns match exact required names and order A through R");
+    assert(headersMatch, "Req 12: Columns match exact required names and order A through Q");
 
     // ----------------------------------------------------
     // 3. SUBMITTED AT DATE + TIME FORMATTING (REQUIREMENT 11)
@@ -160,7 +159,7 @@ async function runTests() {
     };
 
     const jobRow = formatApplicationForSheet(mockJobApp);
-    assert(jobRow.length === 18, `Req 16: Job row has exactly 18 cell values (got ${jobRow.length})`);
+    assert(jobRow.length === 17, `Req 16: Job row has exactly 17 cell values (got ${jobRow.length})`);
     assert(jobRow[0] === 42, `Req 16: Column A uses numeric integer applicationNumber (got ${jobRow[0]})`);
     assert(jobRow[1] === "'30/09/2026 03:23 PM", "Req 16: Column B has formatted date time");
     assert(jobRow[2] === "Job", "Req 16: Column C: Application Type is 'Job'");
@@ -169,10 +168,10 @@ async function runTests() {
     assert(jobRow[5] === "Aarav" && jobRow[6] === "Sharma", "Req 16: Columns F & G: First and Last Name");
     assert(jobRow[8] === "'+91 9876543210", "Req 16: Column I: Phone escaped for Sheets");
     assert(jobRow[16] === "Aarav_Sharma_Resume.pdf", "Req 18: Resume behavior preserves human readable file name");
-    assert(jobRow[17] === "New", "Req 16: Status is 'New'");
 
     const noResumeApp = { ...mockJobApp, resume: null };
     const noResumeRow = formatApplicationForSheet(noResumeApp);
+    assert(noResumeRow.length === 17, `Missing resume row has exactly 17 cell values (got ${noResumeRow.length})`);
     assert(noResumeRow[16] === "Not submitted", "Missing resume displays 'Not submitted'");
 
     const mockGenApp = {
@@ -194,7 +193,7 @@ async function runTests() {
     };
 
     const genRow = formatApplicationForSheet(mockGenApp);
-    assert(genRow.length === 18, `Req 17: General row has exactly 18 cell values (got ${genRow.length})`);
+    assert(genRow.length === 17, `Req 17: General row has exactly 17 cell values (got ${genRow.length})`);
     assert(genRow[0] === 43, `Req 17: Column A uses numeric integer applicationNumber (got ${genRow[0]})`);
     assert(genRow[2] === "General", "Req 17: Application Type is 'General'");
     assert(genRow[3] === "—" && genRow[4] === "—", "Req 17: Position and Team are '—' for General Applications");
@@ -422,7 +421,7 @@ async function runTests() {
       const lastRowMeta = await sheets.spreadsheets.get({
         spreadsheetId,
         includeGridData: true,
-        ranges: [`Applications!A${lastRowIdx}:R${lastRowIdx}`],
+        ranges: [`Applications!A${lastRowIdx}:Q${lastRowIdx}`],
       });
       const lastRowCells = lastRowMeta.data.sheets[0].data[0]?.rowData?.[0]?.values;
       if (lastRowCells) {
@@ -444,9 +443,8 @@ async function runTests() {
         );
         assert(
           typeof resumeCell?.hyperlink === "string" &&
-            resumeCell.hyperlink.includes("/api/admin/applications/") &&
-            resumeCell.hyperlink.endsWith("/resume"),
-          `Resume is a clickable hyperlink to secure route (got '${resumeCell?.hyperlink}')`
+            resumeCell.hyperlink.includes("/api/resumes/"),
+          `Resume is a clickable hyperlink to persistent route (got '${resumeCell?.hyperlink}')`
         );
         assert(
           resumeCell?.effectiveFormat?.textFormat?.bold === false,

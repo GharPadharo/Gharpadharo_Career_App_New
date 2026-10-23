@@ -19,6 +19,7 @@ export default function AdminDashboardShell({
   title,
   subtitle,
   initialApplicationsCount = null,
+  user,
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
@@ -68,10 +69,11 @@ export default function AdminDashboardShell({
           title={headerTitle}
           subtitle={headerSubtitle}
           onMenuToggle={() => setIsSidebarOpen((prev) => !prev)}
+          user={user}
         />
 
         {/* Page Children */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        <main className="flex-1 p-4 sm:p-6 lg:p-6 xl:p-8 max-w-7xl w-full mx-auto min-w-0">
           {children}
         </main>
       </div>

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect, useRef, useSyncExternalStore } from "react";
 import Link from "next/link";
+import { SlidersHorizontal, X } from "lucide-react";
 import ApplicationStatusBadge from "./ApplicationStatusBadge";
 import {
   markApplicationAsViewed,
@@ -29,7 +30,7 @@ function getServerSnapshot() {
  * - Search: matches candidate name, email, or resolved job title
  * - Status filter: All Status, New, Viewed
  * - Job filter: All Jobs + dynamically derived from jobs
- * - Desktop table & responsive mobile cards (< md)
+ * - Desktop table (>= xl) & responsive cards (< xl)
  * - View action linking to /admin/dashboard/applications/[id]
  * - Secure Bulk Selection and Deletion:
  *   * Header checkbox with checked/indeterminate/unchecked states for current page
@@ -49,6 +50,7 @@ export default function AdminApplicationsTable({
   const [selectedType, setSelectedType] = useState("All");
   const [selectedStatus, setSelectedStatus] = useState("All");
   const [selectedJobId, setSelectedJobId] = useState("All");
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   // Selection & Bulk Delete state
   const [selectedIds, setSelectedIds] = useState(new Set());
@@ -278,12 +280,34 @@ export default function AdminApplicationsTable({
     }
   };
 
+  const activeFilterCount =
+    (selectedType !== "All" ? 1 : 0) +
+    (selectedStatus !== "All" ? 1 : 0) +
+    (selectedJobId !== "All" ? 1 : 0);
+  const hasActiveDropdownFilters = activeFilterCount > 0;
+
   const isFiltered = Boolean(
-    searchTerm.trim() ||
-      selectedType !== "All" ||
-      selectedStatus !== "All" ||
-      selectedJobId !== "All"
+    searchTerm.trim() || hasActiveDropdownFilters
   );
+
+  // Prevent background scrolling when mobile filter panel is open
+  useEffect(() => {
+    if (isMobileFilterOpen) {
+      document.body.style.overflow = "hidden";
+      const handleKeyDown = (e) => {
+        if (e.key === "Escape") {
+          setIsMobileFilterOpen(false);
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+      return () => {
+        document.body.style.overflow = "";
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [isMobileFilterOpen]);
 
   const handleSearchChange = (value) => {
     setSearchTerm(value);
@@ -307,6 +331,13 @@ export default function AdminApplicationsTable({
 
   const handleClearFilters = () => {
     setSearchTerm("");
+    setSelectedType("All");
+    setSelectedStatus("All");
+    setSelectedJobId("All");
+    setCurrentPage(1);
+  };
+
+  const handleClearDropdownFilters = () => {
     setSelectedType("All");
     setSelectedStatus("All");
     setSelectedJobId("All");
@@ -357,8 +388,8 @@ export default function AdminApplicationsTable({
           aria-label="Bulk actions toolbar"
           className="bg-primary/5 border border-primary/20 rounded-2xl p-3 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs animate-in fade-in duration-200"
         >
-          <div className="flex items-center gap-3">
-            <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-white text-xs font-bold shadow-2xs">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-primary text-white text-xs font-bold shadow-2xs shrink-0">
               {selectedIds.size}
             </span>
             <span className="text-sm font-semibold text-slate-800">
@@ -367,20 +398,20 @@ export default function AdminApplicationsTable({
             <button
               type="button"
               onClick={handleDeselectAll}
-              className="text-xs font-semibold text-primary hover:underline hover:text-[#46477f] cursor-pointer ml-1"
+              className="text-xs font-semibold text-primary hover:underline hover:text-[#4D20BE] cursor-pointer ml-1"
             >
               Deselect all
             </button>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <button
               type="button"
               onClick={() => {
                 setDeleteError(null);
                 setIsDeleteModalOpen(true);
               }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 min-h-[44px]"
               aria-label={`Delete ${selectedIds.size} selected applications`}
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
@@ -394,111 +425,143 @@ export default function AdminApplicationsTable({
 
       {/* 1. Filter Toolbar */}
       <div className="bg-white rounded-2xl border border-slate-200/90 p-3 sm:p-4 shadow-2xs space-y-3">
-        {/* Controls Row: Responsive Grid on Mobile, Flex on Desktop */}
-        <div className="grid grid-cols-2 md:flex md:items-center gap-3">
-          {/* 1. Search Input: Spans 2 cols on mobile (100%), flex-1 on desktop */}
-          <div className="col-span-2 md:col-auto md:flex-1 relative">
-            <svg
-              className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              placeholder="Search candidates, roles, or notes..."
-              className="w-full h-11 pl-10 pr-9 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition-colors"
-              aria-label="Search candidates or jobs"
-            />
-            {searchTerm && (
-              <button
-                type="button"
-                onClick={() => handleSearchChange("")}
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer"
-                aria-label="Clear search input"
+        {/* Controls Row */}
+        <div className="flex flex-col xl:flex-row xl:items-center gap-3">
+          {/* Row 1 below xl: Search input takes all remaining space + compact square Filter button */}
+          <div className="flex items-center gap-2.5 w-full xl:w-auto xl:flex-1 xl:min-w-[200px]">
+            <div className="flex-1 min-w-0 relative">
+              <svg
+                className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
               >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => handleSearchChange(e.target.value)}
+                placeholder="Search candidates, roles, or notes..."
+                className="w-full h-11 pl-10 pr-9 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition-colors"
+                aria-label="Search candidates or jobs"
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  onClick={() => handleSearchChange("")}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5 rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 cursor-pointer"
+                  aria-label="Clear search input"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            {/* Compact Square Filter Button (Visible below xl: xl:hidden) */}
+            <button
+              type="button"
+              onClick={() => setIsMobileFilterOpen(true)}
+              aria-label={
+                hasActiveDropdownFilters
+                  ? `Open application filters (${activeFilterCount} active)`
+                  : "Open application filters"
+              }
+              aria-expanded={isMobileFilterOpen}
+              className={`xl:hidden w-11 h-11 shrink-0 flex items-center justify-center rounded-xl border transition-colors cursor-pointer relative shadow-2xs focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                hasActiveDropdownFilters
+                  ? "bg-primary/5 border-primary/30 text-primary hover:bg-primary/10"
+                  : "bg-white hover:bg-slate-50 border-slate-200/90 text-slate-700 hover:text-primary"
+              }`}
+            >
+              <SlidersHorizontal className="w-4.5 h-4.5" aria-hidden="true" />
+              {hasActiveDropdownFilters && (
+                <span
+                  className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-white shadow-2xs"
+                  aria-hidden="true"
+                >
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
+          </div>
+
+          {/* Desktop Inline Dropdowns (Hidden below xl: hidden xl:flex) */}
+          <div className="hidden xl:flex xl:items-center gap-3 xl:shrink-0">
+            {/* 2. Type Dropdown */}
+            <div className="relative w-[160px] shrink-0">
+              <select
+                value={selectedType}
+                onChange={(e) => handleTypeChange(e.target.value)}
+                className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
+                aria-label="Filter by Type"
+              >
+                <option value="All">All Types</option>
+                <option value="job">Job Applications</option>
+                <option value="general">General</option>
+              </select>
+              <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
-            )}
-          </div>
-
-          {/* 2. Type Dropdown: All, Job Applications, General Applications */}
-          <div className="col-span-1 md:col-auto relative w-full md:w-[170px] md:shrink-0">
-            <select
-              value={selectedType}
-              onChange={(e) => handleTypeChange(e.target.value)}
-              className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
-              aria-label="Filter by Type"
-            >
-              <option value="All">All Types</option>
-              <option value="job">Job Applications</option>
-              <option value="general">General</option>
-            </select>
-            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
+              </div>
             </div>
-          </div>
 
-          {/* 3. Status Dropdown: 50% width on mobile, 150px on desktop */}
-          <div className="col-span-1 md:col-auto relative w-full md:w-[150px] md:shrink-0">
-            <select
-              value={selectedStatus}
-              onChange={(e) => handleStatusChange(e.target.value)}
-              className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
-              aria-label="Filter by Status"
-            >
-              <option value="All">All Status</option>
-              <option value="new">New</option>
-              <option value="viewed">Viewed</option>
-            </select>
-            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
+            {/* 3. Status Dropdown */}
+            <div className="relative w-[140px] shrink-0">
+              <select
+                value={selectedStatus}
+                onChange={(e) => handleStatusChange(e.target.value)}
+                className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
+                aria-label="Filter by Status"
+              >
+                <option value="All">All Status</option>
+                <option value="new">New</option>
+                <option value="viewed">Viewed</option>
+              </select>
+              <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
-          </div>
 
-          {/* 4. Job Dropdown: spans 2 cols on mobile (100%), 200px on desktop */}
-          <div className="col-span-2 md:col-auto relative w-full md:w-[200px] md:shrink-0">
-            <select
-              value={selectedJobId}
-              onChange={(e) => handleJobChange(e.target.value)}
-              className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden truncate"
-              aria-label="Filter by Job"
-            >
-              <option value="All">All Positions</option>
-              <option value="general">General Applications</option>
-              {jobs.map((job) => (
-                <option key={job.id} value={job.id}>
-                  {job.title}
-                </option>
-              ))}
-            </select>
-            <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-              </svg>
+            {/* 4. Job Dropdown */}
+            <div className="relative w-[200px] shrink-0">
+              <select
+                value={selectedJobId}
+                onChange={(e) => handleJobChange(e.target.value)}
+                className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden truncate"
+                aria-label="Filter by Job"
+              >
+                <option value="All">All Positions</option>
+                <option value="general">General Applications</option>
+                {jobs.map((job) => (
+                  <option key={job.id} value={job.id}>
+                    {job.title}
+                  </option>
+                ))}
+              </select>
+              <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Sub-bar: Count & Clear Filters Indicator */}
         <div className="flex items-center justify-between text-xs text-muted pt-2 px-1 border-t border-slate-100">
-          <span className="font-semibold text-slate-600">
+          <span className="font-semibold text-heading">
             {isFiltered
               ? `${filteredApplications.length} ${
                   filteredApplications.length === 1 ? "application" : "applications"
@@ -512,7 +575,7 @@ export default function AdminApplicationsTable({
             <button
               type="button"
               onClick={handleClearFilters}
-              className="text-xs font-semibold text-primary hover:text-[#46477f] hover:underline cursor-pointer transition-colors focus-visible:outline-none focus-visible:underline"
+              className="text-xs font-semibold text-primary hover:text-[#4D20BE] hover:underline cursor-pointer transition-colors focus-visible:outline-none focus-visible:underline"
             >
               Clear filters
             </button>
@@ -559,11 +622,11 @@ export default function AdminApplicationsTable({
           </div>
         ) : (
           <>
-            {/* Desktop Table View (>= md) */}
-            <div className="hidden md:block overflow-x-auto">
+            {/* Desktop Table View (>= xl) */}
+            <div className="hidden xl:block overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[760px]">
                 <thead>
-                  <tr className="border-b border-slate-200/80 bg-slate-50/70 text-[11px] font-bold text-muted uppercase tracking-wider">
+                  <tr className="border-b border-slate-200/80 bg-slate-50/70 text-[11px] font-bold text-heading uppercase tracking-wider">
                     {/* Checkbox Header Column */}
                     <th scope="col" className="py-3.5 pl-4 pr-2 w-10 text-center">
                       <input
@@ -619,8 +682,8 @@ export default function AdminApplicationsTable({
                               onClick={() => handleViewClick(app.id)}
                               className={`hover:text-primary transition-colors focus-visible:outline-none focus-visible:underline block ${
                                 isNew
-                                  ? "font-bold text-slate-900"
-                                  : "font-semibold text-slate-700"
+                                  ? "font-bold text-heading"
+                                  : "font-semibold text-body"
                               }`}
                             >
                               {app.candidate}
@@ -640,7 +703,7 @@ export default function AdminApplicationsTable({
                               (!app.jobId && !app.jobSlug);
                             return (
                               <div>
-                                <span className="font-semibold text-slate-800 flex items-center gap-1.5">
+                                <span className="font-semibold text-heading flex items-center gap-1.5">
                                   <span>
                                     {isGeneral
                                       ? "General Application"
@@ -663,7 +726,7 @@ export default function AdminApplicationsTable({
                         </td>
 
                         {/* Experience */}
-                        <td className="py-3.5 sm:py-4 px-4 text-slate-600 text-xs whitespace-nowrap">
+                        <td className="py-3.5 sm:py-4 px-4 text-body font-medium text-xs whitespace-nowrap">
                           {app.experience}
                         </td>
 
@@ -682,7 +745,7 @@ export default function AdminApplicationsTable({
                           <Link
                             href={`/admin/dashboard/applications/${app.id}`}
                             onClick={() => handleViewClick(app.id)}
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-[#46477f] hover:underline transition-colors focus-visible:outline-none focus-visible:underline"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:text-[#4D20BE] hover:underline transition-colors focus-visible:outline-none focus-visible:underline"
                             aria-label={`View application for ${app.candidate}`}
                           >
                             <span>View</span>
@@ -698,11 +761,11 @@ export default function AdminApplicationsTable({
               </table>
             </div>
 
-            {/* Mobile Stacked Cards (< md) */}
-            <div className="md:hidden divide-y divide-slate-100">
-              {/* Select All on mobile */}
-              <div className="p-3 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
-                <label className="flex items-center gap-2.5 text-xs font-semibold text-slate-700 cursor-pointer">
+            {/* Mobile & Tablet Stacked Cards (< xl) */}
+            <div className="xl:hidden divide-y divide-slate-100">
+              {/* Select All on mobile & tablet */}
+              <div className="px-3 py-2.5 sm:p-4 bg-slate-50/80 border-b border-slate-100 flex items-center justify-between">
+                <label className="flex items-center gap-2.5 text-xs font-semibold text-slate-700 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={allCurrentPageSelected}
@@ -725,7 +788,7 @@ export default function AdminApplicationsTable({
                 return (
                   <div
                     key={app.id}
-                    className={`p-4 sm:p-5 space-y-3 transition-colors ${
+                    className={`p-3 sm:p-5 space-y-2 sm:space-y-3 transition-colors ${
                       isSelected
                         ? "bg-primary/5"
                         : isNew
@@ -733,17 +796,17 @@ export default function AdminApplicationsTable({
                         : "bg-slate-50/30"
                     }`}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex items-start gap-3">
+                    <div className="flex items-start justify-between gap-2.5 sm:gap-3">
+                      <div className="flex items-start gap-2.5 sm:gap-3 min-w-0">
                         <input
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => handleToggleSelectRow(app.id)}
-                          className="w-4 h-4 mt-1 rounded border-slate-300 text-primary focus:ring-primary/30 cursor-pointer shrink-0"
+                          className="w-4 h-4 mt-0.5 rounded border-slate-300 text-primary focus:ring-primary/30 cursor-pointer shrink-0"
                           aria-label={`Select application for ${app.candidate}`}
                         />
-                        <div>
-                          <h3 className="text-base font-bold text-heading">
+                        <div className="min-w-0">
+                          <h3 className="text-sm sm:text-base font-bold text-heading leading-tight truncate">
                             <Link
                               href={`/admin/dashboard/applications/${app.id}`}
                               onClick={() => handleViewClick(app.id)}
@@ -752,13 +815,15 @@ export default function AdminApplicationsTable({
                               {app.candidate}
                             </Link>
                           </h3>
-                          <p className="text-xs text-muted mt-0.5">
+                          <p className="text-[11px] sm:text-xs text-muted mt-0.5 truncate break-all">
                             {app.email}
                           </p>
                         </div>
                       </div>
 
-                      <ApplicationStatusBadge status={app.status} />
+                      <div className="shrink-0">
+                        <ApplicationStatusBadge status={app.status} />
+                      </div>
                     </div>
 
                     {(() => {
@@ -767,24 +832,24 @@ export default function AdminApplicationsTable({
                         app.jobId === "general" ||
                         (!app.jobId && !app.jobSlug);
                       return (
-                        <div className="bg-slate-50/80 rounded-xl p-3 border border-slate-100 space-y-1">
-                          <div className="text-xs font-semibold text-slate-800 flex items-center justify-between">
-                            <span>
+                        <div className="bg-slate-50/80 rounded-xl px-2.5 py-1.5 sm:p-3 border border-slate-100 space-y-0.5 sm:space-y-1">
+                          <div className="text-xs sm:text-sm font-semibold text-slate-800 flex items-center justify-between gap-2">
+                            <span className="truncate">
                               {isGeneral
                                 ? "General Application"
                                 : job?.title || app.jobTitle || app.jobId}
                             </span>
                             {isGeneral && (
-                              <span className="px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold">
+                              <span className="px-1.5 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold shrink-0">
                                 General
                               </span>
                             )}
                           </div>
-                          <div className="text-[11px] text-muted flex items-center gap-2">
+                          <div className="text-[11px] sm:text-xs text-muted flex flex-wrap items-center gap-1 sm:gap-2">
                             <span>
                               {isGeneral
                                 ? "General Talent Pool"
-                                : job?.team || app.jobTeam || "General"}
+                                : job?.team || app.jobTeam || "Technology"}
                             </span>
                             <span aria-hidden="true">&bull;</span>
                             <span>{app.experience || "Flexible"}</span>
@@ -795,11 +860,12 @@ export default function AdminApplicationsTable({
                       );
                     })()}
 
-                    <div className="pt-2 border-t border-slate-100 flex items-center justify-end">
+                    <div className="pt-0.5 sm:pt-1 flex items-center justify-end">
                       <Link
                         href={`/admin/dashboard/applications/${app.id}`}
                         onClick={() => handleViewClick(app.id)}
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-[#46477f] text-white text-xs font-semibold shadow-2xs transition-colors"
+                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2.5 rounded-xl bg-primary hover:bg-[#4D20BE] text-white text-xs font-semibold shadow-2xs transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 min-h-[40px] sm:min-h-[44px]"
+                        aria-label={`View application for ${app.candidate}`}
                       >
                         <span>View Application</span>
                         <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -898,7 +964,7 @@ export default function AdminApplicationsTable({
               </div>
             )}
 
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-2.5 sm:gap-3 pt-2">
               <button
                 type="button"
                 disabled={isDeleting}
@@ -906,7 +972,7 @@ export default function AdminApplicationsTable({
                   setIsDeleteModalOpen(false);
                   setDeleteError(null);
                 }}
-                className="px-4 py-2 rounded-xl border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-300 min-h-[44px]"
               >
                 Cancel
               </button>
@@ -914,7 +980,7 @@ export default function AdminApplicationsTable({
                 type="button"
                 disabled={isDeleting}
                 onClick={handleConfirmBulkDelete}
-                className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold shadow-xs transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-sm font-semibold shadow-xs transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 min-h-[44px]"
               >
                 {isDeleting ? (
                   <>
@@ -927,6 +993,162 @@ export default function AdminApplicationsTable({
                 ) : (
                   <span>Delete Applications</span>
                 )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Filter Drawer / Bottom Sheet */}
+      {isMobileFilterOpen && (
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-200"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="mobile-filter-title"
+        >
+          {/* Backdrop click to close */}
+          <div
+            className="fixed inset-0"
+            onClick={() => setIsMobileFilterOpen(false)}
+            aria-hidden="true"
+          />
+
+          {/* Drawer Panel: Bottom sheet on mobile, modal card on sm+ */}
+          <div
+            className="relative z-10 w-full sm:max-w-md bg-white rounded-t-2xl sm:rounded-2xl border border-slate-200 shadow-2xl p-5 sm:p-6 space-y-5 animate-in slide-in-from-bottom-6 sm:zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto"
+          >
+            {/* Header: Title, Active Badge, and Close Button */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
+                  <SlidersHorizontal className="w-4 h-4 text-primary" aria-hidden="true" />
+                </div>
+                <h3 id="mobile-filter-title" className="text-base font-bold text-heading">
+                  Filter Applications
+                </h3>
+                {hasActiveDropdownFilters && (
+                  <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[11px] font-bold">
+                    {activeFilterCount} active
+                  </span>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsMobileFilterOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                aria-label="Close filters"
+              >
+                <X className="w-5 h-5" aria-hidden="true" />
+              </button>
+            </div>
+
+            {/* Form Body: Stacked 3 Filters with clear labels */}
+            <div className="space-y-4">
+              {/* 1. Application Type */}
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="mobile-filter-type"
+                  className="text-xs font-bold text-slate-700 uppercase tracking-wider block"
+                >
+                  Application Type
+                </label>
+                <div className="relative">
+                  <select
+                    id="mobile-filter-type"
+                    value={selectedType}
+                    onChange={(e) => handleTypeChange(e.target.value)}
+                    className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors"
+                  >
+                    <option value="All">All Types</option>
+                    <option value="job">Job Applications</option>
+                    <option value="general">General</option>
+                  </select>
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. Application Status */}
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="mobile-filter-status"
+                  className="text-xs font-bold text-slate-700 uppercase tracking-wider block"
+                >
+                  Application Status
+                </label>
+                <div className="relative">
+                  <select
+                    id="mobile-filter-status"
+                    value={selectedStatus}
+                    onChange={(e) => handleStatusChange(e.target.value)}
+                    className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors"
+                  >
+                    <option value="All">All Status</option>
+                    <option value="new">New</option>
+                    <option value="viewed">Viewed</option>
+                  </select>
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Position */}
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="mobile-filter-job"
+                  className="text-xs font-bold text-slate-700 uppercase tracking-wider block"
+                >
+                  Position
+                </label>
+                <div className="relative">
+                  <select
+                    id="mobile-filter-job"
+                    value={selectedJobId}
+                    onChange={(e) => handleJobChange(e.target.value)}
+                    className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-800 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors truncate"
+                  >
+                    <option value="All">All Positions</option>
+                    <option value="general">General Applications</option>
+                    {jobs.map((job) => (
+                      <option key={job.id} value={job.id}>
+                        {job.title}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 flex items-center justify-center">
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Actions: Clear filters & Done */}
+            <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
+              <button
+                type="button"
+                disabled={!hasActiveDropdownFilters}
+                onClick={handleClearDropdownFilters}
+                className="text-xs font-semibold text-slate-600 hover:text-primary hover:underline transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:no-underline py-2 px-1 focus:outline-none"
+              >
+                Clear filters
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setIsMobileFilterOpen(false)}
+                className="px-5 py-2.5 rounded-xl bg-primary hover:bg-[#4D20BE] active:scale-95 text-white text-sm font-semibold shadow-xs transition-all cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 min-h-[44px]"
+              >
+                Done
               </button>
             </div>
           </div>

@@ -3,20 +3,15 @@
 import { useState } from "react";
 import CareersHero from "./CareersHero";
 import JobListings from "./JobListings";
-import GeneralApplicationCTA from "./GeneralApplicationCTA";
 
 /**
  * JobsContent Component
  * 
- * Coordinates the Careers Hero search input with the Job Listings filters,
- * sorting, and pagination. Includes the General Application CTA at the bottom.
+ * Coordinates the deep navy Careers Hero with the Job Listings area,
+ * search filtering, sorting, and Resume CTA.
  */
-export default function JobsContent({ allJobs }) {
+export default function JobsContent({ allJobs = [], error = null }) {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const hasJobs = (allJobs || []).some(
-    (job) => !job.status || job.status === "active"
-  );
 
   return (
     <>
@@ -28,8 +23,8 @@ export default function JobsContent({ allJobs }) {
         allJobs={allJobs}
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
+        error={error}
       />
-      {hasJobs && <GeneralApplicationCTA />}
     </>
   );
 }

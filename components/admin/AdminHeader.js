@@ -1,22 +1,31 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { signOut } from "next-auth/react";
+import Image from "next/image";
+import { signOut, useSession } from "next-auth/react";
 
 /**
  * AdminHeader Component
  * 
  * Clean top header bar for the admin dashboard:
  * - Left: Mobile hamburger button, page title, and supporting subtitle
- * - Right: Admin profile dropdown with avatar, account info, and authenticated Logout action
+ * - Right: Admin profile dropdown with Google profile avatar / initial fallback,
+ *   account info, and authenticated Logout action
  */
 export default function AdminHeader({
   title = "Dashboard",
   subtitle = "Manage jobs and review career activity.",
   onMenuToggle,
+  user: propUser,
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = useState(null);
   const dropdownRef = useRef(null);
+
+  const { data: session } = useSession();
+  const user = propUser || session?.user;
+  const avatarUrl = user?.image || user?.picture;
+  const initial = (user?.name?.charAt(0) || user?.email?.charAt(0) || "A").toUpperCase();
 
   // Close dropdown on outside click or Escape key press
   useEffect(() => {
@@ -47,8 +56,10 @@ export default function AdminHeader({
     signOut({ callbackUrl: "/admin/login" });
   };
 
+  const showAvatarImage = Boolean(avatarUrl && failedAvatarUrl !== avatarUrl);
+
   return (
-    <header className="h-18 px-4 sm:px-8 bg-white border-b border-slate-200/90 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
+    <header className="h-18 px-4 sm:px-6 xl:px-8 bg-white border-b border-slate-200/90 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
       {/* Left: Mobile Toggle & Page Title */}
       <div className="flex items-center gap-3 sm:gap-4 min-w-0">
         {onMenuToggle && (
@@ -65,11 +76,11 @@ export default function AdminHeader({
         )}
 
         <div className="min-w-0">
-          <h2 className="text-lg sm:text-xl font-extrabold text-heading tracking-tight leading-tight truncate">
+          <h2 className="text-lg font-bold text-heading tracking-tight leading-tight truncate">
             {title}
           </h2>
           {subtitle && (
-            <p className="text-xs text-muted hidden sm:block mt-0.5 truncate">
+            <p className="text-xs text-body hidden sm:block mt-0.5 truncate">
               {subtitle}
             </p>
           )}
@@ -86,9 +97,23 @@ export default function AdminHeader({
           className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200/80 bg-slate-50/50 hover:bg-slate-100/70 transition-colors cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           aria-label="Admin account menu"
         >
-          <div className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
-            A
-          </div>
+          {showAvatarImage ? (
+            <div className="w-7 h-7 aspect-square rounded-full overflow-hidden shrink-0 shadow-2xs border border-slate-200/90 bg-slate-100 flex items-center justify-center">
+              <Image
+                src={avatarUrl}
+                alt={user?.name || "Admin"}
+                width={28}
+                height={28}
+                unoptimized
+                className="w-full h-full object-cover rounded-full"
+                onError={() => setFailedAvatarUrl(avatarUrl)}
+              />
+            </div>
+          ) : (
+            <div className="w-7 h-7 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+              {initial}
+            </div>
+          )}
           <span className="text-xs font-bold text-slate-800 hidden sm:inline-block">
             Admin
           </span>
@@ -111,16 +136,36 @@ export default function AdminHeader({
             role="menu"
             aria-orientation="vertical"
             aria-label="Admin profile options"
-            className="absolute right-0 mt-2 w-52 bg-white rounded-xl border border-slate-200 shadow-lg shadow-slate-200/50 p-2 z-30 focus:outline-none animate-in fade-in zoom-in-95 duration-100"
+            className="absolute right-0 mt-2 w-56 bg-white rounded-xl border border-slate-200 shadow-lg shadow-slate-200/50 p-2 z-30 focus:outline-none animate-in fade-in zoom-in-95 duration-100"
           >
             {/* Account Details Header */}
             <div className="px-2.5 py-2">
-              <p className="text-xs font-bold text-slate-900 leading-tight">
-                Admin
-              </p>
-              <p className="text-[11px] text-muted font-normal mt-0.5">
-                Admin account
-              </p>
+              <div className="flex items-center gap-2.5">
+                {showAvatarImage ? (
+                  <div className="w-8 h-8 aspect-square rounded-full overflow-hidden shrink-0 border border-slate-200/90 bg-slate-100 flex items-center justify-center">
+                    <Image
+                      src={avatarUrl}
+                      alt={user?.name || "Admin"}
+                      width={32}
+                      height={32}
+                      unoptimized
+                      className="w-full h-full object-cover rounded-full"
+                    />
+                  </div>
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
+                    {initial}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs font-bold text-slate-900 leading-tight truncate">
+                    {user?.name || "Admin"}
+                  </p>
+                  <p className="text-[11px] text-muted font-normal mt-0.5 truncate">
+                    {user?.email || "Admin account"}
+                  </p>
+                </div>
+              </div>
             </div>
 
             <div className="h-px bg-slate-100 my-1" role="separator" />

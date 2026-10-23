@@ -31,7 +31,7 @@ export default function Footer() {
                 alt="GharPadharo"
                 width={36}
                 height={36}
-                className="rounded-full object-cover shrink-0 ring-1 ring-white/10"
+                className="w-9 h-9 aspect-square rounded-full object-cover shrink-0 ring-1 ring-white/10"
               />
               <span className="font-extrabold text-xl text-white tracking-tight">
                 GharPadharo
@@ -103,6 +103,16 @@ export default function Footer() {
               COMPANY
             </h3>
             <ul className="space-y-2.5 text-xs sm:text-sm">
+              <li>
+                <Link
+                  href="https://www.gharpadharo.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-400 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
+                >
+                  GharPadharo.com
+                </Link>
+              </li>
               <li>
                 <Link
                   href="https://www.gharpadharo.com/about"

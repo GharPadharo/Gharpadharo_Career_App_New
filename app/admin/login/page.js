@@ -33,35 +33,55 @@ export default async function AdminLoginPage({ searchParams }) {
   }
 
   return (
-    <div className="min-h-[calc(100vh-16rem)] flex items-center justify-center px-4 py-12 sm:py-20 bg-background">
-      <div className="w-full max-w-[460px] mx-auto">
-        {/* Admin Login Card */}
+    <div className="relative min-h-[calc(100dvh-4.5rem)] sm:min-h-[calc(100vh-4.5rem)] w-full flex items-center justify-center px-4 py-10 sm:py-16 overflow-hidden">
+      {/* Full-viewport Mountain Landscape Background */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src={WEBSITE_IMAGES.admin.loginBackground}
+          alt="Misty lavender mountain sunrise"
+          fill
+          priority
+          quality={100}
+          unoptimized
+          className="object-cover object-center select-none pointer-events-none"
+          sizes="100vw"
+        />
+      </div>
+
+      {/* Centered Glassmorphic Login Container */}
+      <div className="relative z-10 w-full max-w-[420px] mx-auto">
+        {/* Glassmorphism Login Card */}
         <section
           aria-labelledby="admin-login-heading"
-          className="bg-card rounded-2xl border border-slate-200/90 shadow-xs p-6 sm:p-10"
+          className="rounded-[30px] bg-white/30 sm:bg-white/35 border border-white/60 backdrop-blur-[20px] shadow-[0_24px_50px_rgba(30,12,65,0.22)] p-6 sm:p-9 transition-all duration-300"
         >
           {/* Card Top: Official Logo & Portal Branding */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-slate-50 border border-slate-100 shadow-2xs mb-4 overflow-hidden">
+          <div className="text-center mb-6 sm:mb-7">
+            <div className="inline-flex items-center justify-center w-16 h-16 sm:w-[70px] sm:h-[70px] rounded-full bg-white/85 border border-white shadow-[0_4px_16px_rgba(89,41,214,0.18)] backdrop-blur-md mb-3.5 p-1 sm:p-[4px] overflow-hidden">
               <Image
                 src={WEBSITE_IMAGES.brand.logo}
                 alt="GharPadharo Official Logo"
-                width={48}
-                height={48}
-                className="object-contain"
+                width={62}
+                height={62}
+                className="w-full h-full object-contain rounded-full"
                 priority
               />
             </div>
-            <p className="text-xs font-semibold text-primary uppercase tracking-wider">
-              GharPadharo Careers
-            </p>
+
+            <div>
+              <span className="inline-flex items-center justify-center px-3.5 py-1 rounded-full bg-[#EAE6F8] border border-[#D8D2F2] text-[10.5px] sm:text-[11px] font-bold text-[#5929D6] tracking-wider uppercase shadow-xs">
+                GharPadharo Careers
+              </span>
+            </div>
+
             <h1
               id="admin-login-heading"
-              className="text-2xl sm:text-3xl font-bold text-heading mt-2"
+              className="text-3xl sm:text-[34px] font-extrabold text-[#0F172A] tracking-tight mt-3"
             >
-              Admin Portal
+              Admin <span className="text-[#5929D6]">Portal</span>
             </h1>
-            <p className="text-sm text-body mt-2.5 leading-relaxed">
+
+            <p className="text-sm sm:text-[14.5px] text-[#3F3B5C] mt-2 leading-relaxed font-medium max-w-[310px] mx-auto">
               Sign in with your authorized GharPadharo account to manage job listings.
             </p>
           </div>
@@ -72,10 +92,10 @@ export default async function AdminLoginPage({ searchParams }) {
               id="oauth-error-container"
               role="alert"
               aria-live="polite"
-              className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700 font-medium flex items-start gap-2.5"
+              className="mb-5 p-3 rounded-xl bg-red-500/15 border border-red-400/40 text-xs sm:text-sm text-red-900 font-medium flex items-start gap-2.5 backdrop-blur-md shadow-xs"
             >
               <svg
-                className="w-4 h-4 text-red-500 shrink-0 mt-0.5"
+                className="w-4 h-4 text-red-600 shrink-0 mt-0.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -98,33 +118,32 @@ export default async function AdminLoginPage({ searchParams }) {
           </div>
 
           {/* Informational Security Notice */}
-          <div className="mt-8 pt-6 border-t border-slate-100">
-            <div className="flex items-start gap-2.5 text-xs text-muted leading-relaxed">
+          <div className="mt-7 pt-5 border-t border-purple-200/50">
+            <div className="flex items-center justify-center gap-2 text-xs sm:text-[13px] text-[#3F3B5C] font-medium leading-relaxed text-center">
               <svg
-                className="w-4 h-4 text-slate-400 shrink-0 mt-0.5"
+                className="w-4 h-4 text-[#5929D6] shrink-0"
                 fill="none"
                 viewBox="0 0 24 24"
-                strokeWidth="1.5"
+                strokeWidth="2"
                 stroke="currentColor"
                 aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="2"
                   d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
                 />
               </svg>
-              <span>Admin access is restricted to authorized GharPadharo accounts.</span>
+              <span>Admin access is restricted to authorized GharPadharo accounts only.</span>
             </div>
           </div>
         </section>
 
         {/* Navigation back to public portal */}
-        <div className="text-center mt-6">
+        <div className="text-center mt-5">
           <Link
             href="/jobs"
-            className="inline-flex items-center text-sm font-medium text-body hover:text-primary transition-colors gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-md px-2 py-1"
+            className="inline-flex items-center gap-1.5 text-xs sm:text-[13px] font-medium text-white hover:text-white px-4 py-1.5 rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 shadow-[0_2px_8px_rgba(0,0,0,0.12)] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white active:scale-98"
           >
             <span aria-hidden="true">&larr;</span>
             <span>Back to Jobs</span>

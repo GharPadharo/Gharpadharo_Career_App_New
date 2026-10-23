@@ -160,10 +160,10 @@ export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
               priority
             />
             <div className="flex flex-col">
-              <span className="font-extrabold text-base text-heading tracking-tight leading-tight">
+              <span className="font-bold text-base text-heading tracking-tight leading-tight">
                 GharPadharo
               </span>
-              <span className="text-[11px] font-semibold text-primary uppercase tracking-wider">
+              <span className="text-[11px] font-bold text-primary uppercase tracking-wider">
                 Career Admin
               </span>
             </div>
@@ -190,10 +190,10 @@ export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
             const isClickable = item.href !== "#";
             const content = (
               <div
-                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-semibold transition-colors ${
+                className={`flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm transition-colors ${
                   item.active
-                    ? "bg-[#525599]/10 text-primary"
-                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                    ? "bg-[#5929D6]/10 text-primary font-semibold"
+                    : "text-body hover:bg-slate-50 hover:text-heading font-medium"
                 } ${!isClickable ? "cursor-default opacity-80" : ""}`}
               >
                 <div className="flex items-center gap-3">
@@ -201,7 +201,7 @@ export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
                   <span>{item.label}</span>
                 </div>
                 {item.badge && (
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500">
+                  <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-heading">
                     {item.badge}
                   </span>
                 )}
@@ -228,7 +228,7 @@ export default function AdminSidebar({ isOpen, onClose, applicationsCount }) {
       <div className="p-4 border-t border-slate-100">
         <Link
           href="/jobs"
-          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:text-primary hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+          className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-sm font-medium text-body hover:text-primary hover:bg-slate-50 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
         >
           <svg className="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

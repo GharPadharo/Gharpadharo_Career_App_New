@@ -4,6 +4,15 @@
  * Used by middleware.js in the Edge runtime.
  */
 
+const resolvedSecret = process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET;
+
+// Fail fast in production runtime if required secret is missing
+if (!resolvedSecret && process.env.NODE_ENV === "production" && process.env.NEXT_PHASE !== "phase-production-build") {
+  throw new Error(
+    "[Security] Missing required authentication secret: AUTH_SECRET or NEXTAUTH_SECRET must be defined in production."
+  );
+}
+
 export const authConfig = {
   providers: [],
   pages: {
@@ -13,16 +22,20 @@ export const authConfig = {
   session: {
     strategy: "jwt",
   },
-  secret:
-    process.env.AUTH_SECRET ||
-    process.env.NEXTAUTH_SECRET ||
-    "build-time-secret-placeholder-at-least-32-chars-long",
+  secret: resolvedSecret,
   callbacks: {
     session({ session, token }) {
       if (session?.user && token) {
         session.user.id = token.dbUserId || token.sub;
         session.user.isAdmin = Boolean(token.isAdmin);
         session.user.role = token.role || "user";
+        if (token.picture) {
+          session.user.image = token.picture;
+          session.user.picture = token.picture;
+        }
+        if (token.name) {
+          session.user.name = token.name;
+        }
       }
       return session;
     },

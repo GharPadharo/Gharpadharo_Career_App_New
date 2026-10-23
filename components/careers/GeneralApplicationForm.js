@@ -2,6 +2,18 @@
 
 import { useState, useRef } from "react";
 import Link from "next/link";
+import {
+  UploadCloud,
+  FileText,
+  X,
+  ArrowRight,
+  CheckCircle2,
+  ChevronDown,
+  AlertCircle,
+  User,
+  Briefcase,
+  Sparkles,
+} from "lucide-react";
 
 const ALLOWED_EXTENSIONS = [".pdf", ".doc", ".docx"];
 const ALLOWED_MIME_TYPES = [
@@ -227,7 +239,6 @@ export default function GeneralApplicationForm() {
           uploadData.error ||
           "Failed to upload resume. Please check your document and try again.";
 
-        // Expected user-facing validation error on resume (e.g. 400 invalid / corrupt / wrong format)
         if (uploadRes.status >= 400 && uploadRes.status < 500) {
           setResumeError(errorMsg);
           setErrors((prev) => ({ ...prev, resume: errorMsg }));
@@ -238,7 +249,6 @@ export default function GeneralApplicationForm() {
             resumeElem.scrollIntoView({ behavior: "smooth", block: "center" });
           }
         } else {
-          // Unexpected 5xx server-level error
           setServerError(errorMsg);
         }
 
@@ -289,10 +299,8 @@ export default function GeneralApplicationForm() {
         const errorMsg =
           data.error || "Failed to submit application. Please try again.";
 
-        // Set the returned user-friendly error message in serverError
         setServerError(errorMsg);
 
-        // If duplicate application error (409) or email conflict, also highlight the email field
         if (res.status === 409) {
           setErrors((prev) => ({
             ...prev,
@@ -323,29 +331,27 @@ export default function GeneralApplicationForm() {
       <div
         role="status"
         aria-live="polite"
-        className="bg-white rounded-3xl border border-slate-200/90 p-8 sm:p-14 text-center shadow-xs max-w-2xl mx-auto"
+        className="bg-white rounded-2xl sm:rounded-[20px] border border-[#E8E2FA] p-8 sm:p-12 text-center shadow-[0_2px_12px_rgba(89,41,214,0.03)] max-w-2xl mx-auto"
       >
-        <div className="w-16 h-16 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-6">
-          <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
-          </svg>
+        <div className="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto mb-5 border border-emerald-200/80">
+          <CheckCircle2 className="w-7 h-7 text-emerald-600" aria-hidden="true" />
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#11152F] tracking-tight">
           Application Received!
         </h2>
 
-        <p className="text-slate-600 text-sm sm:text-base mt-3 max-w-lg mx-auto leading-relaxed">
+        <p className="text-[#64748B] text-sm sm:text-base mt-3 max-w-lg mx-auto leading-relaxed font-normal">
           Thank you for sharing your resume with GharPadharo! We&apos;ve added your profile to our talent network and will reach out when a relevant opportunity matches your background.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
           <Link
             href="/jobs"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-[#46477f] text-white text-sm font-bold px-7 py-3.5 rounded-xl transition-all shadow-xs"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#5929D6] hover:bg-[#4D20BE] active:bg-[#3F189F] text-white text-sm sm:text-base font-bold px-7 py-3.5 rounded-xl transition-all shadow-xs"
           >
             <span>Explore Open Positions</span>
-            <span aria-hidden="true">&rarr;</span>
+            <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </Link>
         </div>
       </div>
@@ -356,21 +362,26 @@ export default function GeneralApplicationForm() {
     <form
       onSubmit={handleSubmit}
       noValidate
-      className="bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 px-5 py-6 sm:p-10 shadow-xs space-y-6 sm:space-y-8"
+      className="bg-white rounded-2xl sm:rounded-[20px] border border-[#E8E2FA] px-5 py-6 sm:p-9 lg:p-10 shadow-[0_2px_12px_rgba(89,41,214,0.03)] space-y-8 sm:space-y-10"
       aria-label="General Application form"
     >
       {/* SECTION 1: Personal Information */}
-      <fieldset className="space-y-3.5 sm:space-y-4">
-        <legend className="text-sm sm:text-base font-bold text-slate-900 pb-2.5 sm:pb-3 border-b border-slate-100 w-full">
-          Personal Information
-        </legend>
+      <fieldset className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 w-full mb-5">
+          <div className="w-8 h-8 rounded-lg bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+            <User className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
+          </div>
+          <legend className="text-base sm:text-lg font-bold text-[#11152F] tracking-tight">
+            Personal Information
+          </legend>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 pt-3.5 sm:pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           {/* First Name */}
           <div>
             <label
               htmlFor="firstName"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2"
             >
               First Name <span className="text-red-500">*</span>
             </label>
@@ -383,15 +394,15 @@ export default function GeneralApplicationForm() {
               onChange={handleChange}
               aria-invalid={!!errors.firstName}
               aria-describedby={errors.firstName ? "firstName-error" : undefined}
-              className={`w-full h-11 px-3.5 rounded-xl border text-sm text-slate-900 bg-white outline-none transition-colors ${
+              className={`w-full h-11 sm:h-12 px-3.5 rounded-xl border text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none transition-all duration-200 ${
                 errors.firstName
                   ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                  : "border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  : "border-[#E2E8F0] hover:border-[#C4B5FD] focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15"
               }`}
               placeholder="e.g. Rahul"
             />
             {errors.firstName && (
-              <p id="firstName-error" className="text-xs text-red-600 mt-1 font-medium">
+              <p id="firstName-error" className="text-xs text-red-600 mt-1.5 font-medium">
                 {errors.firstName}
               </p>
             )}
@@ -401,7 +412,7 @@ export default function GeneralApplicationForm() {
           <div>
             <label
               htmlFor="lastName"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2"
             >
               Last Name <span className="text-red-500">*</span>
             </label>
@@ -414,27 +425,27 @@ export default function GeneralApplicationForm() {
               onChange={handleChange}
               aria-invalid={!!errors.lastName}
               aria-describedby={errors.lastName ? "lastName-error" : undefined}
-              className={`w-full h-11 px-3.5 rounded-xl border text-sm text-slate-900 bg-white outline-none transition-colors ${
+              className={`w-full h-11 sm:h-12 px-3.5 rounded-xl border text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none transition-all duration-200 ${
                 errors.lastName
                   ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                  : "border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  : "border-[#E2E8F0] hover:border-[#C4B5FD] focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15"
               }`}
               placeholder="e.g. Sharma"
             />
             {errors.lastName && (
-              <p id="lastName-error" className="text-xs text-red-600 mt-1 font-medium">
+              <p id="lastName-error" className="text-xs text-red-600 mt-1.5 font-medium">
                 {errors.lastName}
               </p>
             )}
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           {/* Email */}
           <div>
             <label
               htmlFor="email"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2"
             >
               Email Address <span className="text-red-500">*</span>
             </label>
@@ -447,15 +458,15 @@ export default function GeneralApplicationForm() {
               onChange={handleChange}
               aria-invalid={!!errors.email}
               aria-describedby={errors.email ? "email-error" : undefined}
-              className={`w-full h-11 px-3.5 rounded-xl border text-sm text-slate-900 bg-white outline-none transition-colors ${
+              className={`w-full h-11 sm:h-12 px-3.5 rounded-xl border text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none transition-all duration-200 ${
                 errors.email
                   ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                  : "border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  : "border-[#E2E8F0] hover:border-[#C4B5FD] focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15"
               }`}
               placeholder="name@example.com"
             />
             {errors.email && (
-              <p id="email-error" className="text-xs text-red-600 mt-1 font-medium">
+              <p id="email-error" className="text-xs text-red-600 mt-1.5 font-medium">
                 {errors.email}
               </p>
             )}
@@ -465,9 +476,9 @@ export default function GeneralApplicationForm() {
           <div>
             <label
               htmlFor="phone"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2"
             >
-              Phone Number <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              Phone Number <span className="text-[#94A3B8] font-normal lowercase tracking-normal ml-1">(optional)</span>
             </label>
             <input
               id="phone"
@@ -477,15 +488,15 @@ export default function GeneralApplicationForm() {
               onChange={handleChange}
               aria-invalid={!!errors.phone}
               aria-describedby={errors.phone ? "phone-error" : undefined}
-              className={`w-full h-11 px-3.5 rounded-xl border text-sm text-slate-900 bg-white outline-none transition-colors ${
+              className={`w-full h-11 sm:h-12 px-3.5 rounded-xl border text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none transition-all duration-200 ${
                 errors.phone
                   ? "border-red-400 focus:border-red-500 focus:ring-2 focus:ring-red-100"
-                  : "border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  : "border-[#E2E8F0] hover:border-[#C4B5FD] focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15"
               }`}
               placeholder="+91 98765 43210"
             />
             {errors.phone && (
-              <p id="phone-error" className="text-xs text-red-600 mt-1 font-medium">
+              <p id="phone-error" className="text-xs text-red-600 mt-1.5 font-medium">
                 {errors.phone}
               </p>
             )}
@@ -494,19 +505,24 @@ export default function GeneralApplicationForm() {
       </fieldset>
 
       {/* SECTION 2: Professional Background */}
-      <fieldset className="space-y-3.5 sm:space-y-4">
-        <legend className="text-sm sm:text-base font-bold text-slate-900 pb-2.5 sm:pb-3 border-b border-slate-100 w-full">
-          Professional Background
-        </legend>
+      <fieldset className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 w-full mb-5">
+          <div className="w-8 h-8 rounded-lg bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+            <Briefcase className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
+          </div>
+          <legend className="text-base sm:text-lg font-bold text-[#11152F] tracking-tight">
+            Professional Background
+          </legend>
+        </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4 pt-3.5 sm:pt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           {/* Current Job Title */}
           <div>
             <label
               htmlFor="currentJobTitle"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2"
             >
-              Current Job Title <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              Current Job Title <span className="text-[#94A3B8] font-normal lowercase tracking-normal ml-1">(optional)</span>
             </label>
             <input
               id="currentJobTitle"
@@ -514,7 +530,7 @@ export default function GeneralApplicationForm() {
               type="text"
               value={formData.currentJobTitle}
               onChange={handleChange}
-              className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+              className="w-full h-11 sm:h-12 px-3.5 rounded-xl border border-[#E2E8F0] hover:border-[#C4B5FD] text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15 transition-all duration-200"
               placeholder="e.g. Software Engineer"
             />
           </div>
@@ -523,35 +539,41 @@ export default function GeneralApplicationForm() {
           <div>
             <label
               htmlFor="experience"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2"
             >
-              Years of Experience <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              Years of Experience <span className="text-[#94A3B8] font-normal lowercase tracking-normal ml-1">(optional)</span>
             </label>
-            <select
-              id="experience"
-              name="experience"
-              value={formData.experience}
-              onChange={handleChange}
-              className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors cursor-pointer"
-            >
-              <option value="Any / Flexible">Any / Flexible</option>
-              <option value="0–1 years">0–1 years (Entry / Fresher)</option>
-              <option value="1–3 years">1–3 years (Junior)</option>
-              <option value="3–5 years">3–5 years (Mid-Level)</option>
-              <option value="5–8 years">5–8 years (Senior)</option>
-              <option value="8+ years">8+ years (Lead / Director)</option>
-            </select>
+            <div className="relative">
+              <select
+                id="experience"
+                name="experience"
+                value={formData.experience}
+                onChange={handleChange}
+                className="w-full h-11 sm:h-12 px-3.5 pr-9 rounded-xl border border-[#E2E8F0] hover:border-[#C4B5FD] text-sm text-[#11152F] bg-white outline-none focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15 appearance-none cursor-pointer transition-all duration-200"
+              >
+                <option value="Any / Flexible">Any / Flexible</option>
+                <option value="0–1 years">0–1 years (Entry / Fresher)</option>
+                <option value="1–3 years">1–3 years (Junior)</option>
+                <option value="3–5 years">3–5 years (Mid-Level)</option>
+                <option value="5–8 years">5–8 years (Senior)</option>
+                <option value="8+ years">8+ years (Lead / Director)</option>
+              </select>
+              <ChevronDown
+                className="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none"
+                aria-hidden="true"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
           {/* LinkedIn URL */}
           <div>
             <label
               htmlFor="linkedin"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2"
             >
-              LinkedIn Profile <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              LinkedIn Profile <span className="text-[#94A3B8] font-normal lowercase tracking-normal ml-1">(optional)</span>
             </label>
             <input
               id="linkedin"
@@ -559,7 +581,7 @@ export default function GeneralApplicationForm() {
               type="url"
               value={formData.linkedin}
               onChange={handleChange}
-              className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+              className="w-full h-11 sm:h-12 px-3.5 rounded-xl border border-[#E2E8F0] hover:border-[#C4B5FD] text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15 transition-all duration-200"
               placeholder="https://linkedin.com/in/username"
             />
           </div>
@@ -568,9 +590,9 @@ export default function GeneralApplicationForm() {
           <div>
             <label
               htmlFor="portfolio"
-              className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider mb-1 sm:mb-1.5"
+              className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2"
             >
-              Portfolio / GitHub / Website <span className="text-slate-400 font-normal lowercase">(optional)</span>
+              Portfolio / GitHub / Website <span className="text-[#94A3B8] font-normal lowercase tracking-normal ml-1">(optional)</span>
             </label>
             <input
               id="portfolio"
@@ -578,31 +600,36 @@ export default function GeneralApplicationForm() {
               type="url"
               value={formData.portfolio}
               onChange={handleChange}
-              className="w-full h-11 px-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors"
+              className="w-full h-11 sm:h-12 px-3.5 rounded-xl border border-[#E2E8F0] hover:border-[#C4B5FD] text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15 transition-all duration-200"
               placeholder="https://yourportfolio.com"
             />
           </div>
         </div>
       </fieldset>
 
-      {/* SECTION 3: Opportunity of Interest & Background */}
-      <fieldset className="space-y-3.5 sm:space-y-4">
-        <legend className="text-sm sm:text-base font-bold text-slate-900 pb-2.5 sm:pb-3 border-b border-slate-100 w-full">
-          Your Interests & Goals
-        </legend>
+      {/* SECTION 3: Your Interests & Goals */}
+      <fieldset className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 w-full mb-5">
+          <div className="w-8 h-8 rounded-lg bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+            <Sparkles className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
+          </div>
+          <legend className="text-base sm:text-lg font-bold text-[#11152F] tracking-tight">
+            Your Interests &amp; Goals
+          </legend>
+        </div>
 
-        <div className="pt-3.5 sm:pt-4 space-y-3.5 sm:space-y-4">
+        <div className="space-y-5">
           {/* What kind of opportunity are you looking for? */}
           <div>
-            <div className="flex items-baseline justify-between gap-2 mb-1 sm:mb-1.5">
+            <div className="flex items-center justify-between gap-2 mb-2">
               <label
                 htmlFor="opportunityLookingFor"
-                className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider leading-snug"
+                className="block text-xs font-bold text-slate-700 uppercase tracking-wider leading-snug"
               >
                 What kind of opportunity are you looking for?{" "}
-                <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                <span className="text-[#94A3B8] font-normal lowercase tracking-normal">(optional)</span>
               </label>
-              <span className="text-[11px] text-slate-400 shrink-0 font-medium">
+              <span className="text-[11px] text-[#94A3B8] font-medium shrink-0">
                 {formData.opportunityLookingFor.length}/1000
               </span>
             </div>
@@ -613,22 +640,22 @@ export default function GeneralApplicationForm() {
               maxLength={1000}
               value={formData.opportunityLookingFor}
               onChange={handleChange}
-              className="w-full p-3 sm:p-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors resize-y leading-relaxed min-h-[105px] sm:min-h-[115px]"
+              className="w-full p-3.5 rounded-xl border border-[#E2E8F0] hover:border-[#C4B5FD] text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15 transition-all duration-200 resize-y leading-relaxed min-h-[110px]"
               placeholder="Tell us what teams, technologies, or roles interest you most (e.g., Full Stack Development, AI Research, Product Management)..."
             />
           </div>
 
           {/* Tell us about yourself */}
           <div>
-            <div className="flex items-baseline justify-between gap-2 mb-1 sm:mb-1.5">
+            <div className="flex items-center justify-between gap-2 mb-2">
               <label
                 htmlFor="aboutYourself"
-                className="block text-xs font-bold text-slate-700 uppercase tracking-wide sm:tracking-wider leading-snug"
+                className="block text-xs font-bold text-slate-700 uppercase tracking-wider leading-snug"
               >
                 Tell us about yourself{" "}
-                <span className="text-slate-400 font-normal lowercase">(optional)</span>
+                <span className="text-[#94A3B8] font-normal lowercase tracking-normal">(optional)</span>
               </label>
-              <span className="text-[11px] text-slate-400 shrink-0 font-medium">
+              <span className="text-[11px] text-[#94A3B8] font-medium shrink-0">
                 {formData.aboutYourself.length}/3000
               </span>
             </div>
@@ -639,118 +666,115 @@ export default function GeneralApplicationForm() {
               maxLength={3000}
               value={formData.aboutYourself}
               onChange={handleChange}
-              className="w-full p-3 sm:p-3.5 rounded-xl border border-slate-200 text-sm text-slate-900 bg-white outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-colors resize-y leading-relaxed min-h-[105px] sm:min-h-[115px]"
+              className="w-full p-3.5 rounded-xl border border-[#E2E8F0] hover:border-[#C4B5FD] text-sm text-[#11152F] bg-white placeholder:text-[#94A3B8] outline-none focus:border-[#5929D6] focus:ring-2 focus:ring-[#5929D6]/15 transition-all duration-200 resize-y leading-relaxed min-h-[110px]"
               placeholder="A brief overview of your journey, key accomplishments, or what makes you excited about joining GharPadharo..."
             />
           </div>
         </div>
       </fieldset>
 
-      {/* SECTION 4: Resume Upload */}
-      <fieldset className="space-y-3.5 sm:space-y-4">
-        <legend className="text-sm sm:text-base font-bold text-slate-900 pb-2.5 sm:pb-3 border-b border-slate-100 w-full">
-          Resume / CV <span className="text-red-500">*</span>
-        </legend>
+      {/* SECTION 4: Resume / CV Upload */}
+      <fieldset className="space-y-4">
+        <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100 w-full mb-5">
+          <div className="w-8 h-8 rounded-lg bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+            <FileText className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
+          </div>
+          <legend className="text-base sm:text-lg font-bold text-[#11152F] tracking-tight">
+            Resume / CV <span className="text-red-500">*</span>
+          </legend>
+        </div>
 
-        <div className="pt-3.5 sm:pt-4">
-          {/* Hidden native input */}
-          <input
-            ref={fileInputRef}
-            id="resume"
-            name="resume"
-            type="file"
-            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            onChange={handleFileChange}
-            className="sr-only"
-            aria-describedby="resume-help resume-error"
-          />
+        {/* Hidden native input */}
+        <input
+          ref={fileInputRef}
+          id="resume"
+          name="resume"
+          type="file"
+          accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          onChange={handleFileChange}
+          className="sr-only"
+          aria-describedby="resume-help resume-error"
+        />
 
-          {!resumeFile ? (
-            /* Dropzone when no file selected */
-            <div
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
-              className={`border-2 border-dashed rounded-2xl py-5 px-4 sm:p-8 text-center cursor-pointer transition-colors ${
-                isDragging
-                  ? "border-primary bg-primary/5"
-                  : errors.resume || resumeError
-                  ? "border-red-300 bg-red-50/30 hover:border-red-400"
-                  : "border-slate-200 hover:border-primary/50 hover:bg-slate-50/50"
-              }`}
-            >
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-2.5 sm:mb-3">
-                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="1.8"
-                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-                  />
-                </svg>
-              </div>
-              <p className="text-xs sm:text-sm font-semibold text-slate-800 leading-snug">
-                <span className="text-primary font-bold hover:underline">Click to upload</span> or drag and drop your resume
-              </p>
-              <p id="resume-help" className="text-[11px] sm:text-xs text-muted mt-1">
-                PDF, DOC, DOCX up to 10 MB
-              </p>
+        {!resumeFile ? (
+          /* Dropzone when no file selected */
+          <div
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+            className={`border-2 border-dashed rounded-2xl p-7 sm:p-9 text-center cursor-pointer transition-all duration-200 group ${
+              isDragging
+                ? "border-[#5929D6] bg-[#F0EBFF]/50"
+                : errors.resume || resumeError
+                ? "border-red-300 bg-red-50/30"
+                : "border-[#DDD6FE] hover:border-[#5929D6] bg-[#FDFCFE] hover:bg-[#F8F6FD]"
+            }`}
+          >
+            <div className="w-12 h-12 rounded-xl bg-[#F0EBFF] text-[#5929D6] group-hover:scale-105 flex items-center justify-center mx-auto mb-3.5 transition-transform duration-200 shadow-2xs">
+              <UploadCloud className="w-6 h-6 text-[#5929D6]" aria-hidden="true" />
             </div>
-          ) : (
-            /* Selected file display */
-            <div
-              className={`flex items-center justify-between p-3.5 sm:p-4 rounded-xl border transition-colors ${
-                errors.resume || resumeError
-                  ? "border-red-300 bg-red-50/30"
-                  : "border-slate-200 bg-slate-50/60"
-              }`}
-            >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                  <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                    />
-                  </svg>
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xs sm:text-sm font-semibold text-slate-800 truncate">
-                    {resumeFile.name}
-                  </p>
-                  <p className="text-[11px] sm:text-xs text-muted">
-                    {formatFileSize(resumeFile.size)}
-                  </p>
-                </div>
+            <p className="text-sm font-bold text-[#11152F]">
+              Upload your resume
+            </p>
+            <p className="text-xs text-[#64748B] mt-1.5">
+              Drag and drop your resume here, or{" "}
+              <span className="text-[#5929D6] font-bold group-hover:underline">browse</span>
+            </p>
+            <p id="resume-help" className="text-[11px] text-[#94A3B8] mt-2.5 font-medium">
+              PDF, DOC, or DOCX — max 10MB
+            </p>
+          </div>
+        ) : (
+          /* Selected file display */
+          <div className="border border-[#E8E2FA] rounded-2xl p-4 bg-[#F8F7FC] flex items-center justify-between gap-3 shadow-2xs">
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-10 h-10 rounded-xl bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+                <FileText className="w-5 h-5 text-[#5929D6]" aria-hidden="true" />
               </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-[#11152F] truncate">
+                  {resumeFile.name}
+                </p>
+                <p className="text-xs text-[#64748B] mt-0.5 font-medium">
+                  {formatFileSize(resumeFile.size)}
+                </p>
+              </div>
+            </div>
 
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="text-xs font-semibold text-[#5929D6] hover:text-[#4D20BE] hover:underline px-2.5 py-1.5 transition-colors cursor-pointer rounded-lg hover:bg-[#F0EBFF]"
+              >
+                Replace
+              </button>
               <button
                 type="button"
                 onClick={handleRemoveResume}
-                className="p-1.5 text-slate-400 hover:text-red-500 rounded-lg transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-colors cursor-pointer shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-200"
                 aria-label="Remove resume"
               >
-                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
-          )}
+          </div>
+        )}
 
-          {(errors.resume || resumeError) && (
-            <p id="resume-error" className="text-xs text-red-600 mt-1.5 font-medium">
-              {errors.resume || resumeError}
-            </p>
-          )}
-        </div>
+        {(errors.resume || resumeError) && (
+          <p id="resume-error" className="text-xs text-red-600 mt-2 font-medium">
+            {errors.resume || resumeError}
+          </p>
+        )}
       </fieldset>
 
       {/* SECTION 5: Consent & Legal */}
-      <fieldset className="space-y-3 pt-0.5 sm:pt-1">
-        <div className="flex items-start gap-2.5 sm:gap-3">
+      <div className="pt-2">
+        <label
+          htmlFor="consent"
+          className="flex items-start gap-3 cursor-pointer select-none group"
+        >
           <input
             id="consent"
             name="consent"
@@ -760,46 +784,56 @@ export default function GeneralApplicationForm() {
             onChange={handleChange}
             aria-invalid={!!errors.consent}
             aria-describedby={errors.consent ? "consent-error" : undefined}
-            className="w-4 h-4 mt-0.5 sm:mt-1 rounded border-slate-300 text-primary focus:ring-primary/20 cursor-pointer shrink-0"
+            className="w-4 h-4 rounded border-slate-300 text-[#5929D6] accent-[#5929D6] mt-0.5 shrink-0 focus:ring-[#5929D6]/20 cursor-pointer"
           />
-          <label htmlFor="consent" className="text-xs sm:text-sm text-slate-600 leading-relaxed cursor-pointer">
+          <span className="text-xs sm:text-sm text-[#475569] leading-relaxed font-normal group-hover:text-slate-800 transition-colors">
             I confirm that the information provided is accurate and consent to GharPadharo retaining my resume and details for prospective career opportunities. <span className="text-red-500">*</span>
-          </label>
-        </div>
+          </span>
+        </label>
         {errors.consent && (
-          <p id="consent-error" className="text-xs text-red-600 font-medium">
+          <p id="consent-error" className="text-xs text-red-600 mt-2 font-medium">
             {errors.consent}
           </p>
         )}
-      </fieldset>
+      </div>
 
       {/* Server Error Message */}
       {serverError && (
         <div
           role="alert"
-          className="p-4 rounded-xl bg-red-50 border border-red-200 text-xs sm:text-sm text-red-800 font-medium flex items-center gap-3"
+          className="p-4 sm:p-5 rounded-2xl bg-red-50 border border-red-200 text-red-900 flex items-start justify-between shadow-2xs animate-in fade-in duration-200"
         >
-          <svg className="w-5 h-5 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <span>{serverError}</span>
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-lg bg-red-100 text-red-700 flex items-center justify-center shrink-0 mt-0.5">
+              <AlertCircle className="w-5 h-5 text-red-600" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-sm font-bold">Submission failed</p>
+              <p className="text-xs text-red-700 mt-0.5 font-medium leading-relaxed">
+                {serverError}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setServerError(null)}
+            className="text-xs font-bold text-red-800 hover:text-red-950 underline shrink-0 ml-4 pt-1 cursor-pointer"
+          >
+            Dismiss
+          </button>
         </div>
       )}
 
-      {/* Submit Button */}
-      <div className="pt-1 sm:pt-2">
+      {/* SECTION 6: Submit Button */}
+      <div className="pt-4 border-t border-slate-100">
         <button
           type="submit"
           disabled={isSubmitting}
-          className={`w-full h-12 rounded-xl text-white font-bold text-sm sm:text-base transition-all shadow-xs flex items-center justify-center gap-2 ${
-            isSubmitting
-              ? "bg-primary/70 cursor-wait"
-              : "bg-primary hover:bg-[#46477f] cursor-pointer"
-          }`}
+          className="w-full inline-flex items-center justify-center gap-2 bg-[#5929D6] hover:bg-[#4D20BE] active:bg-[#3F189F] disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm sm:text-base font-bold py-3.5 px-8 rounded-xl shadow-xs hover:shadow-md transition-all duration-200 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2 group"
         >
           {isSubmitting ? (
             <>
-              <svg className="animate-spin w-5 h-5 text-white" fill="none" viewBox="0 0 24 24">
+              <svg className="animate-spin w-4 h-4 text-white" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
               </svg>
@@ -810,7 +844,13 @@ export default function GeneralApplicationForm() {
               </span>
             </>
           ) : (
-            <span>Submit Your Resume &rarr;</span>
+            <>
+              <span>Submit Your Resume</span>
+              <ArrowRight
+                className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
+            </>
           )}
         </button>
       </div>

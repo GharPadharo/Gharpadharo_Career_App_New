@@ -2,7 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { WEBSITE_IMAGES } from "@/lib/websiteImages";
+import SectionBadge from "@/components/common/SectionBadge";
 
 const galleryImages = [
   {
@@ -21,8 +23,8 @@ const galleryImages = [
     position: "object-[center_60%]",
   },
   {
-    src: WEBSITE_IMAGES.life.galleryTeamGathering,
-    alt: "GharPadharo team gathered together in the conference room",
+    src: WEBSITE_IMAGES.life.teamWorkingAtDesks,
+    alt: "GharPadharo team members working on laptops at their office desks",
     position: "object-[center_35%]",
   },
   {
@@ -123,7 +125,7 @@ export default function LifeGallery() {
       id="our-life"
       aria-roledescription="carousel"
       aria-label="Life at GharPadharo gallery"
-      className="scroll-mt-24 w-full py-12 sm:py-14 lg:py-16 bg-white border-b border-slate-200/60 overflow-hidden"
+      className="scroll-mt-24 w-full py-14 sm:py-18 lg:py-22 bg-gradient-to-b from-[#FAF8FF] via-[#F6F2FF] to-[#FAF8FF] border-b border-[#E8E2FA]/60 overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onFocus={() => setIsFocused(true)}
@@ -135,16 +137,14 @@ export default function LifeGallery() {
       onKeyDown={handleKeyDown}
       tabIndex={0}
     >
-      <div className="container-custom max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mb-5 sm:mb-6 text-center sm:text-left">
-          <span className="text-xs font-bold text-primary tracking-widest uppercase block mb-1.5 sm:mb-2">
-            OUR LIFE
-          </span>
-          <h2 className="text-2xl sm:text-[30px] lg:text-[32px] font-extrabold text-heading tracking-tight leading-snug">
+        <div className="mb-6 sm:mb-8 text-center sm:text-left">
+          <SectionBadge className="mb-3">OUR LIFE</SectionBadge>
+          <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#11152F] tracking-tight leading-snug">
             A glimpse of the people and moments behind the work.
           </h2>
-          <p className="text-sm sm:text-base text-body mt-1.5 sm:mt-2 leading-relaxed font-normal max-w-2xl">
+          <p className="text-sm sm:text-base text-[#64748B] mt-2 sm:mt-2.5 leading-relaxed font-normal max-w-2xl">
             See some of the moments, spaces, and people that make life at GharPadharo what it is.
           </p>
         </div>
@@ -183,7 +183,7 @@ export default function LifeGallery() {
                     aria-label={`${idx + 1} of ${galleryImages.length}`}
                     aria-hidden={!isActive}
                   >
-                    <div className="relative aspect-[16/9] sm:aspect-[16/8.5] w-full rounded-[18px] sm:rounded-[20px] overflow-hidden border border-slate-200/70 bg-slate-100 shadow-sm">
+                    <div className="relative aspect-[16/9] sm:aspect-[16/8.5] w-full rounded-2xl overflow-hidden border border-[#E8E2FA] bg-slate-100 shadow-[0_4px_16px_rgba(89,41,214,0.04)]">
                       <Image
                         src={item.src}
                         alt={item.alt}
@@ -204,40 +204,24 @@ export default function LifeGallery() {
             type="button"
             onClick={handlePrev}
             aria-label="Previous image"
-            className="group absolute left-2.5 sm:left-[calc(15%+5px)] top-1/2 -translate-y-1/2 sm:-translate-x-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-slate-200 shadow-md hover:bg-primary hover:border-primary hover:scale-[1.04] active:scale-[0.96] transition-all duration-200 flex items-center justify-center focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 cursor-pointer backdrop-blur-xs"
+            className="group absolute left-2.5 sm:left-[calc(15%+5px)] top-1/2 -translate-y-1/2 sm:-translate-x-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-[#E8E2FA] shadow-md hover:bg-[#5929D6] hover:border-[#5929D6] hover:scale-[1.04] active:scale-[0.96] transition-all duration-200 flex items-center justify-center focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#5929D6]/30 focus-visible:ring-offset-2 cursor-pointer backdrop-blur-xs"
           >
-            <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 -ml-0.5 text-slate-700 group-hover:text-white transition-colors duration-200"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
+            <ChevronLeft className="w-5 h-5 text-slate-700 group-hover:text-white transition-colors duration-200" />
           </button>
 
           <button
             type="button"
             onClick={handleNext}
             aria-label="Next image"
-            className="group absolute right-2.5 sm:right-[calc(15%+5px)] top-1/2 -translate-y-1/2 sm:translate-x-1/2 z-20 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-slate-200 shadow-md hover:bg-primary hover:border-primary hover:scale-[1.04] active:scale-[0.96] transition-all duration-200 flex items-center justify-center focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 cursor-pointer backdrop-blur-xs"
+            className="group absolute right-2.5 sm:right-[calc(15%+5px)] top-1/2 -translate-y-1/2 sm:translate-x-1/2 z-20 w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white/95 border border-[#E8E2FA] shadow-md hover:bg-[#5929D6] hover:border-[#5929D6] hover:scale-[1.04] active:scale-[0.96] transition-all duration-200 flex items-center justify-center focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#5929D6]/30 focus-visible:ring-offset-2 cursor-pointer backdrop-blur-xs"
           >
-            <svg
-              className="w-4 h-4 sm:w-5 sm:h-5 -mr-0.5 text-slate-700 group-hover:text-white transition-colors duration-200"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2.5}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
+            <ChevronRight className="w-5 h-5 text-slate-700 group-hover:text-white transition-colors duration-200" />
           </button>
         </div>
 
         {/* Pagination Dots */}
         <div
-          className="flex items-center justify-center gap-2 mt-4 sm:mt-[18px]"
+          className="flex items-center justify-center gap-2 mt-5 sm:mt-6"
           role="tablist"
           aria-label="Gallery pagination"
         >
@@ -249,10 +233,10 @@ export default function LifeGallery() {
               aria-selected={currentIndex === idx}
               aria-label={`Go to slide ${idx + 1}`}
               onClick={() => goToSlide(idx)}
-              className={`transition-all duration-300 ease-out rounded-full cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 ${
+              className={`transition-all duration-300 ease-out rounded-full cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[#5929D6]/30 focus-visible:ring-offset-2 ${
                 currentIndex === idx
-                  ? "w-[22px] sm:w-[24px] h-[6px] bg-primary shadow-2xs"
-                  : "w-[7px] h-[7px] sm:w-[8px] sm:h-[8px] bg-slate-300 hover:bg-slate-400"
+                  ? "w-[24px] sm:w-[28px] h-[6px] sm:h-[7px] bg-[#5929D6] shadow-xs"
+                  : "w-[7px] h-[7px] sm:w-[8px] sm:h-[8px] bg-[#E8E2FA] hover:bg-[#C4B5FD]"
               }`}
             />
           ))}

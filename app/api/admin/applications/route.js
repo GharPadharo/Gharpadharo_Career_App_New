@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import Application from "@/models/Application";
 import { requireAdminAuth } from "@/lib/authGuard";
 import { serializeApplication } from "@/lib/applicationSerializer";
+import { escapeRegex } from "@/lib/searchUtils";
 
 export const dynamic = "force-dynamic";
 
@@ -51,7 +52,8 @@ export async function GET(request) {
     }
 
     if (search.trim()) {
-      const searchRegex = new RegExp(search.trim(), "i");
+      const sanitizedSearch = escapeRegex(search.trim());
+      const searchRegex = new RegExp(sanitizedSearch, "i");
       query.$or = [
         ...(query.$or || []),
         { candidate: searchRegex },

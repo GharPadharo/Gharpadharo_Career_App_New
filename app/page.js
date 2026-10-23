@@ -19,16 +19,16 @@ export const metadata = {
       "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
   },
   description:
-    "Join a team building technology that makes finding a place simpler. Explore career opportunities across engineering, product, design, growth, and operations.",
+    "Explore career opportunities and job openings at GharPadharo. Join our engineering, product, design, growth, and operations teams building transparent living across Uttarakhand.",
   alternates: {
-    canonical: "https://career.gharpadharo.com/",
+    canonical: "https://career.gharpadharo.com",
   },
   openGraph: {
     title:
       "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
     description:
-      "Join a team building technology that makes finding a place simpler. Explore career opportunities across engineering, product, design, growth, and operations.",
-    url: "https://career.gharpadharo.com/",
+      "Explore career opportunities and job openings at GharPadharo. Join our engineering, product, design, growth, and operations teams building transparent living across Uttarakhand.",
+    url: "https://career.gharpadharo.com",
     siteName: "GharPadharo Careers",
     locale: "en_IN",
     type: "website",
@@ -38,7 +38,7 @@ export const metadata = {
     title:
       "GharPadharo Careers | Build Technology That Makes Finding a Place Simpler",
     description:
-      "Join a team building technology that makes finding a place simpler. Explore career opportunities across engineering, product, design, growth, and operations.",
+      "Explore career opportunities and job openings at GharPadharo. Join our engineering, product, design, growth, and operations teams building transparent living across Uttarakhand.",
   },
 };
 
@@ -59,9 +59,6 @@ export default async function HomePage() {
     <>
       {/* 1. Hero Section */}
       <CareersLandingHero />
-
-      {/* 2. Value Proposition Strip */}
-      <ValuePropositionStrip />
 
       {/* 3. Open Positions with Search & Filter Bar */}
       <OpenPositionsSection jobs={activeJobs} />

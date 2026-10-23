@@ -6,19 +6,26 @@ import { signIn } from "@/auth";
  * Initiates real Google OAuth authentication flow via Auth.js Server Action.
  * Preserves the exact visual design tokens, sizing, and styling.
  */
-export default function GoogleSignInButton({ callbackUrl = "/admin/dashboard" }) {
+export default function GoogleSignInButton({ callbackUrl = "/admin/dashboard", className }) {
   return (
     <form
       action={async () => {
         "use server";
-        await signIn("google", { redirectTo: callbackUrl });
+        await signIn(
+          "google",
+          { redirectTo: callbackUrl },
+          { prompt: "select_account" }
+        );
       }}
       className="w-full"
     >
       <button
         type="submit"
         aria-label="Continue with Google sign in"
-        className="w-full flex items-center justify-center gap-3 px-4 py-3 bg-white hover:bg-slate-50 text-slate-700 font-semibold text-sm sm:text-base rounded-xl border border-slate-300 hover:border-slate-400 shadow-2xs transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:scale-[0.99] cursor-pointer"
+        className={
+          className ||
+          "w-full flex items-center justify-center gap-3 px-5 py-3.5 bg-white hover:bg-[#F7F4FD] text-[#0F172A] font-semibold text-sm sm:text-base rounded-2xl border border-white/90 hover:border-purple-200 shadow-[0_4px_14px_rgba(0,0,0,0.06)] hover:shadow-[0_10px_25px_-5px_rgba(89,41,214,0.22),0_8px_10px_-6px_rgba(89,41,214,0.15)] hover:-translate-y-[2px] active:translate-y-0 active:scale-[0.98] active:shadow-[0_2px_8px_rgba(89,41,214,0.15)] transition-all duration-[250ms] ease-in-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2 focus-visible:ring-offset-white/80 cursor-pointer select-none touch-manipulation"
+        }
       >
         <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true">
           <path

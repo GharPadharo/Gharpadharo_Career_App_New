@@ -52,7 +52,7 @@ export default function AdminJobFilters({
             value={searchTerm}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search jobs by title or keyword..."
-            className="w-full h-11 pl-10 pr-9 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition-colors"
+            className="w-full h-11 pl-10 pr-9 bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl text-sm text-heading placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs transition-colors"
             aria-label="Search jobs by title or keyword"
           />
           {searchTerm && (
@@ -74,7 +74,7 @@ export default function AdminJobFilters({
           <select
             value={selectedStatus}
             onChange={(e) => onStatusChange(e.target.value)}
-            className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
+            className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-heading focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden"
             aria-label="Filter by Status"
           >
             <option value="all">All Status</option>
@@ -94,7 +94,7 @@ export default function AdminJobFilters({
           <select
             value={selectedTeam}
             onChange={(e) => onTeamChange(e.target.value)}
-            className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-slate-700 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden truncate"
+            className="w-full h-11 appearance-none bg-slate-50/60 hover:bg-slate-50 focus:bg-white border border-slate-200/90 rounded-xl pl-3.5 pr-9 text-sm font-medium text-heading focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary shadow-2xs cursor-pointer transition-colors [&::-ms-expand]:hidden truncate"
             aria-label="Filter by Team"
           >
             <option value="All">All Teams</option>
@@ -114,7 +114,7 @@ export default function AdminJobFilters({
 
       {/* 3. Sub-bar: Count & Clear Filters Indicator */}
       <div className="flex items-center justify-between text-xs text-muted pt-2 px-1 border-t border-slate-100">
-        <span className="font-semibold text-slate-600">
+        <span className="font-semibold text-heading">
           {isFiltered
             ? `${filteredCount} ${filteredCount === 1 ? "job" : "jobs"} found`
             : `${totalCount} ${totalCount === 1 ? "job" : "jobs"}`}
@@ -124,7 +124,7 @@ export default function AdminJobFilters({
           <button
             type="button"
             onClick={onClearFilters}
-            className="text-xs font-semibold text-primary hover:text-[#46477f] hover:underline cursor-pointer transition-colors focus-visible:outline-none focus-visible:underline"
+            className="text-xs font-semibold text-primary hover:text-[#4D20BE] hover:underline cursor-pointer transition-colors focus-visible:outline-none focus-visible:underline"
           >
             Clear filters
           </button>

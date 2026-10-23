@@ -1,9 +1,22 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import mongoose from "mongoose";
+import {
+  Briefcase,
+  MapPin,
+  CircleCheck,
+  Calendar,
+  ArrowRight,
+  ArrowLeft,
+  Sparkles,
+  ListChecks,
+  Award,
+  ShieldCheck,
+} from "lucide-react";
 import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import { serializeJob } from "@/lib/jobSerializer";
+import ScrollReveal from "@/components/common/ScrollReveal";
 
 export const dynamic = "force-dynamic";
 
@@ -44,6 +57,10 @@ export async function generateMetadata({ params }) {
     return {
       title: "Job Not Found | GharPadharo Careers",
       description: "The requested job position does not exist or is not available.",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
@@ -53,8 +70,12 @@ export async function generateMetadata({ params }) {
     : `${job.title} | GharPadharo Careers`;
   const description = isClosed
     ? `The position for ${job.title} at GharPadharo is now closed and no longer accepting applications.`
-    : job.description;
-  const canonicalUrl = `https://career.gharpadharo.com/jobs/${job.id}`;
+    : `Join GharPadharo as ${job.title} (${job.type}, ${job.location}). ${
+        job.description?.length > 140
+          ? `${job.description.slice(0, 137)}...`
+          : job.description || ""
+      }`;
+  const canonicalUrl = `https://career.gharpadharo.com/jobs/${job.slug || job.id}`;
 
   return {
     title: {
@@ -64,6 +85,12 @@ export async function generateMetadata({ params }) {
     alternates: {
       canonical: canonicalUrl,
     },
+    ...(isClosed && {
+      robots: {
+        index: false,
+        follow: true,
+      },
+    }),
     openGraph: {
       title,
       description,
@@ -92,394 +119,478 @@ export default async function JobDetailsPage({ params }) {
   const badgeClasses =
     badgeColorMap[job.type] || "bg-slate-50 text-slate-700 border-slate-200";
 
-  // Build schema-compliant JobPosting JSON-LD truthfully from mock data
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "JobPosting",
-    title: job.title,
-    description: job.description,
-    datePosted: job.postedAt
-      ? job.postedAt.split("T")[0]
-      : undefined,
-    employmentType: employmentTypeMap[job.type] || "FULL_TIME",
-    hiringOrganization: {
-      "@type": "Organization",
-      name: "GharPadharo",
-      sameAs: "https://www.gharpadharo.com",
-    },
-    jobLocationType: job.location.includes("Remote")
-      ? "TELECOMMUTE"
-      : undefined,
-    jobLocation: {
-      "@type": "Place",
-      address: {
-        "@type": "PostalAddress",
-        addressCountry: "IN",
-      },
-    },
-    ...(job.location.includes("India") && {
-      applicantLocationRequirements: {
-        "@type": "Country",
-        name: "India",
-      },
-    }),
-  };
+  const hasSkills = Array.isArray(job.skills) && job.skills.length > 0;
+  const hasTags = Array.isArray(job.tags) && job.tags.length > 0;
+
+  // Check if skills and tags are duplicate lists
+  const areSkillsAndTagsIdentical =
+    hasSkills &&
+    hasTags &&
+    job.skills.length === job.tags.length &&
+    job.skills.every((s, i) => s.trim().toLowerCase() === job.tags[i]?.trim().toLowerCase());
+
+  // Skills unique to job.skills (if not identical)
+  const uniqueSkills = hasSkills
+    ? areSkillsAndTagsIdentical
+      ? []
+      : job.skills.filter(
+          (s) => !job.tags.some((t) => t.trim().toLowerCase() === s.trim().toLowerCase())
+        )
+    : [];
+
+  // Consolidated tags to display as badges
+  const displayTags = hasTags
+    ? job.tags
+    : hasSkills
+    ? job.skills
+    : [];
+
+  const postedIsoDate = job.postedAt
+    ? job.postedAt.split("T")[0]
+    : undefined;
+
+  // Build full HTML description matching visible page content for Google Jobs
+  let fullDescription = `<p>${job.description || ""}</p>`;
+  if (Array.isArray(job.responsibilities) && job.responsibilities.length > 0) {
+    fullDescription += `<h3>Key Responsibilities:</h3><ul>${job.responsibilities
+      .map((r) => `<li>${r}</li>`)
+      .join("")}</ul>`;
+  }
+  if (Array.isArray(job.requirements) && job.requirements.length > 0) {
+    fullDescription += `<h3>Requirements:</h3><ul>${job.requirements
+      .map((r) => `<li>${r}</li>`)
+      .join("")}</ul>`;
+  }
+
+  const isRemote =
+    job.workMode === "Remote" ||
+    (typeof job.location === "string" && job.location.includes("Remote"));
+
+  const canonicalJobUrl = `https://career.gharpadharo.com/jobs/${job.slug || job.id}`;
+
+  // Build schema-compliant JobPosting JSON-LD truthfully from data for active vacancies only
+  const jsonLd = !isClosed
+    ? {
+        "@context": "https://schema.org",
+        "@type": "JobPosting",
+        title: job.title,
+        description: fullDescription,
+        datePosted: postedIsoDate,
+        employmentType: employmentTypeMap[job.type] || "FULL_TIME",
+        url: canonicalJobUrl,
+        directApply: true,
+        hiringOrganization: {
+          "@type": "Organization",
+          "@id": "https://career.gharpadharo.com/#organization",
+          name: "GharPadharo",
+          sameAs: "https://www.gharpadharo.com",
+          logo: "https://career.gharpadharo.com/logo.png",
+        },
+        jobLocationType: isRemote ? "TELECOMMUTE" : undefined,
+        applicantLocationRequirements: isRemote
+          ? {
+              "@type": "Country",
+              name: "India",
+            }
+          : undefined,
+        jobLocation: {
+          "@type": "Place",
+          address: {
+            "@type": "PostalAddress",
+            ...(isRemote
+              ? {}
+              : {
+                  addressLocality: job.location || "Dehradun",
+                  addressRegion: "Uttarakhand",
+                }),
+            addressCountry: "IN",
+          },
+        },
+      }
+    : null;
 
   return (
-    <div className="w-full bg-[#f8fafc] min-h-screen py-10 lg:py-14 border-b border-slate-200/60">
-      {/* JobPosting Structured Data */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <div className="w-full bg-[#F8F7FC] min-h-screen py-8 sm:py-10 lg:py-14 border-b border-slate-200/60">
+      {/* JobPosting Structured Data - only emitted for active vacancies */}
+      {!isClosed && jsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+          }}
+        />
+      )}
 
-      <div className="container-custom">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Back Link */}
         <nav aria-label="Breadcrumb" className="mb-6">
           <Link
             href="/jobs"
-            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-primary hover:text-primary-hover transition-colors focus:outline-none focus:underline"
+            className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-[#5929D6] hover:text-[#4D20BE] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6]/30 rounded px-1 py-0.5"
           >
-            <span aria-hidden="true">&larr;</span>
+            <ArrowLeft className="w-4 h-4" aria-hidden="true" />
             <span>Back to Jobs</span>
           </Link>
         </nav>
 
         {/* Job Header Card */}
-        <section
-          aria-labelledby="job-title"
-          className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 lg:p-10 shadow-xs mb-8"
-        >
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-3">
-              <div className="flex flex-wrap items-center gap-3">
-                <h1
-                  id="job-title"
-                  className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight"
-                >
-                  {job.title}
-                </h1>
-                <span
-                  className={`inline-flex items-center px-3 py-0.5 rounded-full text-xs font-semibold border ${badgeClasses}`}
-                >
-                  {job.type}
-                </span>
-                {isClosed && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-300">
-                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500" aria-hidden="true" />
-                    Closed
+        <ScrollReveal variant="fade-up">
+          <section
+            aria-labelledby="job-title"
+            className="bg-white rounded-2xl border border-[#E8E2FA] p-6 sm:p-8 lg:p-9 shadow-[0_2px_12px_rgba(89,41,214,0.03)] mb-8"
+          >
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+              <div className="space-y-3.5">
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1
+                    id="job-title"
+                    className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-[#11152F] tracking-tight"
+                  >
+                    {job.title}
+                  </h1>
+                  <span
+                    className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border ${badgeClasses}`}
+                  >
+                    {job.type}
                   </span>
+                  {isClosed && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-300">
+                      <span className="w-1.5 h-1.5 rounded-full bg-slate-500" aria-hidden="true" />
+                      Closed
+                    </span>
+                  )}
+                </div>
+
+                {/* Closed position notice banner */}
+                {isClosed && (
+                  <div className="mt-3 p-3.5 bg-slate-50 border border-slate-200/90 rounded-xl flex items-center gap-3 text-xs sm:text-sm text-slate-700 font-medium">
+                    <ShieldCheck className="w-5 h-5 text-slate-500 shrink-0" aria-hidden="true" />
+                    <span>
+                      This position is closed and no longer accepting applications.
+                    </span>
+                  </div>
+                )}
+
+                {/* Metadata row */}
+                <div className="flex flex-wrap items-center gap-x-6 gap-y-2.5 text-xs sm:text-sm text-[#64748B] font-medium pt-0.5">
+                  {/* Team */}
+                  <div className="flex items-center gap-1.5">
+                    <Briefcase className="w-4 h-4 text-[#94A3B8] shrink-0" aria-hidden="true" />
+                    <span>{job.team}</span>
+                  </div>
+
+                  {/* Location */}
+                  <div className="flex items-center gap-1.5">
+                    <MapPin className="w-4 h-4 text-[#94A3B8] shrink-0" aria-hidden="true" />
+                    <span>{job.location}</span>
+                  </div>
+
+                  {/* Experience */}
+                  <div className="flex items-center gap-1.5">
+                    <CircleCheck className="w-4 h-4 text-[#94A3B8] shrink-0" aria-hidden="true" />
+                    <span>{job.experience}</span>
+                  </div>
+
+                  {/* Date */}
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-4 h-4 text-[#94A3B8] shrink-0" aria-hidden="true" />
+                    <time dateTime={postedIsoDate}>{job.postedText}</time>
+                  </div>
+                </div>
+              </div>
+
+              {/* Header Apply CTA */}
+              <div className="shrink-0">
+                {isClosed ? (
+                  <span
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-100 border border-slate-200 text-slate-500 text-sm sm:text-base font-bold px-7 py-3.5 rounded-xl cursor-not-allowed select-none text-center"
+                    aria-disabled="true"
+                  >
+                    Applications Closed
+                  </span>
+                ) : (
+                  <Link
+                    href={`/jobs/${job.id}/apply`}
+                    aria-label={`Apply for ${job.title}`}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-[#5929D6] hover:bg-[#4D20BE] active:bg-[#3F189F] text-white text-sm sm:text-base font-bold px-7 py-3.5 rounded-xl shadow-xs hover:shadow-md transition-all duration-200 active:scale-[0.98] text-center cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2"
+                  >
+                    <span>Apply Now</span>
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
+                  </Link>
                 )}
               </div>
-
-              {/* Closed position notice banner */}
-              {isClosed && (
-                <div className="mt-3.5 p-3.5 bg-slate-50 border border-slate-200/90 rounded-xl flex items-center gap-3 text-xs sm:text-sm text-slate-700 font-medium">
-                  <svg
-                    className="w-5 h-5 text-slate-500 shrink-0"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <span>
-                    This position is closed and no longer accepting applications.
-                  </span>
-                </div>
-              )}
-
-              {/* Metadata row */}
-              <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs sm:text-sm text-slate-600 font-medium pt-1">
-                {/* Team */}
-                <div className="flex items-center gap-1.5">
-                  <svg
-                    className="w-4 h-4 text-slate-400 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                    />
-                  </svg>
-                  <span>{job.team}</span>
-                </div>
-
-                {/* Location */}
-                <div className="flex items-center gap-1.5">
-                  <svg
-                    className="w-4 h-4 text-slate-400 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                  <span>{job.location}</span>
-                </div>
-
-                {/* Experience */}
-                <div className="flex items-center gap-1.5">
-                  <svg
-                    className="w-4 h-4 text-slate-400 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    />
-                  </svg>
-                  <span>{job.experience}</span>
-                </div>
-
-                {/* Date */}
-                <div className="flex items-center gap-1.5 text-slate-400">
-                  <svg
-                    className="w-4 h-4 shrink-0"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.8}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                  <time dateTime={jsonLd.datePosted}>{job.postedText}</time>
-                </div>
-              </div>
             </div>
+          </section>
+        </ScrollReveal>
 
-            {/* Header Apply CTA */}
-            <div className="shrink-0">
-              {isClosed ? (
-                <span
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-100 border border-slate-200 text-slate-500 text-sm sm:text-base font-bold px-7 py-3.5 rounded-xl cursor-not-allowed select-none text-center"
-                  aria-disabled="true"
-                >
-                  Applications Closed
-                </span>
-              ) : (
-                <Link
-                  href={`/jobs/${job.id}/apply`}
-                  aria-label={`Apply for ${job.title}`}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm sm:text-base font-bold px-7 py-3.5 rounded-xl shadow-xs transition-all duration-200 active:scale-95 text-center focus:outline-none focus:ring-2 focus:ring-primary/40"
-                >
-                  <span>Apply Now</span>
-                  <span aria-hidden="true">&rarr;</span>
-                </Link>
-              )}
-            </div>
-          </div>
-        </section>
-
-        {/* 2-Column Content Layout */}
+        {/* 2-Column Content Layout (70% main, 30% sidebar) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Main Content (65–70%) */}
-          <div className="lg:col-span-8 space-y-8">
+          {/* Main Content (~70%) */}
+          <div className="lg:col-span-8 space-y-6 sm:space-y-8">
             {/* About the Role */}
-            <section
-              aria-labelledby="about-role-heading"
-              className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-xs"
-            >
-              <h2
-                id="about-role-heading"
-                className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight pb-3 border-b border-slate-100 mb-4"
+            <ScrollReveal variant="fade-up">
+              <section
+                aria-labelledby="about-role-heading"
+                className="bg-white rounded-2xl border border-[#E8E2FA] p-6 sm:p-8 shadow-[0_2px_12px_rgba(89,41,214,0.03)]"
               >
-                About the Role
-              </h2>
-              <p className="text-sm sm:text-base text-slate-700 leading-relaxed font-normal">
-                {job.description}
-              </p>
-            </section>
+                <div className="flex items-center gap-3 pb-4 border-b border-slate-100 mb-5">
+                  <div className="w-9 h-9 rounded-xl bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
+                  </div>
+                  <h2
+                    id="about-role-heading"
+                    className="text-lg sm:text-xl font-bold text-[#11152F] tracking-tight"
+                  >
+                    About the Role
+                  </h2>
+                </div>
+                <p className="text-sm sm:text-base text-[#475569] leading-relaxed font-normal">
+                  {job.description}
+                </p>
+              </section>
+            </ScrollReveal>
 
             {/* Responsibilities */}
-            <section
-              aria-labelledby="responsibilities-heading"
-              className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-xs"
-            >
-              <h2
-                id="responsibilities-heading"
-                className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight pb-3 border-b border-slate-100 mb-4"
+            <ScrollReveal variant="fade-up">
+              <section
+                aria-labelledby="responsibilities-heading"
+                className="bg-white rounded-2xl border border-[#E8E2FA] p-6 sm:p-8 shadow-[0_2px_12px_rgba(89,41,214,0.03)]"
               >
-                Responsibilities
-              </h2>
-              <ul className="space-y-3 text-sm sm:text-base text-slate-700 leading-relaxed list-disc pl-5">
-                {job.responsibilities && job.responsibilities.length > 0 ? (
-                  job.responsibilities.map((item, idx) => (
-                    <li key={idx}>{item}</li>
-                  ))
-                ) : (
-                  <>
-                    <li>
-                      Collaborate directly within the {job.team} team to deliver
-                      impactful solutions and drive high-priority objectives.
-                    </li>
-                    <li>
-                      Design, build, and maintain scalable workflows aligned with
-                      GharPadharo platform standards.
-                    </li>
-                    <li>
-                      Utilize relevant tools and technologies including{" "}
-                      {job.tags.join(", ")} to solve practical challenges.
-                    </li>
-                    <li>
-                      Communicate progress, coordinate with team members, and ensure
-                      timely delivery of milestones.
-                    </li>
-                  </>
-                )}
-              </ul>
-            </section>
+                <div className="flex items-center gap-3 pb-4 border-b border-slate-100 mb-5">
+                  <div className="w-9 h-9 rounded-xl bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+                    <ListChecks className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
+                  </div>
+                  <h2
+                    id="responsibilities-heading"
+                    className="text-lg sm:text-xl font-bold text-[#11152F] tracking-tight"
+                  >
+                    Responsibilities
+                  </h2>
+                </div>
+                <ul className="space-y-3 text-sm sm:text-base text-[#475569] leading-relaxed">
+                  {job.responsibilities && job.responsibilities.length > 0 ? (
+                    job.responsibilities.map((item, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#5929D6] mt-2.5 shrink-0"
+                          aria-hidden="true"
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <>
+                      <li className="flex items-start gap-3">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#5929D6] mt-2.5 shrink-0"
+                          aria-hidden="true"
+                        />
+                        <span>
+                          Collaborate directly within the {job.team} team to deliver
+                          impactful solutions and drive high-priority objectives.
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#5929D6] mt-2.5 shrink-0"
+                          aria-hidden="true"
+                        />
+                        <span>
+                          Design, build, and maintain scalable workflows aligned with
+                          GharPadharo platform standards.
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#5929D6] mt-2.5 shrink-0"
+                          aria-hidden="true"
+                        />
+                        <span>
+                          Utilize relevant tools and technologies including{" "}
+                          {job.tags.join(", ")} to solve practical challenges.
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#5929D6] mt-2.5 shrink-0"
+                          aria-hidden="true"
+                        />
+                        <span>
+                          Communicate progress, coordinate with team members, and ensure
+                          timely delivery of milestones.
+                        </span>
+                      </li>
+                    </>
+                  )}
+                </ul>
+              </section>
+            </ScrollReveal>
 
             {/* Skills & Experience */}
-            <section
-              aria-labelledby="skills-heading"
-              className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-xs"
-            >
-              <h2
-                id="skills-heading"
-                className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight pb-3 border-b border-slate-100 mb-4"
+            <ScrollReveal variant="fade-up">
+              <section
+                aria-labelledby="skills-heading"
+                className="bg-white rounded-2xl border border-[#E8E2FA] p-6 sm:p-8 shadow-[0_2px_12px_rgba(89,41,214,0.03)]"
               >
-                Skills & Experience
-              </h2>
-              <div className="space-y-4">
-                <div>
-                  <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
-                    Experience Level
-                  </p>
-                  <span className="inline-block bg-slate-100 text-slate-800 text-xs sm:text-sm font-semibold px-3 py-1.5 rounded-lg border border-slate-200/80">
-                    {job.experience}
-                  </span>
-                </div>
-
-                {job.skills && job.skills.length > 0 && (
-                  <div>
-                    <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
-                      Key Competencies
-                    </p>
-                    <ul className="space-y-1.5 text-xs sm:text-sm text-slate-700 leading-relaxed list-disc pl-5">
-                      {job.skills.map((skill, idx) => (
-                        <li key={idx}>{skill}</li>
-                      ))}
-                    </ul>
+                <div className="flex items-center gap-3 pb-4 border-b border-slate-100 mb-6">
+                  <div className="w-9 h-9 rounded-xl bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+                    <Award className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
                   </div>
-                )}
-
-                <div>
-                  <p className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">
-                    Required Skills & Technologies
-                  </p>
-                  <div
-                    className="flex flex-wrap items-center gap-2"
-                    aria-label="Required skills list"
+                  <h2
+                    id="skills-heading"
+                    className="text-lg sm:text-xl font-bold text-[#11152F] tracking-tight"
                   >
-                    {job.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-block bg-slate-100/90 text-slate-700 text-xs sm:text-sm px-3 py-1.5 rounded-lg font-medium border border-slate-200/60"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
+                    Skills &amp; Experience
+                  </h2>
                 </div>
-              </div>
-            </section>
+
+                <div className="space-y-6">
+                  {/* Experience Level */}
+                  <div>
+                    <p className="text-xs font-bold text-[#11152F] uppercase tracking-wider mb-2.5">
+                      Experience Level
+                    </p>
+                    <span className="inline-block bg-[#F0EBFF] text-[#5929D6] text-xs sm:text-sm font-semibold px-3.5 py-1.5 rounded-lg border border-[#DDD6FE]">
+                      {job.experience}
+                    </span>
+                  </div>
+
+                  {/* Key Competencies (rendered if distinct from tags) */}
+                  {uniqueSkills.length > 0 && (
+                    <div>
+                      <p className="text-xs font-bold text-[#11152F] uppercase tracking-wider mb-2.5">
+                        Key Competencies
+                      </p>
+                      <ul className="space-y-2.5 text-sm text-[#475569] leading-relaxed">
+                        {uniqueSkills.map((skill, idx) => (
+                          <li key={idx} className="flex items-start gap-2.5">
+                            <span
+                              className="w-1.5 h-1.5 rounded-full bg-[#5929D6] mt-2 shrink-0"
+                              aria-hidden="true"
+                            />
+                            <span>{skill}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {/* Required Skills & Technologies (Badges) */}
+                  {displayTags.length > 0 && (
+                    <div>
+                      <p className="text-xs font-bold text-[#11152F] uppercase tracking-wider mb-2.5">
+                        {areSkillsAndTagsIdentical
+                          ? "Key Skills & Competencies"
+                          : "Required Skills & Technologies"}
+                      </p>
+                      <div
+                        className="flex flex-wrap items-center gap-2"
+                        aria-label="Required skills list"
+                      >
+                        {displayTags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="inline-block bg-[#F0EBFF] text-[#5929D6] hover:bg-[#E5DBFF] hover:text-[#4619B8] text-xs sm:text-sm px-3.5 py-1.5 rounded-lg font-medium border border-[#DDD6FE] hover:border-[#C4B5FD] hover:shadow-[0_2px_8px_rgba(89,41,214,0.12)] hover:-translate-y-px transition-all duration-200 ease-in-out cursor-default select-none break-words max-w-full"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+            </ScrollReveal>
 
             {/* Requirements */}
             {job.requirements && job.requirements.length > 0 && (
-              <section
-                aria-labelledby="requirements-heading"
-                className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-xs"
-              >
-                <h2
-                  id="requirements-heading"
-                  className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight pb-3 border-b border-slate-100 mb-4"
+              <ScrollReveal variant="fade-up">
+                <section
+                  aria-labelledby="requirements-heading"
+                  className="bg-white rounded-2xl border border-[#E8E2FA] p-6 sm:p-8 shadow-[0_2px_12px_rgba(89,41,214,0.03)]"
                 >
-                  Requirements
-                </h2>
-                <ul className="space-y-3 text-sm sm:text-base text-slate-700 leading-relaxed list-disc pl-5">
-                  {job.requirements.map((req, idx) => (
-                    <li key={idx}>{req}</li>
-                  ))}
-                </ul>
-              </section>
+                  <div className="flex items-center gap-3 pb-4 border-b border-slate-100 mb-5">
+                    <div className="w-9 h-9 rounded-xl bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+                      <ShieldCheck className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
+                    </div>
+                    <h2
+                      id="requirements-heading"
+                      className="text-lg sm:text-xl font-bold text-[#11152F] tracking-tight"
+                    >
+                      Requirements
+                    </h2>
+                  </div>
+                  <ul className="space-y-3 text-sm sm:text-base text-[#475569] leading-relaxed">
+                    {job.requirements.map((req, idx) => (
+                      <li key={idx} className="flex items-start gap-3">
+                        <span
+                          className="w-1.5 h-1.5 rounded-full bg-[#5929D6] mt-2.5 shrink-0"
+                          aria-hidden="true"
+                        />
+                        <span>{req}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </ScrollReveal>
             )}
           </div>
 
-          {/* Right Sidebar (30–35%) */}
+          {/* Right Sidebar (~30%) */}
           <aside
             aria-label="Job Overview and Actions"
             className="lg:col-span-4"
           >
-            <div className="bg-white rounded-2xl border border-slate-200/80 p-6 shadow-xs lg:sticky lg:top-24 space-y-6">
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 pb-3 border-b border-slate-100">
-                Job Overview
-              </h2>
+            <ScrollReveal variant="fade-up" delay={80}>
+              <div className="bg-white rounded-2xl border border-[#E8E2FA] p-6 sm:p-7 shadow-[0_2px_12px_rgba(89,41,214,0.03)] lg:sticky lg:top-24 space-y-6">
+              <div className="flex items-center gap-2.5 pb-4 border-b border-slate-100">
+                <div className="w-8 h-8 rounded-lg bg-[#F0EBFF] text-[#5929D6] flex items-center justify-center shrink-0">
+                  <Briefcase className="w-4 h-4 text-[#5929D6]" aria-hidden="true" />
+                </div>
+                <h2 className="text-base sm:text-lg font-bold text-[#11152F] tracking-tight">
+                  Job Overview
+                </h2>
+              </div>
 
               {/* Overview Details List */}
-              <dl className="space-y-4 text-xs sm:text-sm">
+              <dl className="space-y-4">
                 <div>
-                  <dt className="text-slate-400 font-medium">Team</dt>
-                  <dd className="text-slate-800 font-semibold mt-0.5">
+                  <dt className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                    Team
+                  </dt>
+                  <dd className="text-sm font-semibold text-[#11152F] mt-1">
                     {job.team}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-slate-400 font-medium">Location</dt>
-                  <dd className="text-slate-800 font-semibold mt-0.5">
+                  <dt className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                    Location
+                  </dt>
+                  <dd className="text-sm font-semibold text-[#11152F] mt-1">
                     {job.location}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-slate-400 font-medium">Job Type</dt>
-                  <dd className="text-slate-800 font-semibold mt-0.5">
+                  <dt className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                    Job Type
+                  </dt>
+                  <dd className="text-sm font-semibold text-[#11152F] mt-1">
                     {job.type}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-slate-400 font-medium">
+                  <dt className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
                     Experience Level
                   </dt>
-                  <dd className="text-slate-800 font-semibold mt-0.5">
+                  <dd className="text-sm font-semibold text-[#11152F] mt-1">
                     {job.experience}
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-slate-400 font-medium">Date Posted</dt>
-                  <dd className="text-slate-800 font-semibold mt-0.5">
+                  <dt className="text-xs font-semibold text-[#64748B] uppercase tracking-wider">
+                    Date Posted
+                  </dt>
+                  <dd className="text-sm font-semibold text-[#11152F] mt-1">
                     {job.postedText}
                   </dd>
                 </div>
@@ -489,7 +600,7 @@ export default async function JobDetailsPage({ params }) {
               <div className="pt-2 space-y-3">
                 {isClosed ? (
                   <span
-                    className="w-full inline-flex items-center justify-center bg-slate-100 border border-slate-200 text-slate-500 text-sm font-bold px-5 py-3 rounded-xl cursor-not-allowed select-none text-center"
+                    className="w-full inline-flex items-center justify-center bg-slate-100 border border-slate-200 text-slate-500 text-sm font-bold px-5 py-3.5 rounded-xl cursor-not-allowed select-none text-center"
                     aria-disabled="true"
                   >
                     Applications Closed
@@ -498,21 +609,22 @@ export default async function JobDetailsPage({ params }) {
                   <Link
                     href={`/jobs/${job.id}/apply`}
                     aria-label={`Apply for ${job.title}`}
-                    className="w-full inline-flex items-center justify-center gap-1.5 bg-primary hover:bg-primary-hover text-white text-sm font-bold px-5 py-3 rounded-xl shadow-xs transition-all duration-200 text-center active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary/40"
+                    className="w-full inline-flex items-center justify-center gap-2 bg-[#5929D6] hover:bg-[#4D20BE] active:bg-[#3F189F] text-white text-sm sm:text-base font-bold px-5 py-3.5 rounded-xl shadow-xs hover:shadow-md transition-all duration-200 text-center cursor-pointer active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2"
                   >
                     <span>Apply Now</span>
-                    <span aria-hidden="true">&rarr;</span>
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </Link>
                 )}
 
                 <Link
                   href="/jobs"
-                  className="w-full inline-flex items-center justify-center py-2.5 text-xs font-semibold text-slate-500 hover:text-primary transition-colors text-center focus:outline-none focus:underline"
+                  className="w-full inline-flex items-center justify-center py-2.5 text-xs sm:text-sm font-semibold text-[#5929D6] hover:text-[#4D20BE] hover:underline transition-colors text-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6]/30 rounded"
                 >
                   Back to all jobs
                 </Link>
               </div>
             </div>
+            </ScrollReveal>
           </aside>
         </div>
       </div>

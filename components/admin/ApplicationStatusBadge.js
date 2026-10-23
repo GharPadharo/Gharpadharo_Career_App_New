@@ -13,7 +13,7 @@ export default function ApplicationStatusBadge({ status = "new", className = "" 
   const config = isNew
     ? {
         label: "New",
-        bg: "bg-[#525599]/10 text-primary border-[#525599]/25 font-bold shadow-2xs",
+        bg: "bg-[#5929D6]/10 text-primary border-[#5929D6]/25 font-bold shadow-2xs",
         dot: "bg-primary animate-pulse",
       }
     : {

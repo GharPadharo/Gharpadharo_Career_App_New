@@ -302,10 +302,10 @@ export default function JobForm({ initialData = null, isEdit = false }) {
           {/* SECTION 1: Basic Information */}
           <section className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-7 shadow-2xs space-y-5">
             <div className="border-b border-slate-100 pb-3">
-              <h2 className="text-base font-bold text-slate-900 tracking-tight">
+              <h2 className="admin-card-heading">
                 Basic Information
               </h2>
-              <p className="text-xs text-muted mt-0.5">
+              <p className="text-xs text-body mt-0.5">
                 Core job title, organizational team, and seniority level.
               </p>
             </div>
@@ -315,7 +315,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
               <div>
                 <label
                   htmlFor="title"
-                  className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                  className="admin-field-label"
                 >
                   Job Title <span className="text-red-500">*</span>
                 </label>
@@ -326,7 +326,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                   value={formData.title}
                   onChange={handleInputChange}
                   placeholder="e.g. Full Stack Developer"
-                  className={`w-full px-4 py-2.5 bg-white border rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
+                  className={`w-full px-4 py-2.5 bg-white border rounded-xl text-sm text-heading placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
                     errors.title
                       ? "border-red-400 focus:border-red-500"
                       : "border-slate-200 hover:border-slate-300 focus:border-primary"
@@ -345,7 +345,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 <div>
                   <label
                     htmlFor="team"
-                    className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                    className="admin-field-label"
                   >
                     Team <span className="text-red-500">*</span>
                   </label>
@@ -354,7 +354,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                     name="team"
                     value={formData.team}
                     onChange={handleInputChange}
-                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-heading focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
                   >
                     {CANONICAL_TEAMS.map((t) => (
                       <option key={t} value={t}>
@@ -368,7 +368,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 <div>
                   <label
                     htmlFor="type"
-                    className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                    className="admin-field-label"
                   >
                     Job Type <span className="text-red-500">*</span>
                   </label>
@@ -377,7 +377,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                     name="type"
                     value={formData.type}
                     onChange={handleInputChange}
-                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-heading focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
                   >
                     {JOB_TYPES.map((jt) => (
                       <option key={jt} value={jt}>
@@ -391,7 +391,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 <div>
                   <label
                     htmlFor="experience"
-                    className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                    className="admin-field-label"
                   >
                     Experience Level <span className="text-red-500">*</span>
                   </label>
@@ -400,7 +400,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                     name="experience"
                     value={formData.experience}
                     onChange={handleInputChange}
-                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-heading focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
                   >
                     {EXPERIENCE_LEVELS.map((exp) => (
                       <option key={exp} value={exp}>
@@ -416,10 +416,10 @@ export default function JobForm({ initialData = null, isEdit = false }) {
           {/* SECTION 2: Job Location */}
           <section className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-7 shadow-2xs space-y-5">
             <div className="border-b border-slate-100 pb-3">
-              <h2 className="text-base font-bold text-slate-900 tracking-tight">
+              <h2 className="admin-card-heading">
                 Job Location & Work Mode
               </h2>
-              <p className="text-xs text-muted mt-0.5">
+              <p className="text-xs text-body mt-0.5">
                 Specify geographic requirements and workplace arrangement.
               </p>
             </div>
@@ -429,7 +429,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
               <div>
                 <label
                   htmlFor="location"
-                  className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                  className="admin-field-label"
                 >
                   Location <span className="text-red-500">*</span>
                 </label>
@@ -440,7 +440,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                   value={formData.location}
                   onChange={handleInputChange}
                   placeholder="e.g. Remote (India)"
-                  className={`w-full px-4 py-2.5 bg-white border rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
+                  className={`w-full px-4 py-2.5 bg-white border rounded-xl text-sm text-heading placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all ${
                     errors.location
                       ? "border-red-400 focus:border-red-500"
                       : "border-slate-200 hover:border-slate-300 focus:border-primary"
@@ -457,7 +457,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
               <div>
                 <label
                   htmlFor="workMode"
-                  className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                  className="admin-field-label"
                 >
                   Work Mode
                 </label>
@@ -466,7 +466,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                   name="workMode"
                   value={formData.workMode}
                   onChange={handleInputChange}
-                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
+                  className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-heading focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
                 >
                   {WORK_MODES.map((wm) => (
                     <option key={wm} value={wm}>
@@ -481,10 +481,10 @@ export default function JobForm({ initialData = null, isEdit = false }) {
           {/* SECTION 3: Job Description & Details */}
           <section className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-7 shadow-2xs space-y-6">
             <div className="border-b border-slate-100 pb-3">
-              <h2 className="text-base font-bold text-slate-900 tracking-tight">
+              <h2 className="admin-card-heading">
                 Job Description
               </h2>
-              <p className="text-xs text-muted mt-0.5">
+              <p className="text-xs text-body mt-0.5">
                 Overview of the role, core responsibilities, and required competencies.
               </p>
             </div>
@@ -493,7 +493,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
             <div>
               <label
                 htmlFor="description"
-                className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5"
+                className="admin-field-label"
               >
                 About the Role <span className="text-red-500">*</span>
               </label>
@@ -504,7 +504,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 value={formData.description}
                 onChange={handleInputChange}
                 placeholder="Describe the role and what the person will work on..."
-                className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all leading-relaxed ${
+                className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-heading placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all leading-relaxed ${
                   errors.description
                     ? "border-red-400 focus:border-red-500"
                     : "border-slate-200 hover:border-slate-300 focus:border-primary"
@@ -524,7 +524,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <label className="admin-field-label mb-0">
                     Responsibilities <span className="text-red-500">*</span>
                   </label>
                   <p className="text-[11px] text-muted">
@@ -534,7 +534,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 <button
                   type="button"
                   onClick={() => handleAddListItem("responsibilities")}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-[#46477f] px-2.5 py-1 rounded-lg hover:bg-slate-50 border border-slate-200/80 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-[#4D20BE] px-2.5 py-1 rounded-lg hover:bg-slate-50 border border-slate-200/80 transition-colors cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
@@ -560,7 +560,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                       value={resp}
                       onChange={(e) => handleListChange("responsibilities", idx, e.target.value)}
                       placeholder={`e.g. Design and scale core application features...`}
-                      className="flex-1 px-3.5 py-2 bg-white border border-slate-200 hover:border-slate-300 focus:border-primary rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                      className="flex-1 px-3.5 py-2 bg-white border border-slate-200 hover:border-slate-300 focus:border-primary rounded-xl text-sm text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                     />
                     <button
                       type="button"
@@ -582,7 +582,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <label className="admin-field-label mb-0">
                     Required Skills <span className="text-red-500">*</span>
                   </label>
                   <p className="text-[11px] text-muted">
@@ -592,7 +592,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 <button
                   type="button"
                   onClick={() => handleAddListItem("skills")}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-[#46477f] px-2.5 py-1 rounded-lg hover:bg-slate-50 border border-slate-200/80 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-[#4D20BE] px-2.5 py-1 rounded-lg hover:bg-slate-50 border border-slate-200/80 transition-colors cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
@@ -618,7 +618,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                       value={skill}
                       onChange={(e) => handleListChange("skills", idx, e.target.value)}
                       placeholder={`e.g. Next.js, TypeScript, PostgreSQL...`}
-                      className="flex-1 px-3.5 py-2 bg-white border border-slate-200 hover:border-slate-300 focus:border-primary rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
+                      className="flex-1 px-3.5 py-2 bg-white border border-slate-200 hover:border-slate-300 focus:border-primary rounded-xl text-sm text-heading focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all"
                     />
                     <button
                       type="button"
@@ -640,7 +640,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
             <div className="space-y-3 pt-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  <label className="admin-field-label mb-0">
                     Requirements <span className="text-red-500">*</span>
                   </label>
                   <p className="text-[11px] text-muted">
@@ -650,7 +650,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 <button
                   type="button"
                   onClick={() => handleAddListItem("requirements")}
-                  className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-[#46477f] px-2.5 py-1 rounded-lg hover:bg-slate-50 border border-slate-200/80 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-[#4D20BE] px-2.5 py-1 rounded-lg hover:bg-slate-50 border border-slate-200/80 transition-colors cursor-pointer"
                 >
                   <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 4v16m8-8H4" />
@@ -702,14 +702,14 @@ export default function JobForm({ initialData = null, isEdit = false }) {
           <section className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-2xs space-y-5">
             <div className="border-b border-slate-100 pb-3 flex items-center justify-between">
               <div>
-                <h2 className="text-base font-bold text-slate-900 tracking-tight">
+                <h2 className="admin-card-heading">
                   Publishing
                 </h2>
-                <p className="text-xs text-muted mt-0.5">
+                <p className="text-xs text-body mt-0.5">
                   Control position visibility and status.
                 </p>
               </div>
-              <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded border border-slate-200/80">
+              <span className="text-[10px] font-bold text-heading uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded border border-slate-200/80">
                 Status
               </span>
             </div>
@@ -733,7 +733,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-900">Active</span>
+                    <span className="text-xs font-bold text-heading">Active</span>
                     <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded-full border border-emerald-200/80">
                       Public
                     </span>
@@ -762,7 +762,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-900">Draft</span>
+                    <span className="text-xs font-bold text-heading">Draft</span>
                     <span className="text-[10px] font-semibold text-slate-600 bg-slate-100 px-2 py-0.2 rounded-full border border-slate-200">
                       Internal
                     </span>
@@ -791,7 +791,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                 />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-900">Closed</span>
+                    <span className="text-xs font-bold text-heading">Closed</span>
                     <span className="text-[10px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.2 rounded-full border border-slate-200">
                       Archived
                     </span>
@@ -811,7 +811,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                   href={`/jobs/${initialData.id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 font-semibold text-primary hover:text-[#46477f] hover:underline"
+                  className="inline-flex items-center gap-1 font-semibold text-primary hover:text-[#4D20BE] hover:underline"
                   title="Preview role on public portal (opens in new tab)"
                 >
                   <span>Preview</span>

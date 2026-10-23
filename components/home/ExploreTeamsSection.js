@@ -1,561 +1,680 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
+import {
+  Flag,
+  Code2,
+  Box,
+  PenTool,
+  ChartNoAxesCombined,
+  Settings,
+} from "lucide-react";
+import { WEBSITE_IMAGES } from "@/lib/websiteImages";
+import SectionBadge from "@/components/common/SectionBadge";
+
+const TEAMS = [
+  {
+    id: "engineering",
+    name: "Engineering",
+    description: "Build the technology that powers GharPadharo.",
+    image: WEBSITE_IMAGES.teams.engineering,
+    imageAlt: "GharPadharo developers collaborating on code",
+    Icon: Code2,
+    accentColor: "#3B82F6",
+    ringColor: "ring-[#3B82F6]",
+    glowColor: "rgba(59, 130, 246, 0.24)",
+    iconBg: "bg-[#E0EDFD]",
+    iconColor: "text-[#2563EB]",
+    cardBg: "bg-white",
+    borderColor: "border-[#DCE9FE]",
+    photoPosition: "right",
+    desktopPositionClass: "left-[2%] top-[70px] w-[355px] xl:w-[370px] h-[98px]",
+    paddingClass: "pl-4 pr-3 py-3",
+    entranceDelay: 350,
+  },
+  {
+    id: "product",
+    name: "Product",
+    description: "Turn real problems into simple experiences.",
+    image: WEBSITE_IMAGES.teams.product,
+    imageAlt: "GharPadharo teammates discussing product ideas around a laptop",
+    Icon: Box,
+    accentColor: "#8B5CF6",
+    ringColor: "ring-[#8B5CF6]",
+    glowColor: "rgba(139, 92, 246, 0.24)",
+    iconBg: "bg-[#EAE4FC]",
+    iconColor: "text-[#7C3AED]",
+    cardBg: "bg-white",
+    borderColor: "border-[#ECE5FB]",
+    photoPosition: "left",
+    desktopPositionClass: "right-[2%] top-[70px] w-[355px] xl:w-[370px] h-[98px]",
+    paddingClass: "pl-3 pr-4 py-3",
+    entranceDelay: 420,
+  },
+  {
+    id: "operations",
+    name: "Operations",
+    description: "Make things happen behind the scenes.",
+    image: WEBSITE_IMAGES.teams.operations,
+    imageAlt: "GharPadharo team coordinating work in an office",
+    Icon: Settings,
+    accentColor: "#10B981",
+    ringColor: "ring-[#10B981]",
+    glowColor: "rgba(16, 185, 129, 0.24)",
+    iconBg: "bg-[#DBF3E5]",
+    iconColor: "text-[#059669]",
+    cardBg: "bg-white",
+    borderColor: "border-[#D1F2DF]",
+    photoPosition: "right",
+    desktopPositionClass: "left-[0%] top-[295px] w-[355px] xl:w-[370px] h-[98px]",
+    paddingClass: "pl-4 pr-3 py-3",
+    entranceDelay: 490,
+  },
+  {
+    id: "design",
+    name: "Design",
+    description: "Shape how people experience our platforms.",
+    image: WEBSITE_IMAGES.teams.design,
+    imageAlt: "GharPadharo designer working on interface designs",
+    Icon: PenTool,
+    accentColor: "#F43F5E",
+    ringColor: "ring-[#F43F5E]",
+    glowColor: "rgba(244, 63, 94, 0.24)",
+    iconBg: "bg-[#FCE7ED]",
+    iconColor: "text-[#E85D75]",
+    cardBg: "bg-white",
+    borderColor: "border-[#FCE3E8]",
+    photoPosition: "left",
+    desktopPositionClass: "right-[0%] top-[295px] w-[355px] xl:w-[370px] h-[98px]",
+    paddingClass: "pl-3 pr-4 py-3",
+    entranceDelay: 560,
+  },
+  {
+    id: "growth",
+    name: "Growth & Marketing",
+    description: "Help more people discover GharPadharo.",
+    image: WEBSITE_IMAGES.teams.growth,
+    imageAlt: "GharPadharo teammates collaborating on marketing or growth",
+    Icon: ChartNoAxesCombined,
+    accentColor: "#F59E0B",
+    ringColor: "ring-[#F59E0B]",
+    glowColor: "rgba(245, 158, 11, 0.24)",
+    iconBg: "bg-[#FEF2D6]",
+    iconColor: "text-[#D97706]",
+    cardBg: "bg-white",
+    borderColor: "border-[#F8ECCB]",
+    photoPosition: "left",
+    desktopPositionClass: "left-1/2 bottom-[10px] -translate-x-1/2 w-[390px] xl:w-[410px] h-[98px]",
+    paddingClass: "pl-3 pr-5 py-3",
+    entranceDelay: 630,
+  },
+];
+
+const TEAM_CONNECTORS = {
+  engineering: {
+    x1: 520,
+    y1: 255,
+    x2: 425,
+    y2: 190,
+    dotX: 425,
+    dotY: 190,
+    defaultStroke: "#BFDBFE",
+    ringStroke: "#93C5FD",
+  },
+  product: {
+    x1: 660,
+    y1: 255,
+    x2: 755,
+    y2: 190,
+    dotX: 755,
+    dotY: 190,
+    defaultStroke: "#DDD6FE",
+    ringStroke: "#C4B5FD",
+  },
+  operations: {
+    x1: 500,
+    y1: 310,
+    x2: 375,
+    y2: 345,
+    dotX: 375,
+    dotY: 345,
+    defaultStroke: "#A7F3D0",
+    ringStroke: "#6EE7B7",
+  },
+  design: {
+    x1: 680,
+    y1: 310,
+    x2: 805,
+    y2: 345,
+    dotX: 805,
+    dotY: 345,
+    defaultStroke: "#FECDD3",
+    ringStroke: "#FDA4AF",
+  },
+  growth: {
+    x1: 590,
+    y1: 400,
+    x2: 590,
+    y2: 445,
+    dotX: 590,
+    dotY: 445,
+    defaultStroke: "#FDE68A",
+    ringStroke: "#FCD34D",
+  },
+};
 
 export default function ExploreTeamsSection() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [touchStart, setTouchStart] = useState({ x: 0, y: 0 });
-  const [touchEnd, setTouchEnd] = useState({ x: 0, y: 0 });
+  const sectionRef = useRef(null);
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [hoveredTeam, setHoveredTeam] = useState(null);
+  const [focusedTeam, setFocusedTeam] = useState(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [hasEntered, setHasEntered] = useState(false);
 
-  const teams = [
-    {
-      name: "Engineering",
-      description: "Build the technology that powers GharPadharo.",
-      bg: "bg-[#F4F8FD]",
-      border: "border-[#E2EEFB]",
-      hoverBorder: "hover:border-blue-300",
-      iconBg: "bg-[#E0EDFD]",
-      iconBorder: "border border-blue-200/60",
-      icon: (
-        <svg
-          className="w-6.5 h-6.5 sm:w-7 sm:h-7 text-blue-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M7 8l-4 4 4 4" />
-          <path d="M17 8l4 4-4 4" />
-          <path d="M14 4l-4 16" />
-        </svg>
-      ),
-      backgroundArt: (
-        <div className="absolute -bottom-4 -right-4 pointer-events-none select-none w-[124px] h-[124px] opacity-75" aria-hidden="true">
-          <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            <circle cx="85" cy="85" r="45" fill="#DBEAFE" fillOpacity="0.4" />
-            <rect x="35" y="45" width="80" height="70" rx="14" fill="#FFFFFF" fillOpacity="0.75" stroke="#BFDBFE" strokeWidth="1.5" strokeOpacity="0.6" />
-            <circle cx="50" cy="58" r="2.5" fill="#93C5FD" fillOpacity="0.7" />
-            <circle cx="58" cy="58" r="2.5" fill="#93C5FD" fillOpacity="0.7" />
-            <circle cx="66" cy="58" r="2.5" fill="#93C5FD" fillOpacity="0.7" />
-            <rect x="50" y="70" width="46" height="5" rx="2.5" fill="#60A5FA" fillOpacity="0.45" />
-            <rect x="50" y="81" width="34" height="5" rx="2.5" fill="#93C5FD" fillOpacity="0.5" />
-            <rect x="50" y="92" width="50" height="5" rx="2.5" fill="#BFDBFE" fillOpacity="0.6" />
-          </svg>
-        </div>
-      ),
-    },
-    {
-      name: "Product",
-      description: "Turn real problems into simple experiences.",
-      bg: "bg-[#F8F6FD]",
-      border: "border-[#ECE5FB]",
-      hoverBorder: "hover:border-purple-300",
-      iconBg: "bg-[#EAE4FC]",
-      iconBorder: "border border-purple-200/60",
-      icon: (
-        <svg
-          className="w-6.5 h-6.5 sm:w-7 sm:h-7 text-purple-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z" />
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
-          <line x1="12" y1="22.08" x2="12" y2="12" />
-        </svg>
-      ),
-      backgroundArt: (
-        <div className="absolute -bottom-4 -right-4 pointer-events-none select-none w-[124px] h-[124px] opacity-75" aria-hidden="true">
-          <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            <circle cx="85" cy="85" r="45" fill="#EDE9FE" fillOpacity="0.4" />
-            <rect x="50" y="38" width="70" height="55" rx="12" fill="#DDD6FE" fillOpacity="0.35" stroke="#C4B5FD" strokeWidth="1.2" strokeOpacity="0.5" />
-            <rect x="30" y="55" width="75" height="55" rx="12" fill="#FFFFFF" fillOpacity="0.75" stroke="#DDD6FE" strokeWidth="1.5" strokeOpacity="0.6" />
-            <circle cx="48" cy="72" r="6" fill="#8B5CF6" fillOpacity="0.45" />
-            <rect x="60" y="70" width="32" height="4" rx="2" fill="#C4B5FD" fillOpacity="0.6" />
-            <rect x="42" y="84" width="50" height="4" rx="2" fill="#DDD6FE" fillOpacity="0.7" />
-            <rect x="42" y="93" width="35" height="4" rx="2" fill="#EDE9FE" fillOpacity="0.8" />
-          </svg>
-        </div>
-      ),
-    },
-    {
-      name: "Design",
-      description: "Shape how people experience our platforms.",
-      bg: "bg-[#FDF4F6]",
-      border: "border-[#FCE3E8]",
-      hoverBorder: "hover:border-rose-300",
-      iconBg: "bg-[#FCE7ED]",
-      iconBorder: "border border-rose-200/60",
-      icon: (
-        <svg
-          className="w-6.5 h-6.5 sm:w-7 sm:h-7 text-[#E85D75]"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M12 19l7-7 3 3-7 7-3-3z" />
-          <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
-          <path d="M2 2l7.586 7.586" />
-          <circle cx="11" cy="11" r="2" />
-        </svg>
-      ),
-      backgroundArt: (
-        <div className="absolute -bottom-3 -right-3 pointer-events-none select-none w-[124px] h-[124px]" aria-hidden="true">
-          <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            <circle cx="82" cy="82" r="48" fill="#FCE7ED" fillOpacity="0.75" />
-            <rect
-              x="22"
-              y="48"
-              width="62"
-              height="62"
-              rx="18"
-              fill="#FFE4E6"
-              fillOpacity="0.55"
-              transform="rotate(-12 53 79)"
-            />
-            <rect
-              x="38"
-              y="34"
-              width="72"
-              height="76"
-              rx="16"
-              fill="#FFFFFF"
-              fillOpacity="0.92"
-              stroke="#FECDD3"
-              strokeWidth="1.5"
-            />
-            <g transform="translate(74, 68) rotate(-35)">
-              <rect x="-4.5" y="-24" width="9" height="18" rx="3" fill="#FDA4AF" fillOpacity="0.85" />
-              <line x1="0" y1="-22" x2="0" y2="-9" stroke="#FFFFFF" strokeWidth="1" strokeOpacity="0.6" strokeLinecap="round" />
-              <rect x="-5" y="-6" width="10" height="2.5" rx="1" fill="#E85D75" fillOpacity="0.85" />
-              <path
-                d="M-5 -3.5 C-5 3, -4 6, 0 14 C4 6, 5 3, 5 -3.5 Z"
-                fill="#E85D75"
-                fillOpacity="0.9"
-              />
-              <path
-                d="M0 -3.5 C0 3, 0 6, 0 14 C4 6, 5 3, 5 -3.5 Z"
-                fill="#D94665"
-                fillOpacity="0.6"
-              />
-              <circle cx="0" cy="3.5" r="1.3" fill="#FFFFFF" />
-              <line x1="0" y1="3.5" x2="0" y2="12" stroke="#FFFFFF" strokeWidth="1" strokeLinecap="round" />
-            </g>
-            <rect
-              x="92"
-              y="78"
-              width="16"
-              height="16"
-              rx="5"
-              fill="#FB7185"
-              fillOpacity="0.85"
-              stroke="#FFFFFF"
-              strokeWidth="1.5"
-            />
-            <rect
-              x="82"
-              y="96"
-              width="12"
-              height="12"
-              rx="4"
-              fill="#FDA4AF"
-              fillOpacity="0.75"
-              stroke="#FFFFFF"
-              strokeWidth="1.2"
-            />
-            <circle cx="106" cy="66" r="3.5" fill="#F43F5E" fillOpacity="0.5" stroke="#FFFFFF" strokeWidth="1" />
-          </svg>
-        </div>
-      ),
-    },
-    {
-      name: "Growth & Marketing",
-      description: "Help more people discover GharPadharo.",
-      bg: "bg-[#FDFAF3]",
-      border: "border-[#F4ECDC]",
-      hoverBorder: "hover:border-amber-300",
-      iconBg: "bg-[#FEF2D6]",
-      iconBorder: "border border-amber-200/40",
-      iconContainerClass: "w-11 h-11 sm:w-12 sm:h-12 rounded-2xl",
-      icon: (
-        <svg
-          className="w-5.5 h-5.5 sm:w-6 sm:h-6 text-[#DE9B35]"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <rect x="3.5" y="14" width="3.2" height="7" rx="1.2" />
-          <rect x="8.5" y="10.5" width="3.2" height="10.5" rx="1.2" />
-          <rect x="13.5" y="6.5" width="3.2" height="14.5" rx="1.2" />
-          <path
-            d="M3.5 11.5L8.5 7.5L13 9.5L19.5 3.5"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <path
-            d="M15 3.5H19.5V8"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      ),
-      backgroundArt: (
-        <div className="absolute bottom-1 right-1 pointer-events-none select-none w-[136px] h-[136px] sm:w-[144px] sm:h-[144px]" aria-hidden="true">
-          <svg viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            <defs>
-              <linearGradient id="gmBar1Grad" x1="0" y1="0" x2="0.6" y2="1">
-                <stop offset="0%" stopColor="#FFFDF7" />
-                <stop offset="100%" stopColor="#FCEFC8" />
-              </linearGradient>
-              <linearGradient id="gmBar2Grad" x1="0" y1="0" x2="0.6" y2="1">
-                <stop offset="0%" stopColor="#FEED96" />
-                <stop offset="100%" stopColor="#FABE2F" />
-              </linearGradient>
-              <linearGradient id="gmBar3Grad" x1="0" y1="0" x2="0.6" y2="1">
-                <stop offset="0%" stopColor="#FDD24D" />
-                <stop offset="100%" stopColor="#E69620" />
-              </linearGradient>
-            </defs>
-            <circle cx="106" cy="116" r="46" fill="#FEF2D6" fillOpacity="0.55" />
-            <circle cx="74" cy="122" r="28" fill="#FFF8E7" fillOpacity="0.7" />
-            <rect x="74" y="106" width="13" height="34" rx="5.5" fill="url(#gmBar1Grad)" />
-            <rect x="92" y="84" width="13" height="56" rx="5.5" fill="url(#gmBar2Grad)" />
-            <rect x="110" y="62" width="13" height="78" rx="5.5" fill="url(#gmBar3Grad)" />
-            <path
-              d="M48 114 C72 110, 98 90, 124 56"
-              stroke="#E89F2A"
-              strokeWidth="2.8"
-              strokeLinecap="round"
-            />
-            <polygon
-              points="134,46 119,51 129,61"
-              fill="#E89F2A"
-            />
-          </svg>
-        </div>
-      ),
-    },
-    {
-      name: "Operations",
-      description: "Make things happen behind the scenes.",
-      bg: "bg-[#F3FAF6]",
-      border: "border-[#DCF2E5]",
-      hoverBorder: "hover:border-emerald-300",
-      iconBg: "bg-[#DBF3E5]",
-      iconBorder: "border border-emerald-200/60",
-      icon: (
-        <svg
-          className="w-6.5 h-6.5 sm:w-7 sm:h-7 text-emerald-600"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z" />
-        </svg>
-      ),
-      backgroundArt: (
-        <div className="absolute -bottom-4 -right-4 pointer-events-none select-none w-[124px] h-[124px] opacity-75" aria-hidden="true">
-          <svg viewBox="0 0 140 140" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-            <circle cx="85" cy="85" r="45" fill="#D1FAE5" fillOpacity="0.4" />
-            <rect x="42" y="42" width="72" height="75" rx="14" fill="#FFFFFF" fillOpacity="0.75" stroke="#A7F3D0" strokeWidth="1.5" strokeOpacity="0.6" />
-            <circle cx="58" cy="60" r="8" fill="#10B981" fillOpacity="0.6" />
-            <path d="M54.5 60L57 62.5L61.5 57.5" stroke="#FFFFFF" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
-            <rect x="71" y="58" width="30" height="4" rx="2" fill="#6EE7B7" fillOpacity="0.6" />
-            <rect x="52" y="74" width="48" height="4" rx="2" fill="#A7F3D0" fillOpacity="0.6" />
-            <rect x="52" y="85" width="38" height="4" rx="2" fill="#D1FAE5" fillOpacity="0.7" />
-          </svg>
-        </div>
-      ),
-    },
-  ];
+  // Entrance observer respecting prefers-reduced-motion
+  useEffect(() => {
+    if (typeof window === "undefined") return;
 
-  const canPrev = currentIndex > 0;
-  const canNext = currentIndex < teams.length - 1;
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mediaQuery.matches) {
+      const raf = requestAnimationFrame(() => {
+        setIsVisible(true);
+        setHasEntered(true);
+      });
+      return () => cancelAnimationFrame(raf);
+    }
 
-  const handlePrev = () => {
-    if (canPrev) setCurrentIndex((prev) => prev - 1);
+    if (!("IntersectionObserver" in window)) {
+      const raf = requestAnimationFrame(() => {
+        setIsVisible(true);
+        setHasEntered(true);
+      });
+      return () => cancelAnimationFrame(raf);
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          const timer = setTimeout(() => {
+            setHasEntered(true);
+          }, 950);
+          observer.disconnect();
+          return () => clearTimeout(timer);
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Compute active team id
+  const activeTeamId = hoveredTeam || focusedTeam || selectedTeam || null;
+  const hasActive = activeTeamId !== null;
+
+  // Toggle selection on click or keyboard
+  const handleSelectTeam = (teamId) => {
+    setSelectedTeam((prev) => (prev === teamId ? null : teamId));
   };
 
-  const handleNext = () => {
-    if (canNext) setCurrentIndex((prev) => prev + 1);
-  };
-
-  const handleDot = (idx) => {
-    setCurrentIndex(idx);
-  };
-
-  const minSwipeDistance = 40;
-
-  const onTouchStart = (e) => {
-    setTouchEnd({ x: 0, y: 0 });
-    setTouchStart({
-      x: e.targetTouches[0].clientX,
-      y: e.targetTouches[0].clientY,
-    });
-  };
-
-  const onTouchMove = (e) => {
-    setTouchEnd({
-      x: e.targetTouches[0].clientX,
-      y: e.targetTouches[0].clientY,
-    });
-  };
-
-  const onTouchEnd = () => {
-    if (!touchStart.x || !touchEnd.x) return;
-    const diffX = touchStart.x - touchEnd.x;
-    const diffY = touchStart.y - touchEnd.y;
-    if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDistance) {
-      if (diffX > 0 && canNext) {
-        handleNext();
-      } else if (diffX < 0 && canPrev) {
-        handlePrev();
-      }
+  const handleKeyDown = (e, teamId) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleSelectTeam(teamId);
     }
   };
 
+  // Safe transform generator preserving Growth center translate
+  const getCardTransform = (teamId, isActive) => {
+    const isCentered = teamId === "growth";
+    if (!hasEntered) {
+      if (!isVisible) {
+        return isCentered
+          ? "translateX(-50%) translateY(16px)"
+          : "translateY(16px)";
+      }
+      return isCentered
+        ? "translateX(-50%) translateY(0)"
+        : "translateY(0)";
+    }
+    if (isCentered) {
+      return isActive
+        ? "translateX(-50%) translateY(-4px)"
+        : "translateX(-50%) translateY(0)";
+    }
+    return isActive ? "translateY(-4px)" : "translateY(0)";
+  };
+
   return (
-    <section className="w-full py-12 sm:py-16 lg:py-24 bg-white border-b border-slate-200/60 overflow-hidden">
-      <div className="container-custom max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="max-w-3xl mb-7 sm:mb-9 lg:mb-14 text-left">
-          <span className="text-xs sm:text-[13px] font-bold text-primary tracking-widest uppercase block mb-2 sm:mb-2.5">
+    <section
+      ref={sectionRef}
+      className="w-full py-16 sm:py-20 lg:py-24 bg-white border-b border-slate-200/60 relative overflow-hidden"
+    >
+      {/* Component-scoped CSS for orbits, breathing animation & reduced motion */}
+      <style>{`
+        .orbital-card {
+          border-width: 1.5px;
+          border-radius: 24px;
+          box-shadow: 0 6px 22px rgba(89, 41, 214, 0.05);
+          transition:
+            border-color 300ms cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1),
+            transform 300ms cubic-bezier(0.4, 0, 0.2, 1),
+            opacity 300ms cubic-bezier(0.4, 0, 0.2, 1),
+            filter 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Slow continuous orbital rotation */
+        @keyframes orbitSpin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        .orbital-spin {
+          transform-origin: 590px 310px;
+          animation: orbitSpin 80s linear infinite;
+        }
+
+        /* Central One Mission breathing animation */
+        @keyframes missionHubBreathe {
+          0%, 100% {
+            transform: translate(-50%, -50%) scale(1);
+            box-shadow:
+              0 16px 40px -8px rgba(89, 41, 214, 0.44),
+              0 0 28px rgba(113, 59, 255, 0.24);
+          }
+          50% {
+            transform: translate(-50%, -50%) scale(1.025);
+            box-shadow:
+              0 22px 50px -6px rgba(89, 41, 214, 0.58),
+              0 0 38px rgba(113, 59, 255, 0.38);
+          }
+        }
+
+        .mission-hub-breathe {
+          animation: missionHubBreathe 4.6s ease-in-out infinite;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .orbital-spin,
+          .mission-hub-breathe {
+            animation: none !important;
+          }
+          .orbital-card,
+          .orbital-card-photo,
+          .orbital-card-icon {
+            transition: none !important;
+            transform: none !important;
+          }
+        }
+      `}</style>
+
+      {/* Soft background ambient gradient shapes */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[720px] h-[720px] bg-purple-100/35 rounded-full blur-3xl pointer-events-none z-0"
+        aria-hidden="true"
+      />
+
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        {/* Section Header (Centered with subtle entrance) */}
+        <div
+          className={`max-w-3xl mx-auto mb-10 sm:mb-14 lg:mb-16 text-center transition-all duration-700 ease-out ${
+            isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+          }`}
+        >
+          <SectionBadge className="mb-3.5">
             EXPLORE OUR TEAMS
-          </span>
-          <h2 className="text-2xl sm:text-3xl lg:text-[42px] font-extrabold text-heading tracking-tight leading-[1.15]">
-            Different skills.
-            <br />
-            Same mission.
+          </SectionBadge>
+          <h2 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-extrabold text-[#11152F] tracking-tight leading-[1.12]">
+            Different <span className="text-[#5929D6]">skills.</span> Same{" "}
+            <span className="text-[#5929D6]">mission.</span>
           </h2>
-          <p className="text-sm sm:text-base lg:text-lg text-body mt-2 sm:mt-3 font-normal leading-relaxed max-w-2xl">
-            From product and engineering to growth and operations, every team at GharPadharo plays a part in making finding a place simpler.
+          <p className="text-sm sm:text-base lg:text-[16.5px] text-[#64748B] mt-3 sm:mt-4 font-normal leading-relaxed max-w-2xl mx-auto">
+            From product and engineering to growth and operations, every team at
+            GharPadharo plays a part in making finding a place simpler.
           </p>
         </div>
 
-        {/* 1. Desktop Layout: 5 Editorial Team Cards in 1 Row (lg and above) */}
-        <div className="hidden lg:grid lg:grid-cols-5 gap-4 sm:gap-4.5 xl:gap-5">
-          {teams.map((t, idx) => (
-            <div
-              key={idx}
-              className={`group relative rounded-2xl sm:rounded-3xl border ${t.border} ${t.hoverBorder} ${t.bg} ${
-                t.cardClass || "p-6 sm:p-7 xl:p-7.5"
-              } shadow-2xs hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-start min-h-[270px] sm:min-h-[290px] lg:min-h-[310px] overflow-hidden`}
-            >
-              {/* Subtle Abstract Background Decoration */}
-              {t.backgroundArt}
-
-              {/* Card Foreground Content */}
-              <div className="relative z-10">
-                {/* Icon Container */}
-                <div
-                  className={`${
-                    t.iconContainerClass || "w-14 h-14 sm:w-16 sm:h-16 rounded-2xl"
-                  } ${t.iconBg} ${t.iconBorder} flex items-center justify-center shrink-0 shadow-2xs group-hover:scale-105 transition-transform duration-300`}
-                >
-                  {t.icon}
-                </div>
-
-                {/* Team Name */}
-                <h3
-                  className={
-                    t.titleClass ||
-                    "text-lg sm:text-xl font-bold text-heading tracking-tight mt-6 sm:mt-7"
-                  }
-                >
-                  {t.name}
-                </h3>
-
-                {/* Description */}
-                <p
-                  className={
-                    t.descClass ||
-                    "text-sm sm:text-[15px] text-body font-normal leading-relaxed mt-2 sm:mt-2.5"
-                  }
-                >
-                  {t.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* 2. Mobile & Tablet Carousel Viewport (< lg) */}
-        <div
-          className="lg:hidden w-full"
-          role="region"
-          aria-roledescription="carousel"
-          aria-label="Explore Our Teams"
-        >
-          {/* Slider Container with Touch Support */}
-          <div
-            className="overflow-hidden w-full"
-            onTouchStart={onTouchStart}
-            onTouchMove={onTouchMove}
-            onTouchEnd={onTouchEnd}
+        {/* ============================================================
+            1. DESKTOP VIEW (>= 1024px): Orbital Team Infographic
+           ============================================================ */}
+        <div className="hidden lg:block relative w-full h-[580px] xl:h-[610px] max-w-[1180px] mx-auto select-none">
+          {/* Orbital SVG Tracks & Connecting Nodes */}
+          <svg
+            className="absolute inset-0 w-full h-full pointer-events-none z-0"
+            viewBox="0 0 1180 600"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
           >
-            <div
-              className="flex transition-transform duration-350 ease-out"
-              style={{
-                transform: `translateX(-${currentIndex * 100}%)`,
-              }}
+            {/* Center = (590, 310) */}
+
+            {/* Rotating Layer: Concentric dashed circular orbits & aesthetic satellite dots */}
+            <g className="orbital-spin" style={{ transformOrigin: "590px 310px" }}>
+              {/* Inner concentric dotted orbit (radius 135) */}
+              <circle
+                cx="590"
+                cy="310"
+                r="135"
+                stroke="#D8CCFE"
+                strokeWidth="1.5"
+                strokeDasharray="4 5"
+                opacity="0.85"
+              />
+
+              {/* Mid concentric dotted orbit (radius 265) */}
+              <circle
+                cx="590"
+                cy="310"
+                r="265"
+                stroke="#E4DCFF"
+                strokeWidth="1.4"
+                strokeDasharray="5 6"
+                opacity="0.9"
+              />
+
+              {/* Outer subtle orbital ring (radius 400) */}
+              <circle
+                cx="590"
+                cy="310"
+                r="400"
+                stroke="#EFEBFF"
+                strokeWidth="1.2"
+                strokeDasharray="6 7"
+                opacity="0.75"
+              />
+
+              {/* Orbiting satellite dots along circular tracks */}
+              <circle cx="590" cy="175" r="4.5" fill="#8B5CF6" />
+              <circle cx="325" cy="310" r="4" fill="#A78BFA" opacity="0.85" />
+              <circle cx="855" cy="310" r="4" fill="#C4B5FD" opacity="0.85" />
+              <circle cx="590" cy="445" r="3.5" fill="#93C5FD" opacity="0.75" />
+            </g>
+
+            {/* Static & Interactive Layer: Connecting Lines and Nodes */}
+            <g
+              className={`transition-opacity duration-700 ${
+                isVisible ? "opacity-100" : "opacity-0"
+              }`}
+              style={{ transitionDelay: "260ms" }}
             >
-              {teams.map((t, idx) => (
-                <div
-                  key={idx}
-                  className="w-full shrink-0 flex justify-center px-0.5"
-                  role="group"
-                  aria-roledescription="slide"
-                  aria-label={`${t.name} (Team ${idx + 1} of ${teams.length})`}
-                >
-                  <div
-                    className={`relative w-full max-w-md rounded-2xl sm:rounded-3xl border ${t.border} ${t.bg} ${
-                      t.cardClass || "p-6 sm:p-7"
-                    } shadow-2xs flex flex-col justify-start min-h-[265px] sm:min-h-[290px] overflow-hidden`}
-                  >
-                    {/* Subtle Abstract Background Decoration */}
-                    {t.backgroundArt}
+              {Object.entries(TEAM_CONNECTORS).map(([id, conn]) => {
+                const team = TEAMS.find((t) => t.id === id);
+                const isConnActive = activeTeamId === id;
+                const isConnSubdued = hasActive && !isConnActive;
 
-                    {/* Card Foreground Content */}
-                    <div className="relative z-10">
-                      {/* Icon Container */}
-                      <div
-                        className={`${
-                          t.iconContainerClass || "w-14 h-14 sm:w-16 sm:h-16 rounded-2xl"
-                        } ${t.iconBg} ${t.iconBorder} flex items-center justify-center shrink-0 shadow-2xs`}
-                      >
-                        {t.icon}
-                      </div>
-
-                      {/* Team Name */}
-                      <h3
-                        className={
-                          t.titleClass ||
-                          "text-lg sm:text-xl font-bold text-heading tracking-tight mt-5 sm:mt-6"
-                        }
-                      >
-                        {t.name}
-                      </h3>
-
-                      {/* Description */}
-                      <p
-                        className={
-                          t.descClass ||
-                          "text-sm sm:text-[15px] text-body font-normal leading-relaxed mt-2 max-w-[260px] sm:max-w-none"
-                        }
-                      >
-                        {t.description}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Carousel Pagination Dots & Navigation Buttons */}
-          <div className="mt-5 sm:mt-6 flex flex-col items-center gap-3.5">
-            {/* Pagination Dots for all 5 departments */}
-            <div
-              className="flex items-center gap-2"
-              role="tablist"
-              aria-label="Department slides"
-            >
-              {teams.map((t, idx) => {
-                const isActive = currentIndex === idx;
                 return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => handleDot(idx)}
-                    aria-label={`Go to ${t.name} department`}
-                    aria-selected={isActive}
-                    role="tab"
-                    className={`h-2.5 rounded-full transition-all duration-300 ${
-                      isActive
-                        ? "w-6 bg-primary"
-                        : "w-2.5 bg-purple-200/50 hover:bg-purple-200"
-                    }`}
-                  />
+                  <g key={id} className="transition-all duration-300">
+                    {/* Radial Connector Line */}
+                    <line
+                      x1={conn.x1}
+                      y1={conn.y1}
+                      x2={conn.x2}
+                      y2={conn.y2}
+                      stroke={isConnActive ? team.accentColor : conn.defaultStroke}
+                      strokeWidth={isConnActive ? 2.5 : 1.5}
+                      strokeDasharray={isConnActive ? "none" : "3 4"}
+                      strokeOpacity={isConnSubdued ? 0.25 : isConnActive ? 1 : 0.85}
+                      className="transition-all duration-300"
+                    />
+
+                    {/* Outer Connection Pulse Ring */}
+                    <circle
+                      cx={conn.dotX}
+                      cy={conn.dotY}
+                      r={isConnActive ? 12 : 9}
+                      stroke={isConnActive ? team.accentColor : conn.ringStroke}
+                      strokeWidth={isConnActive ? 2 : 1.5}
+                      opacity={isConnSubdued ? 0.25 : isConnActive ? 0.95 : 0.6}
+                      fill={isConnActive ? `${team.accentColor}20` : "none"}
+                      className="transition-all duration-300"
+                    />
+
+                    {/* Center Connection Dot */}
+                    <circle
+                      cx={conn.dotX}
+                      cy={conn.dotY}
+                      r={isConnActive ? 6.5 : 5.5}
+                      fill={team.accentColor}
+                      opacity={isConnSubdued ? 0.35 : 1}
+                      className="transition-all duration-300"
+                    />
+                  </g>
                 );
               })}
-            </div>
+            </g>
+          </svg>
 
-            {/* Previous and Next Circular Buttons */}
-            <div className="flex items-center gap-3">
-              {/* Previous Button */}
-              <button
-                type="button"
-                onClick={handlePrev}
-                disabled={!canPrev}
-                aria-label="Previous department"
-                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                  canPrev
-                    ? "bg-white border-slate-200 text-primary hover:border-slate-300 hover:bg-slate-50 shadow-2xs active:scale-95 cursor-pointer"
-                    : "bg-white/60 border-slate-100 text-slate-300 cursor-not-allowed opacity-40 pointer-events-none"
+          {/* ============================================================
+              CENTRAL MISSION HUB
+             ============================================================ */}
+          <div
+            className={`absolute left-1/2 top-[310px] w-44 h-44 rounded-full bg-gradient-to-br from-[#6835F9] via-[#5929D6] to-[#451AB8] text-white flex flex-col items-center justify-center text-center p-4 z-20 border-[3px] border-white/40 mission-hub-breathe transition-opacity duration-700 ${
+              isVisible ? "opacity-100" : "opacity-0"
+            }`}
+            style={{ transitionDelay: "150ms" }}
+            role="region"
+            aria-label="One Mission"
+          >
+            <div
+              className="w-9 h-9 rounded-full bg-white/18 flex items-center justify-center shrink-0 mb-1.5"
+              aria-hidden="true"
+            >
+              <Flag className="w-5 h-5 text-white stroke-[2.2]" />
+            </div>
+            <h3 className="text-[19px] font-extrabold text-white tracking-tight leading-tight">
+              One Mission
+            </h3>
+            <p className="text-[12px] text-white/85 font-normal leading-tight mt-1 max-w-[120px]">
+              Making finding a place simpler.
+            </p>
+          </div>
+
+          {/* ============================================================
+              FIVE FLOATING TEAM CARDS (Desktop Orbit)
+             ============================================================ */}
+          {TEAMS.map((t) => {
+            const Icon = t.Icon;
+            const isSelected = selectedTeam === t.id;
+            const isHovered = hoveredTeam === t.id || focusedTeam === t.id;
+            const isActive = isSelected || isHovered;
+            const isSubdued = hasActive && !isActive;
+
+            return (
+              <article
+                key={t.id}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
+                aria-label={`${t.name} team. ${
+                  isSelected ? "Selected." : "Click to select."
+                } ${t.description}`}
+                onClick={() => handleSelectTeam(t.id)}
+                onKeyDown={(e) => handleKeyDown(e, t.id)}
+                onMouseEnter={() => setHoveredTeam(t.id)}
+                onMouseLeave={() => setHoveredTeam(null)}
+                onFocus={() => setFocusedTeam(t.id)}
+                onBlur={() => setFocusedTeam(null)}
+                style={{
+                  borderColor: isActive ? t.accentColor : undefined,
+                  boxShadow: isActive
+                    ? `0 16px 36px -6px ${t.glowColor}, 0 0 20px ${t.glowColor}`
+                    : undefined,
+                  transform: getCardTransform(t.id, isActive),
+                  transitionDelay: !hasEntered && isVisible ? `${t.entranceDelay}ms` : "0ms",
+                }}
+                className={`orbital-card absolute ${t.desktopPositionClass} bg-white flex items-center justify-between ${
+                  t.paddingClass
+                } z-10 cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2 transition-all duration-300 ${
+                  isSubdued ? "opacity-65 grayscale-[15%]" : "opacity-100"
+                } ${
+                  !hasEntered
+                    ? isVisible
+                      ? "opacity-100"
+                      : "opacity-0 pointer-events-none"
+                    : ""
                 }`}
               >
-                <svg
-                  className="w-4 h-4 sm:w-4.5 sm:h-4.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
-                >
-                  <path d="M19 12H5M12 19l-7-7 7-7" />
-                </svg>
-              </button>
+                {/* Photo on left when photoPosition === "left" */}
+                {t.photoPosition === "left" && (
+                  <div
+                    className={`orbital-card-photo relative w-[76px] h-[76px] aspect-square rounded-full overflow-hidden shrink-0 shadow-sm bg-slate-100 transition-all duration-300 -ml-6 ${
+                      isActive
+                        ? "ring-[4px] scale-105 ring-offset-2 ring-offset-white"
+                        : "ring-[3px]"
+                    } ${t.ringColor}`}
+                  >
+                    <Image
+                      src={t.image}
+                      alt={t.imageAlt}
+                      fill
+                      className="object-cover"
+                      sizes="80px"
+                    />
+                  </div>
+                )}
 
-              {/* Next Button */}
-              <button
-                type="button"
-                onClick={handleNext}
-                disabled={!canNext}
-                aria-label="Next department"
-                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary/40 ${
-                  canNext
-                    ? "bg-[#ECEEFA] text-primary hover:bg-[#DFE2F7] shadow-2xs active:scale-95 cursor-pointer"
-                    : "bg-purple-50 text-purple-300 cursor-not-allowed opacity-40 pointer-events-none"
-                }`}
-              >
-                <svg
-                  className="w-4 h-4 sm:w-4.5 sm:h-4.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth="2.2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  aria-hidden="true"
+                {/* Team Information & Category Icon */}
+                <div
+                  className={`flex items-center gap-3 min-w-0 ${
+                    t.photoPosition === "left" ? "pl-2 flex-1" : "pr-2"
+                  }`}
                 >
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-              </button>
-            </div>
+                  <div
+                    className={`orbital-card-icon w-11 h-11 rounded-[14px] ${
+                      t.iconBg
+                    } flex items-center justify-center shrink-0 shadow-2xs transition-all duration-300 ${
+                      isActive ? "scale-110" : "scale-100"
+                    }`}
+                    aria-hidden="true"
+                  >
+                    <Icon className={`w-5 h-5 ${t.iconColor}`} strokeWidth={2} />
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="text-[16px] font-extrabold text-[#11152F] tracking-tight leading-snug">
+                      {t.name}
+                    </h4>
+                    <p className="text-[12px] text-[#64748B] leading-[1.4] font-normal mt-0.5 line-clamp-2">
+                      {t.description}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Photo on right when photoPosition === "right" */}
+                {t.photoPosition === "right" && (
+                  <div
+                    className={`orbital-card-photo relative w-[76px] h-[76px] aspect-square rounded-full overflow-hidden shrink-0 shadow-sm bg-slate-100 transition-all duration-300 -mr-6 ${
+                      isActive
+                        ? "ring-[4px] scale-105 ring-offset-2 ring-offset-white"
+                        : "ring-[3px]"
+                    } ${t.ringColor}`}
+                  >
+                    <Image
+                      src={t.image}
+                      alt={t.imageAlt}
+                      fill
+                      className="object-cover"
+                      sizes="80px"
+                    />
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </div>
+
+        {/* ============================================================
+            2. TABLET & MOBILE VIEW (< 1024px): Stacked Team Cards
+           ============================================================ */}
+        <div className="lg:hidden w-full max-w-xl mx-auto">
+          {/* 5 Stacked Team Cards */}
+          <div className="flex flex-col gap-3.5 sm:gap-4 w-full">
+            {TEAMS.map((t) => {
+              const Icon = t.Icon;
+              const isSelected = selectedTeam === t.id;
+              const isHovered = hoveredTeam === t.id || focusedTeam === t.id;
+              const isActive = isSelected || isHovered;
+              const isSubdued = hasActive && !isActive;
+
+              return (
+                <article
+                  key={t.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
+                  aria-label={`${t.name} team. ${
+                    isSelected ? "Selected." : "Click to select."
+                  } ${t.description}`}
+                  onClick={() => handleSelectTeam(t.id)}
+                  onKeyDown={(e) => handleKeyDown(e, t.id)}
+                  onMouseEnter={() => setHoveredTeam(t.id)}
+                  onMouseLeave={() => setHoveredTeam(null)}
+                  onFocus={() => setFocusedTeam(t.id)}
+                  onBlur={() => setFocusedTeam(null)}
+                  style={{
+                    borderColor: isActive ? t.accentColor : undefined,
+                    boxShadow: isActive
+                      ? `0 12px 30px -6px ${t.glowColor}, 0 0 16px ${t.glowColor}`
+                      : undefined,
+                    transform: isActive ? "translateY(-3px)" : undefined,
+                  }}
+                  className={`orbital-card cursor-pointer w-full ${t.cardBg} ${
+                    t.borderColor
+                  } rounded-[22px] p-3.5 sm:p-4 flex items-center gap-3.5 sm:gap-4 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2 select-none ${
+                    isSubdued ? "opacity-65 grayscale-[15%]" : "opacity-100"
+                  }`}
+                >
+                  {/* Circular Team Photo */}
+                  <div
+                    className={`orbital-card-photo relative w-16 h-16 sm:w-18 sm:h-18 aspect-square rounded-full overflow-hidden shrink-0 ring-[3px] ${
+                      t.ringColor
+                    } shadow-sm bg-slate-100 transition-all duration-300 ${
+                      isActive ? "scale-105 ring-[4px] ring-offset-2 ring-offset-white" : ""
+                    }`}
+                  >
+                    <Image
+                      src={t.image}
+                      alt={t.imageAlt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 70px, 80px"
+                    />
+                  </div>
+
+                  {/* Category Icon */}
+                  <div
+                    className={`orbital-card-icon w-10 h-10 sm:w-11 sm:h-11 rounded-[13px] ${
+                      t.iconBg
+                    } flex items-center justify-center shrink-0 shadow-2xs transition-all duration-300 ${
+                      isActive ? "scale-110" : "scale-100"
+                    }`}
+                    aria-hidden="true"
+                  >
+                    <Icon className={`w-5 h-5 ${t.iconColor}`} strokeWidth={2} />
+                  </div>
+
+                  {/* Team Details */}
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-[15px] sm:text-[16px] font-extrabold text-[#11152F] tracking-tight leading-snug">
+                      {t.name}
+                    </h4>
+                    <p className="text-xs sm:text-[13px] text-[#64748B] leading-relaxed mt-0.5">
+                      {t.description}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </div>

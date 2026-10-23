@@ -25,7 +25,7 @@ export default function AdminActivityPage() {
       <div className="flex items-center justify-between">
         <Link
           href="/admin/dashboard"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-primary transition-colors py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded-lg"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-body hover:text-primary transition-colors py-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 rounded-lg"
         >
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />

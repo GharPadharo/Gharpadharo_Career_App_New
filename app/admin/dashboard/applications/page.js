@@ -4,6 +4,7 @@ import Job from "@/models/Job";
 import { serializeApplication } from "@/lib/applicationSerializer";
 import { serializeJob } from "@/lib/jobSerializer";
 import AdminApplicationsTable from "@/components/admin/AdminApplicationsTable";
+import DownloadSpreadsheetButton from "@/components/admin/DownloadSpreadsheetButton";
 
 export const dynamic = "force-dynamic";
 
@@ -41,17 +42,22 @@ export default async function AdminApplicationsPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2.5">
-            <span className="text-xs font-bold text-primary tracking-widest uppercase inline-block">
+            <span className="admin-eyebrow">
               APPLICATIONS
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight leading-tight">
+          <h1 className="admin-page-title">
             Applications
           </h1>
-          <p className="text-sm text-muted font-normal max-w-2xl mt-1 leading-relaxed">
+          <p className="admin-subtitle max-w-2xl mt-1">
             Review candidate applications submitted for GharPadharo positions.
           </p>
+        </div>
+
+        {/* Action: Download Applications Spreadsheet */}
+        <div className="w-full sm:w-auto shrink-0">
+          <DownloadSpreadsheetButton />
         </div>
       </div>
 

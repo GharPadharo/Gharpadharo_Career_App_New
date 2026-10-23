@@ -1,224 +1,274 @@
-export default function WhatYouCanExpectSection() {
-  const benefits = [
-    {
-      title: "Supportive Team",
-      description:
-        "Work in a collaborative and inclusive environment where your ideas are valued.",
-      badgeBg: "bg-[#F3E8FF]",
-      iconColor: "text-purple-600",
-      renderIcon: (cls) => (
-        <svg
-          className={cls}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M22 21v-2a4 4 0 00-3-3.87" />
-          <path d="M16 3.13a4 4 0 010 7.75" />
-        </svg>
-      ),
-    },
-    {
-      title: "Learning & Growth",
-      description:
-        "Access to resources, mentorship and real opportunities to build new skills.",
-      badgeBg: "bg-[#FEF3C7]",
-      iconColor: "text-amber-500",
-      renderIcon: (cls) => (
-        <svg
-          className={cls}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z" />
-          <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z" />
-        </svg>
-      ),
-    },
-    {
-      title: "Well-being & Flexibility",
-      description:
-        "A healthy work-life balance with flexible work options and wellness support.",
-      badgeBg: "bg-[#FFE4E6]",
-      iconColor: "text-rose-500",
-      renderIcon: (cls) => (
-        <svg
-          className={cls}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M19.5 12.572l-7.5 7.428l-7.5-7.428a5 5 0 117.5-6.566 5 5 0 117.5 6.572" />
-          <path d="M3 12h3.5l2-3.5 3 7 2-4.5 1.5 1h5" />
-        </svg>
-      ),
-    },
-    {
-      title: "Recognition & Transparency",
-      description:
-        "Your contributions are appreciated and we keep communication open.",
-      badgeBg: "bg-[#EFF6FF]",
-      iconColor: "text-blue-500",
-      renderIcon: (cls) => (
-        <svg
-          className={cls}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-        </svg>
-      ),
-    },
-    {
-      title: "Meaningful Impact",
-      description:
-        "Work on real problems that create value for communities and make a difference.",
-      badgeBg: "bg-[#ECFDF5]",
-      iconColor: "text-emerald-500",
-      renderIcon: (cls) => (
-        <svg
-          className={cls}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M11 20A7 7 0 014 13C4 7 11 3 20 3c0 9-4 16-9 17z" />
-          <path d="M11 20C11 14 15 8 20 3" />
-        </svg>
-      ),
-    },
-    {
-      title: "Time Off & Benefits",
-      description:
-        "Generous leave policy and additional benefits to support you and your goals.",
-      badgeBg: "bg-[#FFF7ED]",
-      iconColor: "text-orange-500",
-      renderIcon: (cls) => (
-        <svg
-          className={cls}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          aria-hidden="true"
-        >
-          <path d="M21 12V6a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2h7" />
-          <path d="M16 2v4M8 2v4M3 10h18" />
-          <circle cx="17.5" cy="17.5" r="3.5" />
-          <path d="M17.5 16v1.5l1 1" />
-        </svg>
-      ),
-    },
-  ];
+import {
+  UsersRound,
+  BookOpen,
+  HeartPulse,
+  Star,
+  Leaf,
+  CalendarClock,
+} from "lucide-react";
+import SectionBadge from "@/components/common/SectionBadge";
+import ScrollReveal from "@/components/common/ScrollReveal";
 
+const BENEFITS = [
+  {
+    title: "Supportive Team",
+    description:
+      "Work in a collaborative and inclusive environment where your ideas are valued.",
+    hoverMessage:
+      "Share ideas, challenge assumptions, and build better solutions together.",
+    Icon: UsersRound,
+  },
+  {
+    title: "Learning & Growth",
+    description:
+      "Access to resources, mentorship and real opportunities to build new skills.",
+    hoverMessage:
+      "Use feedback and experimentation to keep getting better.",
+    Icon: BookOpen,
+  },
+  {
+    title: "Well-being & Flexibility",
+    description:
+      "A healthy work-life balance with flexible work options and wellness support.",
+    hoverMessage:
+      "A healthy work-life balance with flexible work options and wellness support.",
+    Icon: HeartPulse,
+  },
+  {
+    title: "Recognition & Transparency",
+    description:
+      "Your contributions are appreciated and we keep communication open.",
+    hoverMessage:
+      "Make every interaction clearer, faster, and easier.",
+    Icon: Star,
+  },
+  {
+    title: "Meaningful Impact",
+    description:
+      "Work on real problems that create value for communities and make a difference.",
+    hoverMessage:
+      "Understand people’s needs before building the solution.",
+    Icon: Leaf,
+  },
+  {
+    title: "Time Off & Benefits",
+    description:
+      "Generous leave policy and additional benefits to support you and your goals.",
+    hoverMessage:
+      "Generous leave policy and additional benefits to support you and your goals.",
+    Icon: CalendarClock,
+  },
+];
+
+export default function WhatYouCanExpectSection() {
   return (
     <section
       id="what-we-offer"
-      className="w-full py-14 sm:py-18 lg:py-24 bg-white border-b border-slate-200/60 overflow-hidden"
+      className="w-full py-16 sm:py-20 lg:py-24 bg-white border-b border-slate-200/60 relative overflow-hidden"
     >
-      <div className="container-custom max-w-[1240px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-12 xl:gap-14 items-center">
-          {/* Left Column: Heading & Narrative (4 cols ~33-35% on Desktop) */}
-          <div className="lg:col-span-4 space-y-3 sm:space-y-3.5 text-left">
-            <span className="text-xs sm:text-[13px] font-bold text-primary tracking-widest uppercase block mb-1.5 sm:mb-2">
-              WHAT WE OFFER
-            </span>
+      {/* Component-scoped styles for card hover state, content swap animation, and reduced motion */}
+      <style>{`
+        .benefit-card {
+          transition:
+            background 280ms cubic-bezier(0.4, 0, 0.2, 1),
+            border-color 280ms cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-            <h2 className="text-2xl sm:text-3xl lg:text-[40px] xl:text-[42px] font-extrabold text-heading tracking-tight leading-[1.18]">
-              People, benefits
-              <br />
-              and support to
-              <br className="hidden sm:inline" />
-              {" "}do your best work.
-            </h2>
+        .benefit-icon-container {
+          transition:
+            background-color 280ms cubic-bezier(0.4, 0, 0.2, 1),
+            box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-            <p className="text-sm sm:text-base lg:text-[17px] text-body font-normal leading-relaxed pt-1 max-w-sm">
-              We&apos;re committed to creating an environment where you can
-              grow, stay healthy and build a meaningful career with us.
-            </p>
+        @media (hover: hover) {
+          .benefit-card:hover,
+          .benefit-card:focus-visible,
+          .benefit-card:focus-within {
+            background-color: #5929D6 !important;
+            background-image: none !important;
+            border-color: #4D20BE !important;
+            box-shadow: 0 12px 28px -4px rgba(89, 41, 214, 0.35), 0 4px 12px rgba(89, 41, 214, 0.2) !important;
+          }
+
+          .benefit-card:hover .benefit-icon-container,
+          .benefit-card:focus-visible .benefit-icon-container,
+          .benefit-card:focus-within .benefit-icon-container {
+            background-color: rgba(255, 255, 255, 0.2) !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+          }
+
+          .benefit-card:hover .benefit-content-default,
+          .benefit-card:focus-visible .benefit-content-default,
+          .benefit-card:focus-within .benefit-content-default {
+            opacity: 0;
+            transform: translateY(-12px);
+            pointer-events: none;
+          }
+
+          .benefit-card:hover .benefit-content-hover,
+          .benefit-card:focus-visible .benefit-content-hover,
+          .benefit-card:focus-within .benefit-content-hover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+          }
+        }
+
+        .benefit-content-swap {
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-template-rows: 1fr;
+          align-items: center;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .benefit-content-default,
+        .benefit-content-hover {
+          grid-column: 1 / -1;
+          grid-row: 1 / -1;
+          width: 100%;
+        }
+
+        .benefit-content-default {
+          opacity: 1;
+          transform: translateY(0);
+          transition:
+            opacity 300ms cubic-bezier(0.4, 0, 0.2, 1),
+            transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+          will-change: opacity, transform;
+        }
+
+        .benefit-content-hover {
+          opacity: 0;
+          transform: translateY(14px);
+          pointer-events: none;
+          transition:
+            opacity 300ms cubic-bezier(0.4, 0, 0.2, 1),
+            transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+          will-change: opacity, transform;
+        }
+
+        @media (hover: none) {
+          .benefit-content-hover {
+            display: none !important;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .benefit-card,
+          .benefit-icon-container,
+          .benefit-content-default,
+          .benefit-content-hover {
+            transition: none !important;
+            transform: none !important;
+          }
+          .benefit-card:hover .benefit-content-default,
+          .benefit-card:focus-visible .benefit-content-default,
+          .benefit-card:focus-within .benefit-content-default {
+            opacity: 1 !important;
+            transform: none !important;
+          }
+          .benefit-card:hover .benefit-content-hover,
+          .benefit-card:focus-visible .benefit-content-hover,
+          .benefit-card:focus-within .benefit-content-hover {
+            display: none !important;
+          }
+        }
+      `}</style>
+
+      {/* Subtle oversized organic lavender shapes in background */}
+      <div
+        className="absolute -top-32 -right-32 w-[520px] h-[520px] bg-purple-100/35 rounded-full blur-3xl pointer-events-none z-0"
+        aria-hidden="true"
+      />
+      <div
+        className="absolute -bottom-32 -left-32 w-[480px] h-[480px] bg-purple-100/30 rounded-full blur-3xl pointer-events-none z-0"
+        aria-hidden="true"
+      />
+
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12 xl:gap-16 w-full">
+          {/* ============================================================
+              1. LEFT COLUMN (~30% width on Desktop)
+             ============================================================ */}
+          <div className="w-full lg:w-[32%] xl:w-[30%] shrink-0 text-left">
+            <ScrollReveal variant="fade-up">
+              <SectionBadge className="mb-3.5">
+                WHAT WE OFFER
+              </SectionBadge>
+
+              <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[44px] font-extrabold tracking-tight leading-[1.12]">
+                <span className="text-[#5929D6]">
+                  People, benefits
+                  <br className="hidden lg:block" />{" "}
+                  and support
+                </span>{" "}
+                <span className="text-[#0F172A]">
+                  to
+                  <br className="hidden lg:block" />{" "}
+                  do your best
+                  <br className="hidden lg:block" />{" "}
+                  work.
+                </span>
+              </h2>
+
+              <p className="text-sm sm:text-base lg:text-[16.5px] text-[#64748B] font-normal leading-relaxed mt-3.5 sm:mt-4 max-w-[340px] sm:max-w-[380px]">
+                We&apos;re committed to creating an environment where you can
+                grow, stay healthy and build a meaningful career with us.
+              </p>
+            </ScrollReveal>
           </div>
 
-          {/* Right Column: Benefits Layout (8 cols ~65-67% on Desktop) */}
-          <div className="lg:col-span-8 w-full min-w-0">
-            {/* Desktop Editorial Grid (3 columns × 2 rows with subtle internal dividers) */}
-            <div className="hidden lg:grid grid-cols-3">
-              {benefits.map((item, idx) => (
-                <div
-                  key={item.title}
-                  className={`
-                    p-7 lg:py-8 lg:px-6 xl:py-9 xl:px-7 flex flex-col justify-start
-                    ${idx < 3 ? "border-b border-slate-200/60" : ""}
-                    ${idx % 3 !== 2 ? "border-r border-slate-200/60" : ""}
-                  `}
+          {/* ============================================================
+              2. RIGHT COLUMN: 2-COLUMN × 3-ROW GRID (~70% width)
+             ============================================================ */}
+          <div className="w-full lg:w-[65%] xl:w-[68%] grow">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-4.5 xl:gap-5">
+              {BENEFITS.map(({ title, description, hoverMessage, Icon }, idx) => (
+                <ScrollReveal
+                  key={title}
+                  variant="fade-up"
+                  delay={idx * 70}
+                  className="h-full"
                 >
-                  {/* Pastel rounded-2xl icon container (~56-64px) */}
                   <div
-                    className={`w-14 h-14 xl:w-16 xl:h-16 ${item.badgeBg} rounded-2xl flex items-center justify-center shrink-0`}
+                    tabIndex={0}
+                    className="benefit-card bg-gradient-to-br from-[#F7F3FF] to-[#F2ECFF] border border-[#EBE4FF] rounded-[16px] p-5 sm:p-5.5 lg:p-6 shadow-[0_4px_16px_rgba(89,41,214,0.03)] cursor-default flex items-center gap-4 sm:gap-4.5 lg:gap-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2 h-full"
                   >
-                    {item.renderIcon(`w-6 h-6 ${item.iconColor}`)}
-                  </div>
+                    {/* Large circular purple icon container with white outline icon */}
+                    <div
+                      className="benefit-icon-container w-14 h-14 sm:w-15 sm:h-15 lg:w-16 lg:h-16 rounded-full bg-[#5929D6] text-white flex items-center justify-center shrink-0 shadow-xs"
+                      aria-hidden="true"
+                    >
+                      <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-white stroke-[2]" />
+                    </div>
 
-                  {/* Benefit Title & Description */}
-                  <div className="mt-5 sm:mt-6 space-y-2">
-                    <h3 className="text-lg xl:text-[19px] font-bold text-heading tracking-tight leading-snug">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm xl:text-[14.5px] text-body font-normal leading-relaxed">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
+                    {/* Benefit Title & Description with Hover Swap */}
+                    <div className="benefit-content-swap min-w-0 flex-1">
+                      {/* Default Content: Dark Navy Title & Muted Description */}
+                      <div className="benefit-content-default">
+                        <h3 className="benefit-card-title text-[17px] sm:text-[18px] font-bold text-[#0F172A] tracking-tight leading-snug">
+                          {title}
+                        </h3>
+                        <p className="benefit-card-desc text-[13px] sm:text-[13.5px] lg:text-[14px] text-[#64748B] font-normal leading-relaxed mt-1 sm:mt-1.5">
+                          {description}
+                        </p>
+                      </div>
 
-            {/* Mobile & Tablet Compact Card Grid (2 columns × 3 rows) */}
-            <div className="grid grid-cols-2 gap-2.5 sm:gap-3.5 lg:hidden">
-              {benefits.map((item) => (
-                <div
-                  key={item.title}
-                  className="bg-white border border-slate-200/90 rounded-xl sm:rounded-2xl p-3.5 sm:p-4.5 shadow-2xs flex flex-col justify-start min-h-[148px] sm:min-h-[160px]"
-                >
-                  {/* Compact pastel icon container (~36-40px) */}
-                  <div
-                    className={`w-9 h-9 sm:w-10 sm:h-10 ${item.badgeBg} rounded-lg sm:rounded-xl flex items-center justify-center shrink-0`}
-                  >
-                    {item.renderIcon(`w-4.5 h-4.5 sm:w-5 sm:h-5 ${item.iconColor}`)}
+                      {/* Hover Content: Alternative Description Only (Matching Image 2 Reference) */}
+                      <div
+                        className="benefit-content-hover"
+                        aria-hidden="true"
+                      >
+                        <p className="text-[14px] sm:text-[14.5px] lg:text-[15px] font-medium text-white leading-snug sm:leading-relaxed m-0">
+                          {hoverMessage}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-
-                  {/* Title & Description */}
-                  <h3 className="text-[13.5px] sm:text-[14.5px] font-bold text-heading leading-tight mt-2.5 sm:mt-3 tracking-tight">
-                    {item.title}
-                  </h3>
-                  <p className="text-[11px] sm:text-xs text-body leading-relaxed mt-1 sm:mt-1.5">
-                    {item.description}
-                  </p>
-                </div>
+                </ScrollReveal>
               ))}
             </div>
           </div>

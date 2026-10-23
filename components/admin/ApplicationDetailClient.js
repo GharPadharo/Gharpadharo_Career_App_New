@@ -83,7 +83,7 @@ export default function ApplicationDetailClient({ application, job }) {
       <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs">
         <div className="pb-6 border-b border-slate-100">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-xs font-bold text-primary tracking-widest uppercase">
+            <span className="admin-eyebrow">
               APPLICATION
             </span>
             {application.applicationType === "general" && (
@@ -92,10 +92,10 @@ export default function ApplicationDetailClient({ application, job }) {
               </span>
             )}
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-heading tracking-tight leading-tight">
+          <h1 className="admin-page-title">
             {application.candidate}
           </h1>
-          <p className="text-sm font-semibold text-slate-700 mt-1">
+          <p className="text-sm font-medium text-body mt-1">
             Applied for:{" "}
             <span className="text-primary font-bold">
               {application.applicationType === "general"
@@ -113,23 +113,23 @@ export default function ApplicationDetailClient({ application, job }) {
         {/* Candidate Metadata Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 pt-6 text-sm">
           <div>
-            <span className="text-xs font-bold text-muted uppercase tracking-wider block mb-1">
+            <span className="text-[11px] font-bold text-heading uppercase tracking-wider block mb-1">
               Email
             </span>
             <a
               href={`mailto:${application.email}`}
-              className="text-slate-800 hover:text-primary font-medium transition-colors break-all"
+              className="text-heading hover:text-primary font-medium transition-colors break-all"
             >
               {application.email}
             </a>
           </div>
 
           <div>
-            <span className="text-xs font-bold text-muted uppercase tracking-wider block mb-1">
+            <span className="text-[11px] font-bold text-heading uppercase tracking-wider block mb-1">
               Phone
             </span>
             {application.phone?.trim() ? (
-              <span className="text-slate-800 font-medium">
+              <span className="text-heading font-medium">
                 {application.phone.trim()}
               </span>
             ) : (
@@ -140,11 +140,11 @@ export default function ApplicationDetailClient({ application, job }) {
           </div>
 
           <div>
-            <span className="text-xs font-bold text-muted uppercase tracking-wider block mb-1">
+            <span className="text-[11px] font-bold text-heading uppercase tracking-wider block mb-1">
               Experience
             </span>
             {application.experience?.trim() ? (
-              <span className="text-slate-800 font-medium">
+              <span className="text-heading font-medium">
                 {application.experience.trim()}
               </span>
             ) : (
@@ -155,10 +155,10 @@ export default function ApplicationDetailClient({ application, job }) {
           </div>
 
           <div>
-            <span className="text-xs font-bold text-muted uppercase tracking-wider block mb-1">
+            <span className="text-[11px] font-bold text-heading uppercase tracking-wider block mb-1">
               Applied Date
             </span>
-            <span className="text-slate-800 font-medium block">
+            <span className="text-heading font-medium block">
               {application.appliedText}
             </span>
             <span className="text-[11px] text-muted">
@@ -172,7 +172,7 @@ export default function ApplicationDetailClient({ application, job }) {
       <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-4">
         <div>
           <h2 className="text-lg font-bold text-heading">Resume</h2>
-          <p className="text-xs text-muted mt-0.5">
+          <p className="text-xs text-body mt-0.5">
             Uploaded candidate document.
           </p>
         </div>
@@ -240,7 +240,7 @@ export default function ApplicationDetailClient({ application, job }) {
       <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-4">
         <div>
           <h2 className="text-lg font-bold text-heading">Online Profiles</h2>
-          <p className="text-xs text-muted mt-0.5">
+          <p className="text-xs text-body mt-0.5">
             Links provided by the candidate.
           </p>
         </div>
@@ -255,7 +255,7 @@ export default function ApplicationDetailClient({ application, job }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <span className="text-xs font-bold text-muted uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-heading uppercase tracking-wider block">
                     LinkedIn
                   </span>
                   {hasLinkedIn ? (
@@ -282,7 +282,7 @@ export default function ApplicationDetailClient({ application, job }) {
 
               <div className="p-4 rounded-xl border border-slate-200/80 bg-slate-50/50 flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <span className="text-xs font-bold text-muted uppercase tracking-wider block">
+                  <span className="text-xs font-bold text-heading uppercase tracking-wider block">
                     Portfolio / Website
                   </span>
                   {hasPortfolio ? (
@@ -316,7 +316,7 @@ export default function ApplicationDetailClient({ application, job }) {
         <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-3">
           <div>
             <h2 className="text-lg font-bold text-heading">Opportunity of Interest</h2>
-            <p className="text-xs text-muted mt-0.5">
+            <p className="text-xs text-body mt-0.5">
               Role or areas of focus the candidate is seeking.
             </p>
           </div>
@@ -337,7 +337,7 @@ export default function ApplicationDetailClient({ application, job }) {
         <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-3">
           <div>
             <h2 className="text-lg font-bold text-heading">About Candidate</h2>
-            <p className="text-xs text-muted mt-0.5">
+            <p className="text-xs text-body mt-0.5">
               Candidate&apos;s background and personal introduction.
             </p>
           </div>
@@ -365,7 +365,7 @@ export default function ApplicationDetailClient({ application, job }) {
           <div className="bg-white rounded-2xl border border-slate-200/90 p-6 sm:p-8 shadow-2xs space-y-4">
             <div>
               <h2 className="text-lg font-bold text-heading">Cover Letter / Note</h2>
-              <p className="text-xs text-muted mt-0.5">
+              <p className="text-xs text-body mt-0.5">
                 Candidate&apos;s statement of interest and background.
               </p>
             </div>

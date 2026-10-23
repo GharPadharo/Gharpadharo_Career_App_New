@@ -7,6 +7,7 @@ import { serializeApplication } from "@/lib/applicationSerializer";
 import { deleteResume } from "@/lib/cloudinary";
 import { logActivity } from "@/lib/activityLogger";
 import { appendApplicationToSheet } from "@/lib/googleSheets";
+import { getOrCreateResumeToken } from "@/lib/resumeTokens";
 import { getNextApplicationNumber } from "@/lib/applicationCounter";
 import {
   RATE_LIMIT_RULES,
@@ -254,6 +255,19 @@ export async function POST(request) {
       });
 
       if (existingGeneralApp) {
+        if (
+          resumeMetadata?.publicId &&
+          resumeMetadata.publicId.startsWith("gharpadharo-careers/resumes/") &&
+          resumeMetadata.publicId !== existingGeneralApp.resume?.publicId
+        ) {
+          await deleteResume(resumeMetadata.publicId).catch((delErr) => {
+            console.error(
+              "Failed to clean up newly uploaded resume on duplicate general application:",
+              delErr?.message || "Unknown error"
+            );
+          });
+        }
+
         return NextResponse.json(
           {
             success: false,
@@ -318,6 +332,11 @@ export async function POST(request) {
           jobSlug: "general-application",
           applicationType: "general",
         },
+      });
+
+      // Ensure persistent token is generated for applications with a resume
+      await getOrCreateResumeToken(newApplication).catch((tokErr) => {
+        console.error("Resume token generation failed safely (general):", tokErr?.message || tokErr);
       });
 
       // Secondary downstream sync to Google Sheets (fails safely, never breaks submission)
@@ -430,6 +449,24 @@ export async function POST(request) {
     });
 
     if (existingApplication) {
+      const incomingPublicId =
+        (typeof resume === "object" && typeof resume?.publicId === "string"
+          ? resume.publicId.trim()
+          : "") || "";
+
+      if (
+        incomingPublicId &&
+        incomingPublicId.startsWith("gharpadharo-careers/resumes/") &&
+        incomingPublicId !== existingApplication.resume?.publicId
+      ) {
+        await deleteResume(incomingPublicId).catch((delErr) => {
+          console.error(
+            "Failed to clean up newly uploaded resume on duplicate job application:",
+            delErr?.message || "Unknown error"
+          );
+        });
+      }
+
       return NextResponse.json(
         {
           success: false,
@@ -505,6 +542,11 @@ export async function POST(request) {
         jobSlug: job.slug,
         applicationType: "job",
       },
+    });
+
+    // Ensure persistent token is generated for applications with a resume
+    await getOrCreateResumeToken(newApplication).catch((tokErr) => {
+      console.error("Resume token generation failed safely (job):", tokErr?.message || tokErr);
     });
 
     // Secondary downstream sync to Google Sheets (fails safely, never breaks submission)
