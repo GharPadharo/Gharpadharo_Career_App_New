@@ -22,7 +22,7 @@ export default function Footer() {
           {/* COLUMN 1 — BRAND / CAREERS */}
           <div className="col-span-2 md:col-span-2 lg:col-span-4">
             <Link
-              href="/"
+              href="https://www.gharpadharo.com"
               className="inline-flex items-center gap-2.5 outline-none focus-visible:ring-2 focus-visible:ring-primary/40 rounded-lg group"
               aria-label="GharPadharo Careers Home"
             >
@@ -105,16 +105,6 @@ export default function Footer() {
             <ul className="space-y-2.5 text-xs sm:text-sm">
               <li>
                 <Link
-                  href="https://www.gharpadharo.com"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-slate-400 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
-                >
-                  GharPadharo.com
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="https://www.gharpadharo.com/about"
                   className="text-slate-400 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
@@ -134,7 +124,7 @@ export default function Footer() {
                   href="/jobs"
                   className="text-slate-400 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
                 >
-                  Careers
+                  Jobs
                 </Link>
               </li>
               <li>

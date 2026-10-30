@@ -6,6 +6,7 @@ import User from "@/models/User";
 import { requireAdminAuth } from "@/lib/authGuard";
 import { serializeJob } from "@/lib/jobSerializer";
 import { logActivity } from "@/lib/activityLogger";
+import { JOB_CATEGORIES, isValidCategory } from "@/lib/teamCategories";
 
 export const dynamic = "force-dynamic";
 
@@ -95,13 +96,23 @@ export async function PATCH(request, context) {
     }
 
     if (body.team !== undefined) {
-      if (!body.team.trim()) {
+      if (!body.team || !body.team.trim()) {
         return NextResponse.json(
           { success: false, error: "Team cannot be empty" },
           { status: 400 }
         );
       }
-      job.team = body.team.trim();
+      const trimmedTeam = body.team.trim();
+      if (!isValidCategory(trimmedTeam)) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Invalid team category. Must be one of: ${JOB_CATEGORIES.join(", ")}`,
+          },
+          { status: 400 }
+        );
+      }
+      job.team = trimmedTeam;
     }
 
     if (body.type !== undefined) {

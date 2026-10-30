@@ -1,5 +1,4 @@
 import Link from "next/link";
-import SectionBadge from "@/components/common/SectionBadge";
 import ScrollReveal from "@/components/common/ScrollReveal";
 
 export default function CareersCTA() {
@@ -64,10 +63,6 @@ export default function CareersCTA() {
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8 lg:gap-10 xl:gap-14">
               {/* Left Content */}
               <div className="text-left max-w-2xl xl:max-w-3xl min-w-0">
-                <SectionBadge className="mb-3.5">
-                  WORK WITH US
-                </SectionBadge>
-
                 <h2 className="text-3xl sm:text-4xl md:text-[42px] lg:text-[46px] xl:text-[52px] font-extrabold tracking-tight leading-[1.1]">
                   <span className="text-[#11152F] block">
                     Ready to build something

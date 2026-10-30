@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import SectionBadge from "@/components/common/SectionBadge";
 import ScrollReveal from "@/components/common/ScrollReveal";
 import { Target } from "lucide-react";
 import { WEBSITE_IMAGES } from "@/lib/websiteImages";
@@ -404,6 +403,77 @@ export default function ResourcesHub() {
             .hero-cta-sweep::before {
               transition: none !important;
             }
+            .hiring-card-animate {
+              animation: none !important;
+            }
+            .mirror-shimmer-beam {
+              display: none !important;
+              animation: none !important;
+            }
+            .gp-why-pill {
+              transition: none !important;
+              transform: none !important;
+            }
+          }
+
+          .gp-why-pill {
+            transform: rotate(0deg);
+            box-shadow: 0 8px 24px -4px rgba(89, 41, 214, 0.42), 0 2px 8px rgba(89, 41, 214, 0.20);
+            transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+          }
+
+          .gp-why-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px -4px rgba(89, 41, 214, 0.52), 0 4px 12px rgba(89, 41, 214, 0.24);
+          }
+
+          @keyframes hiringCardEnter {
+            from {
+              opacity: 0;
+              transform: translateY(6px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+          .hiring-card-animate {
+            animation: hiringCardEnter 260ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          }
+
+          @keyframes mirrorShimmerSweep {
+            0% {
+              transform: translateX(-120%) skewX(-20deg);
+              opacity: 0;
+            }
+            15% {
+              opacity: 1;
+            }
+            85% {
+              opacity: 1;
+            }
+            100% {
+              transform: translateX(250%) skewX(-20deg);
+              opacity: 0;
+            }
+          }
+          .mirror-shimmer-beam {
+            position: absolute;
+            inset: 0;
+            width: 55%;
+            height: 100%;
+            background: linear-gradient(
+              90deg,
+              transparent 0%,
+              rgba(255, 255, 255, 0.10) 20%,
+              rgba(255, 255, 255, 0.50) 48%,
+              rgba(237, 233, 254, 0.60) 58%,
+              rgba(255, 255, 255, 0.25) 75%,
+              transparent 100%
+            );
+            animation: mirrorShimmerSweep 1.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+            pointer-events: none;
+            z-index: 20;
           }
 
           /* Resume Tips cards: hover effect matching Life at GharPadharo "How We Work" section */
@@ -590,9 +660,25 @@ export default function ResourcesHub() {
           {/* Section Header */}
           <ScrollReveal variant="fade-up">
             <div className="mb-8 sm:mb-10 text-left">
-              <SectionBadge className="mb-3">
-                HIRING PROCESS
-              </SectionBadge>
+              {/* Purple Capsule Badge: "HIRING PROCESS" matching Resume Tips section */}
+              <div className="relative inline-flex items-center mb-4 sm:mb-5 select-none max-w-full">
+                {/* Subtle soft lavender ambient glow behind the badge */}
+                <div
+                  className="absolute -inset-x-3 -inset-y-2 bg-[#7C3AED]/12 rounded-full blur-xl pointer-events-none -z-10"
+                  aria-hidden="true"
+                />
+
+                {/* Straight purple pill with soft glow */}
+                <div
+                  className="gp-why-pill inline-flex items-center justify-center px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] via-[#5F30DE] to-[#6A3AE8] text-white shrink-0"
+                  aria-label="HIRING PROCESS"
+                >
+                  <span className="text-xs sm:text-[14.5px] lg:text-[16px] font-bold tracking-wide text-white uppercase leading-none whitespace-nowrap">
+                    HIRING PROCESS
+                  </span>
+                </div>
+              </div>
+
               <h2
                 id="hiring-process-heading"
                 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#11152F] tracking-tight leading-snug"
@@ -608,8 +694,8 @@ export default function ResourcesHub() {
 
           {/* Supporting Label Above Timeline */}
           <ScrollReveal variant="fade-up" delay={60}>
-            <div className="mb-6 lg:mb-8 flex items-center gap-3">
-              <span className="text-xs font-bold text-[#5929D6] tracking-widest uppercase">
+            <div className="mb-6 lg:mb-8 flex items-center gap-3 sm:gap-3.5">
+              <span className="inline-flex items-center justify-center bg-[#EDE7FF] text-[#5B32D5] text-xs sm:text-[12.5px] font-semibold tracking-wider uppercase px-4 py-1.5 rounded-full leading-none select-none shrink-0">
                 OUR TYPICAL PROCESS
               </span>
               <span className="h-px flex-1 bg-[#E8E2FA]" aria-hidden="true" />
@@ -652,15 +738,15 @@ export default function ResourcesHub() {
                     aria-selected={isActive}
                     aria-controls={`desktop-step-panel-${step.num}`}
                     onClick={() => setActiveStep(idx)}
-                    className="group relative z-10 flex flex-col items-center text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2 rounded-xl p-2 cursor-pointer transition-colors"
+                    className="group relative z-10 flex flex-col items-center text-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5929D6] focus-visible:ring-offset-2 rounded-xl p-2 cursor-pointer transition-all duration-200"
                   >
                     {/* Circular Icon Marker */}
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 border ${
                         isActive
-                          ? "bg-[#5929D6] text-white border-[#5929D6] shadow-xs ring-4 ring-[#F0EBFF]"
+                          ? "bg-[#5929D6] text-white border-[#5929D6] shadow-xs ring-4 ring-[#EDE9FE] scale-105"
                           : isPassed
-                          ? "bg-[#F0EBFF] text-[#5929D6] border-[#E8E2FA] hover:bg-[#EAE2FC]"
+                          ? "bg-[#F3F0FF] text-[#5929D6] border-[#DCD3F8] hover:bg-[#EDE9FE]"
                           : "bg-white text-[#555A75] border-[#E8E2FA] hover:border-[#5929D6]/40 hover:text-[#5929D6] hover:bg-[#FAF8FF]"
                       }`}
                     >
@@ -670,10 +756,10 @@ export default function ResourcesHub() {
                     {/* Step Title */}
                     <div className="mt-3 text-center">
                       <span
-                        className={`text-sm transition-colors block ${
+                        className={`text-sm transition-colors duration-200 block ${
                           isActive
                             ? "font-bold text-[#5929D6]"
-                            : "font-semibold text-[#555A75] group-hover:text-[#11152F]"
+                            : "font-semibold text-[#555A75] group-hover:text-[#111827]"
                         }`}
                       >
                         {step.shortTitle}
@@ -684,40 +770,44 @@ export default function ResourcesHub() {
               })}
             </div>
 
-            {/* Desktop Compact Selected-Step Panel */}
+            {/* Desktop Active-Stage Detail Panel */}
             <div
               key={activeStep}
               role="tabpanel"
               id={`desktop-step-panel-${hiringSteps[activeStep].num}`}
               aria-labelledby={`desktop-step-tab-${hiringSteps[activeStep].num}`}
-              className="mt-6 bg-[#F8F7FC] rounded-2xl border border-[#E8E2FA] p-5 sm:p-6 shadow-xs transition-opacity duration-200 motion-reduce:transition-none"
+              className="hiring-card-animate relative overflow-hidden mt-8 bg-[#F8F7FF] rounded-[20px] border border-[#E8E2FA] p-6 sm:p-7 lg:p-8 shadow-sm shadow-[#5929D6]/4 hover:shadow-md hover:border-[#D6CBF8] transition-all duration-300 motion-reduce:transition-none"
             >
-              <div className="flex items-center gap-2.5">
-                <span className="font-mono font-semibold text-xs text-[#5929D6] bg-[#F0EBFF] border border-[#E8E2FA] px-2.5 py-0.5 rounded-md">
-                  {hiringSteps[activeStep].num}
-                </span>
-                <h3 className="text-sm sm:text-base font-bold text-[#11152F] tracking-tight uppercase">
-                  {hiringSteps[activeStep].title}
-                </h3>
-              </div>
+              {/* Subtle Mirror Shimmer Beam (Plays once whenever this step becomes active) */}
+              <div
+                key={`shimmer-${activeStep}`}
+                aria-hidden="true"
+                className="mirror-shimmer-beam pointer-events-none absolute inset-0 z-10 overflow-hidden"
+              />
 
-              <p className="text-xs sm:text-sm text-[#555A75] mt-2 leading-relaxed font-normal">
-                {hiringSteps[activeStep].desc}
-              </p>
+              {/* Header: Title */}
+              <h3 className="text-base sm:text-lg font-bold text-[#111827] tracking-tight uppercase">
+                {hiringSteps[activeStep].title}
+              </h3>
 
-              {/* Guidance Badges */}
-              <div className="mt-3.5 pt-3 border-t border-[#E8E2FA]/70 flex flex-wrap items-center gap-2 sm:gap-2.5">
-                {hiringSteps[activeStep].guidance.map((item, gIdx) => (
-                  <span
-                    key={gIdx}
-                    className="inline-flex items-center px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-[#F0EBFF] text-[#5929D6] border border-[#E8E2FA]"
-                  >
-                    {item}
-                  </span>
-                ))}
+                {/* Description */}
+                <p className="text-sm sm:text-[15px] text-[#475569] mt-2.5 sm:mt-3 leading-relaxed font-normal max-w-3xl">
+                  {hiringSteps[activeStep].desc}
+                </p>
+
+                {/* Action Chips */}
+                <div className="mt-5 pt-4.5 border-t border-[#E8E2FA] flex flex-wrap items-center gap-2.5 sm:gap-3">
+                  {hiringSteps[activeStep].guidance.map((item, gIdx) => (
+                    <span
+                      key={gIdx}
+                      className="inline-flex items-center px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-medium bg-[#F3F0FF] hover:bg-[#EDE9FE] text-[#5929D6] border border-[#E2DCF7] hover:border-[#C4B5FD] shadow-2xs hover:shadow-xs hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 cursor-default select-none"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          </ScrollReveal>
+            </ScrollReveal>
 
           {/* B. MOBILE/TABLET TIMELINE (< 1024px) */}
           <ScrollReveal variant="fade-up" delay={100} className="block lg:hidden">
@@ -760,9 +850,9 @@ export default function ResourcesHub() {
                     <div
                       className={`relative z-10 w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 border ${
                         isActive
-                          ? "bg-[#5929D6] text-white border-[#5929D6] shadow-xs ring-4 ring-[#F0EBFF]"
+                          ? "bg-[#5929D6] text-white border-[#5929D6] shadow-xs ring-4 ring-[#EDE9FE]"
                           : isPassed
-                          ? "bg-[#F0EBFF] text-[#5929D6] border-[#E8E2FA]"
+                          ? "bg-[#F3F0FF] text-[#5929D6] border-[#DCD3F8]"
                           : "bg-white text-[#555A75] border-[#E8E2FA] group-hover:border-[#5929D6]/40 group-hover:text-[#5929D6] group-hover:bg-[#FAF8FF]"
                       }`}
                     >
@@ -788,33 +878,36 @@ export default function ResourcesHub() {
                     </div>
                   </button>
 
-                  {/* Selected Step Detail Panel (Compact card directly below selected step on mobile) */}
+                  {/* Selected Step Detail Panel (Card directly below selected step on mobile) */}
                   {isActive && (
                     <div
+                      key={`mobile-panel-${step.num}`}
                       role="tabpanel"
                       id={`mobile-step-panel-${step.num}`}
                       aria-labelledby={`mobile-step-tab-${step.num}`}
-                      className="ml-11 sm:ml-13 mt-2.5 bg-[#F8F7FC] rounded-xl border border-[#E8E2FA] p-3.5 sm:p-4 shadow-xs transition-opacity duration-200 motion-reduce:transition-none"
+                      className="hiring-card-animate relative overflow-hidden ml-11 sm:ml-13 mt-3 bg-[#F8F7FF] rounded-2xl border border-[#E8E2FA] p-4 sm:p-5 shadow-sm shadow-[#5929D6]/4 transition-all duration-300 motion-reduce:transition-none"
                     >
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <span className="font-mono font-semibold text-xs text-[#5929D6] bg-[#F0EBFF] border border-[#E8E2FA] px-1.5 py-0.5 rounded">
-                          {step.num}
-                        </span>
-                        <h4 className="text-xs sm:text-sm font-bold text-[#11152F] tracking-tight uppercase">
-                          {step.title}
-                        </h4>
-                      </div>
+                      {/* Subtle Mirror Shimmer Beam (Plays once whenever this step becomes active) */}
+                      <div
+                        key={`shimmer-mobile-${step.num}`}
+                        aria-hidden="true"
+                        className="mirror-shimmer-beam pointer-events-none absolute inset-0 z-10 overflow-hidden"
+                      />
 
-                      <p className="text-xs text-[#555A75] leading-relaxed mb-2.5 font-normal">
+                      <h4 className="text-sm sm:text-base font-bold text-[#111827] tracking-tight uppercase mb-2">
+                        {step.title}
+                      </h4>
+
+                      <p className="text-xs sm:text-sm text-[#475569] leading-relaxed mb-3 font-normal">
                         {step.desc}
                       </p>
 
                       {/* Guidance Badges */}
-                      <div className="pt-2.5 border-t border-[#E8E2FA]/70 flex flex-wrap items-center gap-2">
+                      <div className="pt-3 border-t border-[#E8E2FA] flex flex-wrap items-center gap-2">
                         {step.guidance.map((item, gIdx) => (
                           <span
                             key={gIdx}
-                            className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[#F0EBFF] text-[#5929D6] border border-[#E8E2FA]"
+                            className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium bg-[#F3F0FF] hover:bg-[#EDE9FE] text-[#5929D6] border border-[#E2DCF7] hover:border-[#C4B5FD] transition-all duration-200 select-none"
                           >
                             {item}
                           </span>
@@ -847,9 +940,25 @@ export default function ResourcesHub() {
           {/* Section Header */}
           <ScrollReveal variant="fade-up">
             <div className="mb-8 sm:mb-10 text-left">
-              <SectionBadge className="mb-3">
-                RESUME TIPS
-              </SectionBadge>
+              {/* Purple Capsule Badge: "RESUME TIPS" matching "Why GharPadharo?" section */}
+              <div className="relative inline-flex items-center mb-4 sm:mb-5 select-none max-w-full">
+                {/* Subtle soft lavender ambient glow behind the badge */}
+                <div
+                  className="absolute -inset-x-3 -inset-y-2 bg-[#7C3AED]/12 rounded-full blur-xl pointer-events-none -z-10"
+                  aria-hidden="true"
+                />
+
+                {/* Straight purple pill with soft glow */}
+                <div
+                  className="gp-why-pill inline-flex items-center justify-center px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] via-[#5F30DE] to-[#6A3AE8] text-white shrink-0"
+                  aria-label="RESUME TIPS"
+                >
+                  <span className="text-xs sm:text-[14.5px] lg:text-[16px] font-bold tracking-wide text-white uppercase leading-none whitespace-nowrap">
+                    RESUME TIPS
+                  </span>
+                </div>
+              </div>
+
               <h2
                 id="resume-tips-heading"
                 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#11152F] tracking-tight leading-snug"
@@ -953,9 +1062,25 @@ export default function ResourcesHub() {
           {/* Section Header */}
           <ScrollReveal variant="fade-up">
             <div className="mb-8 sm:mb-10 text-left">
-              <SectionBadge className="mb-3">
-                INTERVIEW PREP
-              </SectionBadge>
+              {/* Purple Capsule Badge: "INTERVIEW PREP" matching "Why GharPadharo?" section */}
+              <div className="relative inline-flex items-center mb-4 sm:mb-5 select-none max-w-full">
+                {/* Subtle soft lavender ambient glow behind the badge */}
+                <div
+                  className="absolute -inset-x-3 -inset-y-2 bg-[#7C3AED]/12 rounded-full blur-xl pointer-events-none -z-10"
+                  aria-hidden="true"
+                />
+
+                {/* Straight purple pill with soft glow */}
+                <div
+                  className="gp-why-pill inline-flex items-center justify-center px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] via-[#5F30DE] to-[#6A3AE8] text-white shrink-0"
+                  aria-label="INTERVIEW PREP"
+                >
+                  <span className="text-xs sm:text-[14.5px] lg:text-[16px] font-bold tracking-wide text-white uppercase leading-none whitespace-nowrap">
+                    INTERVIEW PREP
+                  </span>
+                </div>
+              </div>
+
               <h2
                 id="interview-prep-heading"
                 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#11152F] tracking-tight leading-snug"
@@ -1130,9 +1255,25 @@ export default function ResourcesHub() {
           {/* Section Header */}
           <ScrollReveal variant="fade-up">
             <div className="mb-8 sm:mb-10 text-left">
-              <SectionBadge className="mb-3">
-                FREQUENTLY ASKED QUESTIONS
-              </SectionBadge>
+              {/* Purple Capsule Badge: "FREQUENTLY ASKED QUESTIONS" matching "Why GharPadharo?" section */}
+              <div className="relative inline-flex items-center mb-4 sm:mb-5 select-none max-w-full">
+                {/* Subtle soft lavender ambient glow behind the badge */}
+                <div
+                  className="absolute -inset-x-3 -inset-y-2 bg-[#7C3AED]/12 rounded-full blur-xl pointer-events-none -z-10"
+                  aria-hidden="true"
+                />
+
+                {/* Straight purple pill with soft glow */}
+                <div
+                  className="gp-why-pill inline-flex items-center justify-center px-3.5 xs:px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] via-[#5F30DE] to-[#6A3AE8] text-white shrink-0"
+                  aria-label="FREQUENTLY ASKED QUESTIONS"
+                >
+                  <span className="text-[11px] xs:text-xs sm:text-[14px] lg:text-[16px] font-bold tracking-wide text-white uppercase leading-none whitespace-nowrap">
+                    FREQUENTLY ASKED QUESTIONS
+                  </span>
+                </div>
+              </div>
+
               <h2
                 id="faq-heading"
                 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#11152F] tracking-tight leading-snug"

@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import AdminJobFilters from "./AdminJobFilters";
+import { JOB_CATEGORIES, matchesTeamFilter } from "@/lib/teamCategories";
 
 /**
  * AdminJobTable Component
@@ -29,9 +30,10 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
   const [isDeleting, setIsDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState(null);
 
-  // Extract distinct teams from currently loaded jobs
+  // Extract distinct teams, combining canonical categories with any loaded job teams
   const teams = useMemo(() => {
-    return Array.from(new Set(initialJobs.map((j) => j.team))).filter(Boolean);
+    const loadedTeams = initialJobs.map((j) => j.team).filter(Boolean);
+    return Array.from(new Set([...JOB_CATEGORIES, ...loadedTeams]));
   }, [initialJobs]);
 
   // Frontend filter logic
@@ -44,9 +46,8 @@ export default function AdminJobTable({ initialJobs = [], hideHeader = false }) 
         selectedStatus === "All" ||
         jobStatus === selectedStatus.toLowerCase();
 
-      // Team filter
-      const matchesTeam =
-        selectedTeam === "All" || selectedTeam === "all" || job.team === selectedTeam;
+      // Team filter using centralized matching (supports legacy equivalence)
+      const matchesTeam = matchesTeamFilter(selectedTeam, job.team);
 
       // Search term filter across title, team, location, and description
       const query = searchTerm.toLowerCase().trim();

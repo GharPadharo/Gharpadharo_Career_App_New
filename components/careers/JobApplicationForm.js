@@ -162,8 +162,8 @@ export default function JobApplicationForm({ job }) {
     } else if (!/^[0-9+\s\-().]{7,18}$/.test(formData.phone.trim())) {
       validationErrors.phone = "Please enter a valid phone number.";
     }
-    if (!formData.coverLetter.trim()) {
-      validationErrors.coverLetter = "Cover letter is required.";
+    if (formData.coverLetter && formData.coverLetter.length > 5000) {
+      validationErrors.coverLetter = "Cover letter cannot exceed 5000 characters.";
     }
     if (!resumeFile) {
       validationErrors.resume = "Please upload your resume.";
@@ -528,13 +528,12 @@ export default function JobApplicationForm({ job }) {
           htmlFor="coverLetter"
           className="block text-base sm:text-lg font-bold text-[#11152F] pb-3 border-b border-slate-100 w-full tracking-tight mb-4"
         >
-          Cover Letter <span className="text-red-500">*</span>
+          Cover Letter
         </label>
         <textarea
           id="coverLetter"
           name="coverLetter"
           rows={5}
-          required
           value={formData.coverLetter}
           onChange={handleChange}
           aria-invalid={!!errors.coverLetter}

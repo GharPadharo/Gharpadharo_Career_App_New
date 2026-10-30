@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { Rocket, ChartNoAxesCombined, UsersRound } from "lucide-react";
 import { WEBSITE_IMAGES } from "@/lib/websiteImages";
-import SectionBadge from "@/components/common/SectionBadge";
 import ScrollReveal from "@/components/common/ScrollReveal";
 
 const VALUE_CARDS = [
@@ -106,12 +105,24 @@ export default function WhyGharPadharoSection() {
           fill: #EAE2FF;
         }
 
+        .gp-why-pill {
+          transform: rotate(0deg);
+          box-shadow: 0 8px 24px -4px rgba(89, 41, 214, 0.42), 0 2px 8px rgba(89, 41, 214, 0.20);
+          transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .gp-why-pill:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 12px 28px -4px rgba(89, 41, 214, 0.52), 0 4px 12px rgba(89, 41, 214, 0.24);
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .gp-why-card,
           .gp-why-card-glow,
           .gp-why-card-icon,
           .gp-why-card-title,
-          .gp-why-card-wave path {
+          .gp-why-card-wave path,
+          .gp-why-pill {
             transition: none !important;
             transform: none !important;
           }
@@ -137,9 +148,25 @@ export default function WhyGharPadharoSection() {
           <div className="lg:col-span-6 space-y-5 sm:space-y-6 text-left min-w-0">
             <ScrollReveal variant="fade-up">
               <div>
-                <SectionBadge className="mb-3.5">
-                  WHY GHARPADHARO
-                </SectionBadge>
+                {/* Purple Capsule Badge: "WHY GHARPADHARO?" */}
+                <div className="relative inline-flex items-center mb-4 sm:mb-5 select-none max-w-full">
+                  {/* Subtle soft lavender ambient glow behind the badge */}
+                  <div
+                    className="absolute -inset-x-3 -inset-y-2 bg-[#7C3AED]/12 rounded-full blur-xl pointer-events-none -z-10"
+                    aria-hidden="true"
+                  />
+
+                  {/* Straight purple pill with soft glow */}
+                  <div
+                    className="gp-why-pill inline-flex items-center justify-center px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] via-[#5F30DE] to-[#6A3AE8] text-white shrink-0"
+                    aria-label="WHY GHARPADHARO?"
+                  >
+                    <span className="text-xs sm:text-[14.5px] lg:text-[16px] font-bold tracking-wide text-white uppercase leading-none whitespace-nowrap">
+                      WHY GHARPADHARO?
+                    </span>
+                  </div>
+                </div>
+
                 <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[44px] font-extrabold text-[#11152F] tracking-tight leading-[1.12]">
                   Work where your
                   <br />

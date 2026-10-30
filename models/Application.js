@@ -145,12 +145,6 @@ const ApplicationSchema = new mongoose.Schema(
     },
     coverLetter: {
       type: String,
-      required: [
-        function () {
-          return this.applicationType === "job";
-        },
-        "Cover letter is required for job applications",
-      ],
       trim: true,
       default: "",
     },

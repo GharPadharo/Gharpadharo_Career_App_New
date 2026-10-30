@@ -2,17 +2,7 @@
 
 import { useState } from "react";
 import { Sliders, ChevronDown } from "lucide-react";
-
-const DEFAULT_TEAMS = [
-  "All teams",
-  "Technology",
-  "Product Management",
-  "Design",
-  "Operations",
-  "Marketing",
-  "Sales",
-  "Data Science",
-];
+import { JOB_CATEGORIES } from "@/lib/teamCategories";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Internship", "Contract"];
 
@@ -34,15 +24,15 @@ export default function JobFilters({
 }) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
-  // Combine default teams with any unique teams from database
+  // Combine canonical categories with any unique teams from database
   const teamsList = [
     "All Teams",
     ...Array.from(
       new Set([
-        ...(availableTeams.length > 0 ? availableTeams : DEFAULT_TEAMS.slice(1)),
-        ...DEFAULT_TEAMS.slice(1),
+        ...JOB_CATEGORIES,
+        ...(availableTeams || []),
       ])
-    ).filter((t) => t.toLowerCase() !== "all teams"),
+    ).filter((t) => t && t.toLowerCase() !== "all teams" && t.toLowerCase() !== "all"),
   ];
 
   const isAllTeams = !selectedTeam || selectedTeam === "All teams" || selectedTeam === "All Teams";

@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import LifeGallery from "@/components/careers/LifeGallery";
 import OurStoriesSection from "@/components/careers/OurStoriesSection";
-import SectionBadge from "@/components/common/SectionBadge";
 import ScrollReveal from "@/components/common/ScrollReveal";
 import { WEBSITE_IMAGES } from "@/lib/websiteImages";
 
@@ -141,7 +140,7 @@ export default function LifeAtGharPadharoPage() {
       {/* ========================================================
           1. HERO — IMMERSIVE FULL-WIDTH BACKGROUND WITH GRADIENT OVERLAY
       ======================================================== */}
-      <section className="relative w-full overflow-hidden bg-[#090A1C] min-h-0 sm:min-h-[520px] lg:min-h-[560px] xl:min-h-[580px] lg:h-[580px] flex items-center py-10 sm:py-14 lg:py-16">
+      <section className="relative w-full overflow-hidden bg-[#EDE9FE] min-h-0 sm:min-h-[520px] lg:min-h-[560px] xl:min-h-[580px] lg:h-[580px] flex items-center py-10 sm:py-14 lg:py-16 border-b border-[#E2DCF7]">
         {/* Full-width team collaboration whiteboard photo background */}
         <div className="absolute inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
           <Image
@@ -155,7 +154,7 @@ export default function LifeAtGharPadharoPage() {
           />
         </div>
 
-        {/* Directional CSS Dark Navy Gradient Overlay Layer */}
+        {/* Directional CSS Lavender Gradient Overlay Layer matching /jobs */}
         <div
           className="life-hero-gradient absolute inset-0 w-full h-full z-[1] pointer-events-none"
           aria-hidden="true"
@@ -166,22 +165,33 @@ export default function LifeAtGharPadharoPage() {
           .life-hero-gradient {
             background: linear-gradient(
               180deg,
-              rgba(9, 10, 28, 0.94) 0%,
-              rgba(9, 10, 28, 0.86) 50%,
-              rgba(9, 10, 28, 0.55) 75%,
-              rgba(9, 10, 28, 0.20) 100%
+              rgba(233, 229, 255, 0.97) 0%,
+              rgba(237, 233, 254, 0.92) 45%,
+              rgba(237, 233, 254, 0.50) 72%,
+              rgba(237, 233, 254, 0.15) 100%
             );
           }
-          @media (min-width: 768px) {
+          @media (min-width: 640px) {
             .life-hero-gradient {
               background: linear-gradient(
                 90deg,
-                rgba(9, 10, 28, 0.96) 0%,
-                rgba(9, 10, 28, 0.90) 24%,
-                rgba(9, 10, 28, 0.70) 40%,
-                rgba(9, 10, 28, 0.35) 54%,
-                rgba(9, 10, 28, 0.10) 68%,
-                rgba(9, 10, 28, 0) 82%
+                rgba(233, 229, 255, 0.98) 0%,
+                rgba(233, 229, 255, 0.93) 30%,
+                rgba(233, 229, 255, 0.65) 52%,
+                rgba(233, 229, 255, 0.20) 74%,
+                rgba(233, 229, 255, 0) 90%
+              );
+            }
+          }
+          @media (min-width: 1024px) {
+            .life-hero-gradient {
+              background: linear-gradient(
+                90deg,
+                rgba(233, 229, 255, 0.98) 0%,
+                rgba(233, 229, 255, 0.94) 25%,
+                rgba(233, 229, 255, 0.70) 42%,
+                rgba(233, 229, 255, 0.28) 60%,
+                rgba(233, 229, 255, 0) 78%
               );
             }
           }
@@ -229,6 +239,12 @@ export default function LifeAtGharPadharoPage() {
             }
 
             /* How We Work cards: keep card & icon stationary; animate content swap on hover */
+            .principle-card {
+              width: 100%;
+              max-width: 100%;
+              box-sizing: border-box;
+            }
+
             .principle-card:hover {
               background-color: #F8F5FF;
               border-color: #C4B5FD;
@@ -249,17 +265,22 @@ export default function LifeAtGharPadharoPage() {
 
           .principle-content-swap {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
             grid-template-rows: 1fr;
             align-items: center;
             position: relative;
             overflow: hidden;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
           }
           .principle-content-default,
           .principle-content-hover {
             grid-column: 1 / -1;
             grid-row: 1 / -1;
             width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
           }
           .principle-content-default {
             opacity: 1;
@@ -275,6 +296,93 @@ export default function LifeAtGharPadharoPage() {
             will-change: opacity, transform;
           }
 
+          .gp-why-pill {
+            transform: rotate(0deg);
+            box-shadow: 0 8px 24px -4px rgba(89, 41, 214, 0.42), 0 2px 8px rgba(89, 41, 214, 0.20);
+            transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+          }
+
+          .gp-why-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px -4px rgba(89, 41, 214, 0.52), 0 4px 12px rgba(89, 41, 214, 0.24);
+          }
+
+          @keyframes badgeLineTravelRight {
+            0% {
+              transform: translateX(-100%);
+              opacity: 0;
+            }
+            20% {
+              opacity: 0.9;
+            }
+            70% {
+              opacity: 0.7;
+            }
+            100% {
+              transform: translateX(350%);
+              opacity: 0;
+            }
+          }
+
+          @keyframes badgeLineTravelLeft {
+            0% {
+              transform: translateX(350%);
+              opacity: 0;
+            }
+            20% {
+              opacity: 0.9;
+            }
+            70% {
+              opacity: 0.7;
+            }
+            100% {
+              transform: translateX(-100%);
+              opacity: 0;
+            }
+          }
+
+          .badge-line-glow-right {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 35%;
+            height: 100%;
+            border-radius: 9999px;
+            background: linear-gradient(
+              90deg,
+              transparent 0%,
+              rgba(255, 255, 255, 0.4) 30%,
+              rgba(255, 255, 255, 0.95) 50%,
+              rgba(222, 218, 255, 0.8) 70%,
+              transparent 100%
+            );
+            animation: badgeLineTravelRight 2.5s ease-in-out infinite;
+            animation-delay: 0.3s;
+            pointer-events: none;
+          }
+
+          .badge-line-glow-left {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 35%;
+            height: 100%;
+            border-radius: 9999px;
+            background: linear-gradient(
+              90deg,
+              transparent 0%,
+              rgba(222, 218, 255, 0.8) 30%,
+              rgba(255, 255, 255, 0.95) 50%,
+              rgba(255, 255, 255, 0.4) 70%,
+              transparent 100%
+            );
+            animation: badgeLineTravelLeft 2.5s ease-in-out infinite;
+            animation-delay: 0.3s;
+            pointer-events: none;
+          }
+
           @media (hover: none) {
             .principle-content-hover {
               display: none !important;
@@ -282,12 +390,18 @@ export default function LifeAtGharPadharoPage() {
           }
 
           @media (prefers-reduced-motion: reduce) {
+            .gp-why-pill,
             .benefit-card,
             .benefit-icon-container,
             .principle-content-default,
             .principle-content-hover {
               transition: none !important;
               transform: none !important;
+            }
+            .badge-line-glow-right,
+            .badge-line-glow-left {
+              animation: none !important;
+              display: none !important;
             }
             .benefit-card:hover {
               transform: none !important;
@@ -308,13 +422,8 @@ export default function LifeAtGharPadharoPage() {
         {/* Hero Content Container */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <ScrollReveal variant="fade-up" className="max-w-xl lg:max-w-[560px] text-left space-y-4 sm:space-y-4.5">
-            {/* Eyebrow Badge */}
-            <div>
-              <SectionBadge>LIFE AT GHARPADHARO</SectionBadge>
-            </div>
-
             {/* Main Heading with "meaningful work" highlighted in exact brand purple #5929D6 */}
-            <h1 className="text-[29px] xs:text-[32px] sm:text-4xl md:text-5xl lg:text-[50px] xl:text-[54px] font-extrabold text-white tracking-tight leading-[1.14] sm:leading-[1.1]">
+            <h1 className="text-[29px] xs:text-[32px] sm:text-4xl md:text-5xl lg:text-[50px] xl:text-[54px] font-extrabold text-[#111827] tracking-tight leading-[1.14] sm:leading-[1.1]">
               Build <span className="text-[#5929D6]">meaningful</span>
               <br className="hidden sm:inline" />{" "}
               <span className="text-[#5929D6]">work</span> with people
@@ -322,8 +431,8 @@ export default function LifeAtGharPadharoPage() {
               who care.
             </h1>
 
-            {/* Description Paragraph in soft-white */}
-            <p className="text-sm sm:text-base lg:text-[17px] text-slate-200 font-normal leading-relaxed max-w-lg">
+            {/* Description Paragraph in dark slate (#334155) */}
+            <p className="text-sm sm:text-base lg:text-[17px] text-[#334155] font-semibold leading-relaxed max-w-lg">
               We’re building technology that makes everyday experiences simpler. Join a team where you take ownership, keep learning and work on things that reach real people.
             </p>
 
@@ -344,7 +453,7 @@ export default function LifeAtGharPadharoPage() {
               </Link>
               <a
                 href="#why-join-us"
-                className="inline-flex items-center justify-center gap-2 bg-slate-900/40 hover:bg-white/10 active:bg-white/15 text-white text-sm sm:text-base font-medium px-6 py-3.5 rounded-xl border border-white/80 hover:border-white transition-all duration-200 w-full sm:w-auto min-h-[46px] sm:min-h-[48px] text-center backdrop-blur-xs"
+                className="inline-flex items-center justify-center gap-2 bg-white/90 hover:bg-white active:bg-[#F3F0FF] text-[#111827] hover:text-[#5929D6] text-sm sm:text-base font-semibold px-6 py-3.5 rounded-xl border border-[#C4B5FD] hover:border-[#5929D6]/60 shadow-sm transition-all duration-200 w-full sm:w-auto min-h-[46px] sm:min-h-[48px] text-center backdrop-blur-xs"
               >
                 <span>Learn About Our Culture</span>
               </a>
@@ -365,7 +474,24 @@ export default function LifeAtGharPadharoPage() {
             {/* Left Column: Eyebrow, Large Headline & Narrative (Col 5) */}
             <div className="lg:col-span-5 text-left space-y-4 sm:space-y-5">
               <ScrollReveal variant="fade-up">
-                <SectionBadge className="mb-1 sm:mb-2">WHY JOIN US</SectionBadge>
+                {/* Purple Capsule Badge: "WHY JOIN US" matching "HOW WE WORK?" section */}
+                <div className="relative inline-flex items-center mb-4 sm:mb-5 select-none max-w-full">
+                  {/* Subtle soft lavender ambient glow behind the badge */}
+                  <div
+                    className="absolute -inset-x-3 -inset-y-2 bg-[#7C3AED]/12 rounded-full blur-xl pointer-events-none -z-10"
+                    aria-hidden="true"
+                  />
+
+                  {/* Straight purple pill with soft glow */}
+                  <div
+                    className="gp-why-pill inline-flex items-center justify-center px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] via-[#5F30DE] to-[#6A3AE8] text-white shrink-0"
+                    aria-label="WHY JOIN US"
+                  >
+                    <span className="text-xs sm:text-[14.5px] lg:text-[16px] font-bold tracking-wide text-white uppercase leading-none whitespace-nowrap">
+                      WHY JOIN US
+                    </span>
+                  </div>
+                </div>
 
                 <h2 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-extrabold text-[#11152F] tracking-tight leading-[1.12]">
                   Work where your{" "}
@@ -428,14 +554,31 @@ export default function LifeAtGharPadharoPage() {
       ======================================================== */}
       <section
         id="how-we-work"
-        className="scroll-mt-24 w-full py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-[#FAF8FF] via-[#F6F2FF] to-[#FAF8FF] border-b border-[#E8E2FA]/80"
+        className="scroll-mt-24 w-full max-w-full py-16 sm:py-20 lg:py-24 bg-gradient-to-b from-[#FAF8FF] via-[#F6F2FF] to-[#FAF8FF] border-b border-[#E8E2FA]/80 relative overflow-x-clip"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 xl:gap-16 items-center">
-            {/* Left Column: Eyebrow, Large Headline & Description (Col 5) */}
-            <div className="lg:col-span-5 text-left space-y-4 sm:space-y-5">
-              <ScrollReveal variant="fade-up">
-                <SectionBadge className="mb-1 sm:mb-2">HOW WE WORK</SectionBadge>
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 box-border">
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] gap-8 sm:gap-10 lg:gap-12 xl:gap-16 items-center w-full min-w-0">
+            {/* Left Column: Eyebrow, Large Headline & Description */}
+            <div className="w-full min-w-0 text-left space-y-4 sm:space-y-5">
+              <ScrollReveal variant="fade-up" className="w-full min-w-0">
+                {/* Purple Capsule Badge: "HOW WE WORK?" matching "Why GharPadharo?" section */}
+                <div className="relative inline-flex items-center mb-4 sm:mb-5 select-none max-w-full">
+                  {/* Subtle soft lavender ambient glow behind the badge */}
+                  <div
+                    className="absolute -inset-x-3 -inset-y-2 bg-[#7C3AED]/12 rounded-full blur-xl pointer-events-none -z-10"
+                    aria-hidden="true"
+                  />
+
+                  {/* Straight purple pill with soft glow */}
+                  <div
+                    className="gp-why-pill inline-flex items-center justify-center px-4 sm:px-5 lg:px-6 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] via-[#5F30DE] to-[#6A3AE8] text-white shrink-0"
+                    aria-label="HOW WE WORK?"
+                  >
+                    <span className="text-xs sm:text-[14.5px] lg:text-[16px] font-bold tracking-wide text-white uppercase leading-none whitespace-nowrap">
+                      HOW WE WORK?
+                    </span>
+                  </div>
+                </div>
 
                 <h2 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-extrabold text-[#11152F] tracking-tight leading-[1.12]">
                   Simple principles. High ownership.
@@ -447,9 +590,9 @@ export default function LifeAtGharPadharoPage() {
               </ScrollReveal>
             </div>
 
-            {/* Right Column: 4 Horizontally Long White Principle Cards Stacked Vertically (Col 7) */}
-            <div className="lg:col-span-7">
-              <div className="flex flex-col gap-4 sm:gap-4.5">
+            {/* Right Column: 4 Horizontally Long White Principle Cards Stacked Vertically */}
+            <div className="w-full min-w-0">
+              <div className="w-full min-w-0 flex flex-col gap-4 sm:gap-4.5">
                 {principles.map((item, idx) => {
                   const Icon = item.icon;
                   return (
@@ -457,9 +600,10 @@ export default function LifeAtGharPadharoPage() {
                       key={item.title}
                       variant="fade-up"
                       delay={idx * 70}
+                      className="w-full min-w-0"
                     >
                       <div
-                        className="principle-card bg-white rounded-2xl sm:rounded-3xl border border-[#E4DCFB] p-5 sm:p-6 lg:p-6.5 shadow-xs transition-colors duration-300 ease-in-out cursor-default flex items-center gap-4 sm:gap-5"
+                        className="principle-card w-full min-w-0 box-border bg-white rounded-2xl sm:rounded-3xl border border-[#E4DCFB] p-5 sm:p-6 lg:p-6.5 shadow-xs transition-colors duration-300 ease-in-out cursor-default flex items-center gap-4 sm:gap-5"
                       >
                         {/* Solid Purple Rounded-Square Container with White Icon - Permanently Stationary */}
                         <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-[#5929D6] text-white flex items-center justify-center shrink-0 shadow-xs">
@@ -469,21 +613,21 @@ export default function LifeAtGharPadharoPage() {
                         {/* Content: Heading & Description swap with bold purple secondary message on hover */}
                         <div className="principle-content-swap min-w-0 flex-1">
                           {/* Default Content: Black Heading + Gray Description */}
-                          <div className="principle-content-default">
-                            <h3 className="text-base sm:text-lg font-bold text-[#11152F] tracking-tight mb-1 sm:mb-1.5">
+                          <div className="principle-content-default min-w-0">
+                            <h3 className="text-base sm:text-lg font-bold text-[#11152F] tracking-tight mb-1 sm:mb-1.5 break-words">
                               {item.title}
                             </h3>
-                            <p className="text-sm sm:text-[14.5px] text-[#555A75] leading-relaxed font-normal m-0">
+                            <p className="text-sm sm:text-[14.5px] text-[#555A75] leading-relaxed font-normal m-0 break-words">
                               {item.description}
                             </p>
                           </div>
 
                           {/* Hover Content: Bold GharPadharo Purple Secondary Message */}
                           <div
-                            className="principle-content-hover"
+                            className="principle-content-hover min-w-0"
                             aria-hidden="true"
                           >
-                            <p className="text-base sm:text-[17px] lg:text-lg font-bold text-[#5929D6] tracking-tight leading-snug m-0">
+                            <p className="text-base sm:text-[17px] lg:text-lg font-bold text-[#5929D6] tracking-tight leading-snug m-0 break-words">
                               {item.hoverMessage}
                             </p>
                           </div>
@@ -503,37 +647,60 @@ export default function LifeAtGharPadharoPage() {
       ======================================================== */}
       <section
         id="the-people"
-        className="scroll-mt-24 w-full py-12 sm:py-14 md:py-16 lg:py-20 bg-white border-b border-[#E8E2FA]/60"
+        className="scroll-mt-24 w-full py-8 sm:py-10 md:py-12 lg:py-14 bg-white border-b border-[#E8E2FA]/60 overflow-hidden"
       >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 sm:gap-10 md:gap-8 lg:gap-12 xl:gap-14 items-center">
-            {/* Left Column: Office Team Visual (Image first on mobile, Left on tablet & desktop) */}
-            <div className="md:col-span-5 lg:col-span-5 w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 items-center">
+            {/* Left Column on Desktop / Bottom on Mobile: Office Team Visual */}
+            <div className="order-2 md:order-1 md:col-span-5 lg:col-span-5 w-full">
               <ScrollReveal variant="fade-up">
-                <div className="group relative w-full max-w-lg md:max-w-none mx-auto md:mx-0 aspect-[16/10] md:aspect-[4/3] rounded-[20px] md:rounded-[22px] overflow-hidden shadow-[0_12px_32px_rgba(89,41,214,0.08)] border border-[#E8E2FA] bg-white">
+                <div className="group relative w-full max-w-lg md:max-w-none mx-auto md:mx-0 aspect-[16/10] md:aspect-[16/11] rounded-[18px] sm:rounded-[20px] md:rounded-[22px] overflow-hidden shadow-[0_10px_28px_rgba(89,41,214,0.07)] border border-[#E8E2FA] bg-white">
                   <Image
                     src={WEBSITE_IMAGES.life.teamWorkspaceWork}
                     alt="Five colleagues in business attire collaborating in a modern office"
                     fill
                     className="object-cover object-[center_25%] transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 45vw, 480px"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 45vw, 520px"
                   />
                 </div>
               </ScrollReveal>
             </div>
 
-            {/* Right Column: Narrative (Text after image on mobile, Right on tablet & desktop) */}
-            <div className="md:col-span-7 lg:col-span-7 text-left space-y-3.5 sm:space-y-4">
-              <ScrollReveal variant="fade-up" delay={120}>
-                <div>
-                  <SectionBadge>THE PEOPLE</SectionBadge>
+            {/* Right Column on Desktop / Top on Mobile: Narrative */}
+            <div className="order-1 md:order-2 md:col-span-7 lg:col-span-7 text-center md:text-left">
+              <ScrollReveal variant="fade-up" delay={120} className="flex flex-col items-center md:items-start max-w-xl mx-auto md:max-w-none md:mx-0">
+                {/* Symmetrical Pill Badge Flanked by Animated Gradient Lines on Both Sides - Centered within column */}
+                <div className="w-full max-w-full flex items-center justify-center gap-2 xs:gap-2.5 sm:gap-3 lg:gap-3.5 mb-4 sm:mb-4.5 lg:mb-5 select-none">
+                  {/* Left horizontal line: outward travelling light towards the left */}
+                  <div
+                    className="relative overflow-hidden h-[2px] xs:h-[2.5px] rounded-full w-[28px] xs:w-[38px] sm:w-[70px] md:w-[90px] lg:w-[130px] xl:w-[150px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
+                    aria-hidden="true"
+                  >
+                    <div className="badge-line-glow-left" />
+                  </div>
+
+                  {/* Pill badge */}
+                  <div className="inline-flex items-center justify-center px-3.5 xs:px-4 sm:px-5 lg:px-5.5 py-1.5 xs:py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] to-[#8561FF] shadow-lg shadow-[#5929D6]/30 select-none shrink-0">
+                    {/* Typography: Bold serif uppercase with generous letter spacing */}
+                    <span className="font-serif font-bold text-[11px] xs:text-xs sm:text-[13px] lg:text-[13.5px] text-white tracking-[0.14em] xs:tracking-[0.16em] sm:tracking-[0.18em] lg:tracking-[0.22em] uppercase leading-none whitespace-nowrap text-center">
+                      THE PEOPLE
+                    </span>
+                  </div>
+
+                  {/* Right horizontal line: outward travelling light towards the right */}
+                  <div
+                    className="relative overflow-hidden h-[2px] xs:h-[2.5px] rounded-full w-[28px] xs:w-[38px] sm:w-[70px] md:w-[90px] lg:w-[130px] xl:w-[150px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
+                    aria-hidden="true"
+                  >
+                    <div className="badge-line-glow-right" />
+                  </div>
                 </div>
 
-                <h2 className="text-2xl sm:text-3xl md:text-[28px] lg:text-[34px] xl:text-[36px] font-extrabold text-[#11152F] tracking-tight leading-[1.2]">
+                <h2 className="text-[22px] xs:text-2xl sm:text-3xl md:text-[28px] lg:text-[34px] xl:text-[36px] font-extrabold text-[#11152F] tracking-tight leading-[1.25] sm:leading-[1.2] mb-3 sm:mb-3.5 lg:mb-4 text-center md:text-left">
                   Different skills. One shared purpose.
                 </h2>
 
-                <div className="space-y-3 sm:space-y-3.5 text-sm sm:text-base md:text-[15px] lg:text-[15.5px] text-[#555A75] leading-relaxed font-normal">
+                <div className="space-y-3 sm:space-y-3.5 text-sm sm:text-base md:text-[15px] lg:text-[15.5px] text-[#555A75] leading-relaxed font-normal text-center md:text-left max-w-lg md:max-w-none mx-auto md:mx-0">
                   <p>
                     Great products are built by people with different strengths. At GharPadharo, technology, product, operations, growth, marketing, and other disciplines come together to solve problems as a team.
                   </p>
@@ -562,8 +729,34 @@ export default function LifeAtGharPadharoPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <ScrollReveal variant="fade-up">
-            <div className="mb-8 sm:mb-12 text-center sm:text-left">
-              <SectionBadge className="mb-3">WHAT YOU CAN EXPECT</SectionBadge>
+            <div className="max-w-3xl mx-auto mb-8 sm:mb-12 text-center">
+              {/* Symmetrical Pill Badge Flanked by Animated Gradient Lines on Both Sides matching Explore Our Teams */}
+              <div className="flex items-center justify-center gap-3 sm:gap-3.5 mb-4 sm:mb-5 max-w-full w-full mx-auto">
+                {/* Left horizontal line: outward travelling light towards the left */}
+                <div
+                  className="relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
+                  aria-hidden="true"
+                >
+                  <div className="badge-line-glow-left" />
+                </div>
+
+                {/* Centered pill badge */}
+                <div className="inline-flex items-center justify-center px-4.5 sm:px-5.5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] to-[#8561FF] shadow-lg shadow-[#5929D6]/30 select-none shrink-0">
+                  {/* Typography: Bold serif uppercase with generous letter spacing */}
+                  <span className="font-serif font-bold text-xs sm:text-[13.5px] text-white tracking-[0.18em] sm:tracking-[0.22em] uppercase leading-none whitespace-nowrap text-center">
+                    WHAT YOU CAN EXPECT
+                  </span>
+                </div>
+
+                {/* Right horizontal line: outward travelling light towards the right */}
+                <div
+                  className="relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
+                  aria-hidden="true"
+                >
+                  <div className="badge-line-glow-right" />
+                </div>
+              </div>
+
               <h2 className="text-2xl sm:text-3xl lg:text-[34px] font-extrabold text-[#11152F] tracking-tight leading-snug">
                 An environment where you can do your best work.
               </h2>

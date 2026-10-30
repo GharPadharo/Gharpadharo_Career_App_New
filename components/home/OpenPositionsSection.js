@@ -5,13 +5,17 @@ import {
   PencilRuler,
   ChartNoAxesCombined,
   Settings,
+  Headphones,
+  Database,
+  Users,
+  Landmark,
+  Briefcase,
   Building2,
   MapPin,
   Clock,
   Calendar,
   ArrowRight,
 } from "lucide-react";
-import SectionBadge from "@/components/common/SectionBadge";
 import ScrollReveal from "@/components/common/ScrollReveal";
 
 /**
@@ -22,7 +26,7 @@ function getCategoryConfig(team = "", title = "") {
   const combined = `${team} ${title}`.toLowerCase();
   const teamLower = team.toLowerCase();
 
-  // Design / UI/UX / Creative / Brand (check title & team so UI/UX roles get PencilRuler)
+  // Design / UI/UX / Creative / Brand
   if (
     teamLower.includes("design") ||
     combined.includes("ui/ux") ||
@@ -39,12 +43,80 @@ function getCategoryConfig(team = "", title = "") {
   // Product / Product Management
   if (teamLower.includes("product") || combined.includes("product manager")) {
     return {
-      name: team || "Product",
+      name: team || "Product Management",
       Icon: Boxes,
     };
   }
 
-  // Growth & Marketing / Content
+  // Data & Analytics / Data Science
+  if (
+    teamLower.includes("data") ||
+    teamLower.includes("analytics") ||
+    combined.includes("data scientist") ||
+    combined.includes("analyst")
+  ) {
+    return {
+      name: team || "Data & Analytics",
+      Icon: Database,
+    };
+  }
+
+  // Sales & Business Development
+  if (
+    teamLower.includes("sales") ||
+    teamLower.includes("business development") ||
+    combined.includes("account executive") ||
+    combined.includes("sdr") ||
+    combined.includes("bde")
+  ) {
+    return {
+      name: team || "Sales & Business Development",
+      Icon: Briefcase,
+    };
+  }
+
+  // Customer Success & Support
+  if (
+    teamLower.includes("customer") ||
+    teamLower.includes("success") ||
+    teamLower.includes("support") ||
+    combined.includes("customer service") ||
+    combined.includes("client success")
+  ) {
+    return {
+      name: team || "Customer Success & Support",
+      Icon: Headphones,
+    };
+  }
+
+  // Human Resources & Talent Acquisition
+  if (
+    teamLower.includes("human resources") ||
+    teamLower.includes("talent") ||
+    teamLower.includes("hr") ||
+    combined.includes("recruiter") ||
+    combined.includes("people ops")
+  ) {
+    return {
+      name: team || "Human Resources & Talent Acquisition",
+      Icon: Users,
+    };
+  }
+
+  // Finance & Accounting
+  if (
+    teamLower.includes("finance") ||
+    teamLower.includes("accounting") ||
+    combined.includes("accountant") ||
+    combined.includes("financial")
+  ) {
+    return {
+      name: team || "Finance & Accounting",
+      Icon: Landmark,
+    };
+  }
+
+  // Marketing
   if (
     teamLower.includes("growth") ||
     teamLower.includes("market") ||
@@ -53,19 +125,16 @@ function getCategoryConfig(team = "", title = "") {
     combined.includes("content creator")
   ) {
     return {
-      name: team || "Growth & Marketing",
+      name: team || "Marketing",
       Icon: ChartNoAxesCombined,
     };
   }
 
-  // Operations / Sales / Business Development / HR
+  // Operations
   if (
     teamLower.includes("operation") ||
-    teamLower.includes("sales") ||
-    teamLower.includes("business") ||
-    teamLower.includes("communit") ||
-    teamLower.includes("people") ||
-    teamLower.includes("hr")
+    teamLower.includes("logistics") ||
+    teamLower.includes("supply")
   ) {
     return {
       name: team || "Operations",
@@ -73,9 +142,9 @@ function getCategoryConfig(team = "", title = "") {
     };
   }
 
-  // Engineering / Technology / Developer (default)
+  // Technology / Engineering (default)
   return {
-    name: team || "Engineering",
+    name: team || "Technology",
     Icon: Code2,
   };
 }
@@ -183,11 +252,53 @@ export default function OpenPositionsSection({ jobs = [] }) {
           opacity: 1;
         }
 
+        @keyframes badgeLineTravel {
+          0% {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          20% {
+            opacity: 0.9;
+          }
+          70% {
+            opacity: 0.7;
+          }
+          100% {
+            transform: translateX(350%);
+            opacity: 0;
+          }
+        }
+
+        .badge-line-glow {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 35%;
+          height: 100%;
+          border-radius: 9999px;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.4) 30%,
+            rgba(255, 255, 255, 0.95) 50%,
+            rgba(222, 218, 255, 0.8) 70%,
+            transparent 100%
+          );
+          animation: badgeLineTravel 2.5s ease-in-out infinite;
+          animation-delay: 0.3s;
+          pointer-events: none;
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .gp-job-card,
           .gp-card-top-highlight {
             transition: none !important;
             transform: none !important;
+          }
+          .badge-line-glow {
+            animation: none !important;
+            display: none !important;
           }
         }
       `}</style>
@@ -198,9 +309,24 @@ export default function OpenPositionsSection({ jobs = [] }) {
         <ScrollReveal variant="fade-up">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 sm:gap-4 mb-8 sm:mb-10 lg:mb-12">
             <div>
-              <SectionBadge className="mb-3.5">
-                OPEN POSITIONS
-              </SectionBadge>
+              {/* Reference Pill Badge with Gradient & Horizontal Gradient Divider */}
+              <div className="flex items-center gap-3.5 sm:gap-4 mb-4 sm:mb-5 max-w-full">
+                <div className="inline-flex items-center justify-center px-4.5 sm:px-5.5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] to-[#8561FF] shadow-lg shadow-[#5929D6]/30 select-none shrink-0">
+                  {/* Typography: Bold serif uppercase with generous letter spacing */}
+                  <span className="font-serif font-bold text-xs sm:text-[13.5px] text-white tracking-[0.18em] sm:tracking-[0.22em] uppercase leading-none whitespace-nowrap text-center">
+                    OPEN POSITIONS
+                  </span>
+                </div>
+
+                {/* Horizontal divider with travelling light animation */}
+                <div
+                  className="relative overflow-hidden h-[2.5px] rounded-full flex-1 max-w-[140px] sm:max-w-[220px] lg:max-w-[280px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
+                  aria-hidden="true"
+                >
+                  <div className="badge-line-glow" />
+                </div>
+              </div>
+
               <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[44px] font-extrabold text-[#11152F] tracking-tight leading-[1.12]">
                 Find <span className="text-[#5929D6]">your place</span> at GharPadharo.
               </h2>

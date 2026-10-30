@@ -1,16 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
-const CANONICAL_TEAMS = [
-  "Technology",
-  "Product Management",
-  "Operations",
-  "Marketing",
-  "Data Science",
-];
+import { JOB_CATEGORIES, isValidCategory } from "@/lib/teamCategories";
 
 const JOB_TYPES = ["Full-time", "Part-time", "Contract", "Internship"];
 
@@ -76,6 +69,15 @@ export default function JobForm({ initialData = null, isEdit = false }) {
   const [successBanner, setSuccessBanner] = useState(null);
   const [serverError, setServerError] = useState(null);
 
+  // Available team options (canonical categories + preserved legacy team if editing legacy job)
+  const teamOptions = useMemo(() => {
+    const list = [...JOB_CATEGORIES];
+    if (formData.team && !list.includes(formData.team)) {
+      list.push(formData.team);
+    }
+    return list;
+  }, [formData.team]);
+
   // Field change handler
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -125,8 +127,10 @@ export default function JobForm({ initialData = null, isEdit = false }) {
     if (!formData.title.trim()) {
       newErrors.title = "Job title is required.";
     }
-    if (!formData.team) {
+    if (!formData.team || !formData.team.trim()) {
       newErrors.team = "Please select a team.";
+    } else if (!isValidCategory(formData.team)) {
+      newErrors.team = "Please select a valid team category.";
     }
     if (!formData.type) {
       newErrors.type = "Please select a job type.";
@@ -356,7 +360,7 @@ export default function JobForm({ initialData = null, isEdit = false }) {
                     onChange={handleInputChange}
                     className="w-full px-3.5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-sm text-heading focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 cursor-pointer transition-all"
                   >
-                    {CANONICAL_TEAMS.map((t) => (
+                    {teamOptions.map((t) => (
                       <option key={t} value={t}>
                         {t}
                       </option>

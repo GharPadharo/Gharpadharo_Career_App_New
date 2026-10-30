@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { WEBSITE_IMAGES } from "@/lib/websiteImages";
-import SectionBadge from "@/components/common/SectionBadge";
 import ScrollReveal from "@/components/common/ScrollReveal";
 
 export default function LifeAtGharPadharoSection() {
@@ -79,17 +78,12 @@ export default function LifeAtGharPadharoSection() {
              ============================================================ */}
           <div className="w-full lg:w-[40%] xl:w-[39%] shrink-0 text-left space-y-5 sm:space-y-6">
             <ScrollReveal variant="fade-up">
-              <div>
-                <SectionBadge className="mb-3.5">
-                  LIFE AT GHARPADHARO
-                </SectionBadge>
-                <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[44px] font-extrabold tracking-tight leading-[1.12]">
-                  <span className="text-[#5929D6] block">People first.</span>
-                  <span className="text-[#11152F] block mt-1 xl:whitespace-nowrap">
-                    Problems worth solving.
-                  </span>
-                </h2>
-              </div>
+              <h2 className="text-3xl sm:text-4xl lg:text-[40px] xl:text-[44px] font-extrabold tracking-tight leading-[1.12]">
+                <span className="text-[#5929D6] block">People first.</span>
+                <span className="text-[#11152F] block mt-1 xl:whitespace-nowrap">
+                  Problems worth solving.
+                </span>
+              </h2>
 
               <p className="text-base sm:text-[16.5px] text-[#64748B] font-normal leading-relaxed max-w-[430px] mt-4">
                 From team celebrations to deep work sessions, here&apos;s a

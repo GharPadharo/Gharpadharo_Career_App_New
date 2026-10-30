@@ -429,13 +429,9 @@ export async function POST(request) {
       );
     }
 
-    if (!coverLetter || typeof coverLetter !== "string" || !coverLetter.trim()) {
-      return NextResponse.json(
-        { success: false, error: "Cover letter is required." },
-        { status: 400 }
-      );
-    }
-    if (coverLetter.length > 5000) {
+    const cleanCoverLetter =
+      typeof coverLetter === "string" ? coverLetter.trim() : "";
+    if (cleanCoverLetter.length > 5000) {
       return NextResponse.json(
         { success: false, error: "Cover letter cannot exceed 5000 characters." },
         { status: 400 }
@@ -516,7 +512,7 @@ export async function POST(request) {
         experience: experience.trim(),
         linkedin: (linkedin || "").trim().slice(0, 300),
         portfolio: (portfolio || "").trim().slice(0, 300),
-        coverLetter: coverLetter.trim(),
+        coverLetter: cleanCoverLetter,
         resume: resumeMetadata,
         consent: true,
         status: "new",

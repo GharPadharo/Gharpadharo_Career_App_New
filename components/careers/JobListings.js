@@ -15,6 +15,7 @@ import {
 import JobFilters from "./JobFilters";
 import JobCard from "./JobCard";
 import ScrollReveal from "@/components/common/ScrollReveal";
+import { matchesTeamFilter } from "@/lib/teamCategories";
 
 const PAGE_SIZE = 4;
 
@@ -172,9 +173,8 @@ export default function JobListings({
         }
       }
 
-      // Team filter
-      const isAllTeams = selectedTeam === "All teams" || selectedTeam === "All Teams";
-      if (!isAllTeams && job.team !== selectedTeam) {
+      // Team filter using centralized matching (supports legacy equivalence)
+      if (!matchesTeamFilter(selectedTeam, job.team)) {
         return false;
       }
 

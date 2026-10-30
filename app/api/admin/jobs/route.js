@@ -5,6 +5,7 @@ import User from "@/models/User";
 import { requireAdminAuth } from "@/lib/authGuard";
 import { serializeJob } from "@/lib/jobSerializer";
 import { logActivity } from "@/lib/activityLogger";
+import { JOB_CATEGORIES, isValidCategory } from "@/lib/teamCategories";
 
 export const dynamic = "force-dynamic";
 
@@ -89,6 +90,16 @@ export async function POST(request) {
     if (!team || !team.trim()) {
       return NextResponse.json(
         { success: false, error: "Team is required" },
+        { status: 400 }
+      );
+    }
+    const trimmedTeam = team.trim();
+    if (!isValidCategory(trimmedTeam)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: `Invalid team category. Must be one of: ${JOB_CATEGORIES.join(", ")}`,
+        },
         { status: 400 }
       );
     }

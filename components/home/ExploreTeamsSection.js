@@ -11,7 +11,6 @@ import {
   Settings,
 } from "lucide-react";
 import { WEBSITE_IMAGES } from "@/lib/websiteImages";
-import SectionBadge from "@/components/common/SectionBadge";
 
 const TEAMS = [
   {
@@ -305,6 +304,82 @@ export default function ExploreTeamsSection() {
           animation: missionHubBreathe 4.6s ease-in-out infinite;
         }
 
+        @keyframes badgeLineTravelRight {
+          0% {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+          20% {
+            opacity: 0.9;
+          }
+          70% {
+            opacity: 0.7;
+          }
+          100% {
+            transform: translateX(350%);
+            opacity: 0;
+          }
+        }
+
+        @keyframes badgeLineTravelLeft {
+          0% {
+            transform: translateX(350%);
+            opacity: 0;
+          }
+          20% {
+            opacity: 0.9;
+          }
+          70% {
+            opacity: 0.7;
+          }
+          100% {
+            transform: translateX(-100%);
+            opacity: 0;
+          }
+        }
+
+        .badge-line-glow-right {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 35%;
+          height: 100%;
+          border-radius: 9999px;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.4) 30%,
+            rgba(255, 255, 255, 0.95) 50%,
+            rgba(222, 218, 255, 0.8) 70%,
+            transparent 100%
+          );
+          animation: badgeLineTravelRight 2.5s ease-in-out infinite;
+          animation-delay: 0.3s;
+          pointer-events: none;
+        }
+
+        .badge-line-glow-left {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          width: 35%;
+          height: 100%;
+          border-radius: 9999px;
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(222, 218, 255, 0.8) 30%,
+            rgba(255, 255, 255, 0.95) 50%,
+            rgba(255, 255, 255, 0.4) 70%,
+            transparent 100%
+          );
+          animation: badgeLineTravelLeft 2.5s ease-in-out infinite;
+          animation-delay: 0.3s;
+          pointer-events: none;
+        }
+
         @media (prefers-reduced-motion: reduce) {
           .orbital-spin,
           .mission-hub-breathe {
@@ -315,6 +390,11 @@ export default function ExploreTeamsSection() {
           .orbital-card-icon {
             transition: none !important;
             transform: none !important;
+          }
+          .badge-line-glow-right,
+          .badge-line-glow-left {
+            animation: none !important;
+            display: none !important;
           }
         }
       `}</style>
@@ -332,9 +412,33 @@ export default function ExploreTeamsSection() {
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
           }`}
         >
-          <SectionBadge className="mb-3.5">
-            EXPLORE OUR TEAMS
-          </SectionBadge>
+          {/* Symmetrical Pill Badge Flanked by Animated Gradient Lines on Both Sides */}
+          <div className="flex items-center justify-center gap-3 sm:gap-3.5 mb-4 sm:mb-5 max-w-full w-full mx-auto">
+            {/* Left horizontal line: outward travelling light towards the left */}
+            <div
+              className="relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
+              aria-hidden="true"
+            >
+              <div className="badge-line-glow-left" />
+            </div>
+
+            {/* Centered pill badge */}
+            <div className="inline-flex items-center justify-center px-4.5 sm:px-5.5 py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] to-[#8561FF] shadow-lg shadow-[#5929D6]/30 select-none shrink-0">
+              {/* Typography: Bold serif uppercase with generous letter spacing */}
+              <span className="font-serif font-bold text-xs sm:text-[13.5px] text-white tracking-[0.18em] sm:tracking-[0.22em] uppercase leading-none whitespace-nowrap text-center">
+                EXPLORE OUR TEAMS
+              </span>
+            </div>
+
+            {/* Right horizontal line: outward travelling light towards the right */}
+            <div
+              className="relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
+              aria-hidden="true"
+            >
+              <div className="badge-line-glow-right" />
+            </div>
+          </div>
+
           <h2 className="text-3xl sm:text-4xl lg:text-[44px] xl:text-[48px] font-extrabold text-[#11152F] tracking-tight leading-[1.12]">
             Different <span className="text-[#5929D6]">skills.</span> Same{" "}
             <span className="text-[#5929D6]">mission.</span>

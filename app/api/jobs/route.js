@@ -3,6 +3,7 @@ import { connectDB } from "@/lib/mongodb";
 import Job from "@/models/Job";
 import { serializeJob } from "@/lib/jobSerializer";
 import { escapeRegex } from "@/lib/searchUtils";
+import { getFilterTeamMatchList } from "@/lib/teamCategories";
 
 export const dynamic = "force-dynamic";
 
@@ -26,8 +27,15 @@ export async function GET(request) {
 
     const query = { status: "active" };
 
-    if (team && team.toLowerCase() !== "all") {
-      query.team = team;
+    if (team && team.toLowerCase() !== "all" && team.toLowerCase() !== "all teams") {
+      const matchingTeams = getFilterTeamMatchList(team);
+      if (matchingTeams.length === 1) {
+        query.team = matchingTeams[0];
+      } else if (matchingTeams.length > 1) {
+        query.team = { $in: matchingTeams };
+      } else {
+        query.team = team;
+      }
     }
 
     if (type && type.toLowerCase() !== "all") {

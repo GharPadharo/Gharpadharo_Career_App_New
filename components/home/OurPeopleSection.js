@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { WEBSITE_IMAGES } from "@/lib/websiteImages";
-import SectionBadge from "@/components/common/SectionBadge";
 import ScrollReveal from "@/components/common/ScrollReveal";
 
 export default function OurPeopleSection() {
@@ -129,17 +128,13 @@ export default function OurPeopleSection() {
              ============================================================ */}
           <div className="w-full md:w-[35%] lg:w-[30%] shrink-0 text-left">
             <ScrollReveal variant="fade-up">
-              <SectionBadge className="mb-9 sm:mb-10 lg:mb-11">
-                OUR PEOPLE
-              </SectionBadge>
-
               <h2 className="text-3xl sm:text-4xl lg:text-[42px] xl:text-[46px] font-extrabold text-[#11152F] tracking-tight leading-[1.12]">
                 What our <span className="text-[#5929D6]">team</span>
                 <br />
                 says.
               </h2>
 
-              <p className="text-sm sm:text-base lg:text-[16.5px] text-[#64748B] font-normal leading-relaxed mt-5 sm:mt-6 max-w-[320px] sm:max-w-[360px]">
+              <p className="text-sm sm:text-base lg:text-[16.5px] text-[#64748B] font-normal leading-relaxed mt-4 sm:mt-5 max-w-[320px] sm:max-w-[360px]">
                 Real experiences from people building at GharPadharo.
               </p>
             </ScrollReveal>

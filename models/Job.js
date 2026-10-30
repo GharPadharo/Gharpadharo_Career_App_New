@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { isValidCategory } from "../lib/teamCategories.js";
 
 const sanitizeStringArray = (arr) =>
   Array.isArray(arr) ? arr.map((s) => (typeof s === "string" ? s.trim() : "")).filter(Boolean) : [];
@@ -22,6 +23,10 @@ const JobSchema = new mongoose.Schema(
       type: String,
       required: [true, "Team is required"],
       trim: true,
+      validate: {
+        validator: isValidCategory,
+        message: (props) => `${props.value} is not a valid team category`,
+      },
     },
     type: {
       type: String,
