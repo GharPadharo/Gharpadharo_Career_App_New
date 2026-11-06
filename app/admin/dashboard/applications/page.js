@@ -4,6 +4,7 @@ import Job from "@/models/Job";
 import { serializeApplication } from "@/lib/applicationSerializer";
 import { serializeJob } from "@/lib/jobSerializer";
 import AdminApplicationsTable from "@/components/admin/AdminApplicationsTable";
+import OpenLiveSpreadsheetButton from "@/components/admin/OpenLiveSpreadsheetButton";
 import DownloadSpreadsheetButton from "@/components/admin/DownloadSpreadsheetButton";
 
 export const dynamic = "force-dynamic";
@@ -55,8 +56,9 @@ export default async function AdminApplicationsPage() {
           </p>
         </div>
 
-        {/* Action: Download Applications Spreadsheet */}
-        <div className="w-full sm:w-auto shrink-0">
+        {/* Actions: Open Live Spreadsheet + Download Applications Spreadsheet */}
+        <div className="w-full sm:w-auto flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 shrink-0">
+          <OpenLiveSpreadsheetButton />
           <DownloadSpreadsheetButton />
         </div>
       </div>

@@ -127,14 +127,6 @@ export default function Footer() {
                   Jobs
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/admin/login"
-                  className="text-slate-400 hover:text-white transition-colors duration-150 inline-block focus:outline-none focus:underline"
-                >
-                  Admin Login
-                </Link>
-              </li>
             </ul>
           </div>
 

@@ -319,7 +319,7 @@ export default function WhatYouCanExpectSection() {
 
                 {/* Horizontal divider with travelling light animation */}
                 <div
-                  className="relative overflow-hidden h-[2.5px] rounded-full flex-1 max-w-[140px] sm:max-w-[220px] lg:max-w-[280px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
+                  className="hidden sm:block relative overflow-hidden h-[2.5px] rounded-full flex-1 max-w-[140px] sm:max-w-[220px] lg:max-w-[280px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
                   aria-hidden="true"
                 >
                   <div className="badge-line-glow" />

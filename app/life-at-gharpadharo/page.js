@@ -417,6 +417,84 @@ export default function LifeAtGharPadharoPage() {
               display: none !important;
             }
           }
+
+          /* ========================================================
+             PREMIUM PURPLE ANNIVERSARY BADGE ANIMATIONS
+          ======================================================== */
+          @keyframes purpleGlowPulse {
+            0%, 100% {
+              box-shadow: 0 4px 18px -2px rgba(85, 40, 216, 0.35), 0 2px 8px rgba(121, 82, 246, 0.20);
+            }
+            50% {
+              box-shadow: 0 6px 26px 0px rgba(85, 40, 216, 0.48), 0 3px 12px rgba(121, 82, 246, 0.28);
+            }
+          }
+
+          @keyframes purpleGlassSweep {
+            0% {
+              background-position: -150% 0%;
+              opacity: 0;
+            }
+            15% {
+              opacity: 0.65;
+            }
+            50% {
+              background-position: 250% 0%;
+              opacity: 0.55;
+            }
+            51%, 100% {
+              background-position: 250% 0%;
+              opacity: 0;
+            }
+          }
+
+          @keyframes purpleBadgeEntrance {
+            0% {
+              opacity: 0;
+              transform: translateY(10px) scale(0.98);
+            }
+            100% {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+
+          .purple-anniversary-badge {
+            background: linear-gradient(135deg, #5528D8 0%, #663DE0 48%, #7952F6 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            animation: purpleGlowPulse 4s ease-in-out infinite, purpleBadgeEntrance 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+            transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
+          }
+
+          .purple-anniversary-badge:hover {
+            transform: scale(1.025);
+            box-shadow: 0 8px 30px rgba(85, 40, 216, 0.52), 0 3px 14px rgba(121, 82, 246, 0.35);
+          }
+
+          .purple-glass-shimmer {
+            background: linear-gradient(
+              110deg,
+              transparent 0%,
+              transparent 40%,
+              rgba(255, 255, 255, 0.12) 48%,
+              rgba(255, 255, 255, 0.32) 50%,
+              rgba(255, 255, 255, 0.12) 52%,
+              transparent 60%,
+              transparent 100%
+            );
+            background-size: 250% 100%;
+            animation: purpleGlassSweep 5.5s ease-in-out infinite;
+          }
+
+          @media (prefers-reduced-motion: reduce) {
+            .purple-anniversary-badge,
+            .purple-glass-shimmer {
+              animation: none !important;
+              transition: none !important;
+              opacity: 1 !important;
+              transform: none !important;
+            }
+          }
         `}</style>
 
         {/* Hero Content Container */}
@@ -643,74 +721,243 @@ export default function LifeAtGharPadharoPage() {
       </section>
 
       {/* ========================================================
-          4. THE PEOPLE (White Background)
+          4. CELEBRATING 2 YEARS OF GHARPADHARO (Anniversary Section)
       ======================================================== */}
       <section
-        id="the-people"
-        className="scroll-mt-24 w-full py-8 sm:py-10 md:py-12 lg:py-14 bg-white border-b border-[#E8E2FA]/60 overflow-hidden"
+        id="celebrating-2-years"
+        className="relative scroll-mt-24 w-full pt-8 pb-12 xs:pt-10 xs:pb-14 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white via-[#FAF8FF] to-white border-b border-[#E8E2FA]/60 overflow-hidden"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 sm:gap-6 md:gap-8 lg:gap-10 xl:gap-12 items-center">
-            {/* Left Column on Desktop / Bottom on Mobile: Office Team Visual */}
-            <div className="order-2 md:order-1 md:col-span-5 lg:col-span-5 w-full">
-              <ScrollReveal variant="fade-up">
-                <div className="group relative w-full max-w-lg md:max-w-none mx-auto md:mx-0 aspect-[16/10] md:aspect-[16/11] rounded-[18px] sm:rounded-[20px] md:rounded-[22px] overflow-hidden shadow-[0_10px_28px_rgba(89,41,214,0.07)] border border-[#E8E2FA] bg-white">
+        {/* Subtle decorative background numeral watermark "02" */}
+        <div
+          className="absolute right-2 sm:right-10 lg:right-16 top-3 sm:top-10 select-none pointer-events-none font-black text-[90px] xs:text-[110px] sm:text-[180px] lg:text-[230px] leading-none text-[#5929D6]/[0.03] tracking-tighter -z-0"
+          aria-hidden="true"
+        >
+          02
+        </div>
+
+        {/* Ambient lavender glow */}
+        <div
+          className="absolute -top-24 left-1/2 -translate-x-1/2 w-[320px] sm:w-[600px] h-[280px] bg-gradient-to-b from-[#8561FF]/10 to-transparent rounded-full blur-3xl pointer-events-none -z-0"
+          aria-hidden="true"
+        />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-3.5 xs:px-4 sm:px-6 lg:px-8">
+          {/* Section Header: Narrative & Anniversary Badges */}
+          <ScrollReveal variant="fade-up">
+            <div className="max-w-3xl mx-auto text-center mb-6 xs:mb-8 sm:mb-12 lg:mb-14">
+              {/* Symmetrical Pill Badge Flanked by Animated Gradient Lines */}
+              <div className="w-full max-w-full flex items-center justify-center gap-1.5 xs:gap-2.5 sm:gap-3 lg:gap-3.5 mb-3 sm:mb-4 lg:mb-5 select-none px-1">
+                {/* Left horizontal line */}
+                <div
+                  className="hidden sm:block relative overflow-hidden h-[2px] xs:h-[2.5px] rounded-full w-[16px] xs:w-[28px] sm:w-[70px] md:w-[90px] lg:w-[130px] xl:w-[150px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
+                  aria-hidden="true"
+                >
+                  <div className="badge-line-glow-left" />
+                </div>
+
+                {/* Pill badge */}
+                <div className="inline-flex items-center justify-center px-3.5 xs:px-4.5 sm:px-5.5 py-1.5 xs:py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] to-[#8561FF] shadow-lg shadow-[#5929D6]/25 select-none shrink-0">
+                  <span className="font-bold text-[10.5px] xs:text-[11.5px] sm:text-[13px] lg:text-[13.5px] text-white tracking-[0.10em] xs:tracking-[0.14em] sm:tracking-[0.18em] lg:tracking-[0.22em] uppercase leading-none whitespace-nowrap text-center">
+                    2 YEARS OF GHARPADHARO
+                  </span>
+                </div>
+
+                {/* Right horizontal line */}
+                <div
+                  className="hidden sm:block relative overflow-hidden h-[2px] xs:h-[2.5px] rounded-full w-[16px] xs:w-[28px] sm:w-[70px] md:w-[90px] lg:w-[130px] xl:w-[150px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
+                  aria-hidden="true"
+                >
+                  <div className="badge-line-glow-right" />
+                </div>
+              </div>
+
+              {/* Main Heading */}
+              <h2 className="text-[25px] xs:text-[27px] sm:text-3xl md:text-[38px] lg:text-[42px] font-extrabold text-[#11152F] tracking-tight leading-[1.24] xs:leading-[1.22] sm:leading-[1.2] mb-2.5 xs:mb-3 sm:mb-4 max-w-2xl mx-auto text-center">
+                Two Years of Dreams, Growth &amp; Building Together.
+              </h2>
+
+              {/* Description */}
+              <p className="text-[14px] xs:text-[14.5px] sm:text-base lg:text-[18px] text-[#4E5270] leading-[1.6] xs:leading-relaxed mb-2 xs:mb-2.5 sm:mb-3.5 max-w-2xl mx-auto text-center">
+                Two incredible years of learning, creating, overcoming challenges, and growing together. What started as an idea has become a journey powered by passionate people, shared ambitions, and a vision to make finding homes simpler.
+              </p>
+
+              {/* Supporting Text */}
+              <p className="text-[13px] xs:text-[13.5px] sm:text-sm lg:text-base text-[#6B708D] leading-[1.55] xs:leading-relaxed mb-4 xs:mb-5 sm:mb-6 lg:mb-7 max-w-xl mx-auto text-center">
+                Here&apos;s to the memories we&apos;ve made, the milestones we&apos;ve achieved, and everything still waiting to be built.
+              </p>
+
+              {/* Highlight Pill: Premium GharPadharo Purple Anniversary Badge */}
+              <div className="relative inline-flex items-center justify-center my-0.5 xs:my-1 select-none max-w-full">
+                <div className="purple-anniversary-badge relative flex items-center justify-center gap-1.5 xs:gap-2 sm:gap-2.5 px-4 xs:px-5 sm:px-6 py-1.5 xs:py-2 sm:py-2.5 rounded-full overflow-hidden max-w-full cursor-default text-center">
+                  {/* Subtle Translucent Light Sweep Shimmer */}
+                  <div className="purple-glass-shimmer absolute inset-0 pointer-events-none rounded-full" aria-hidden="true" />
+
+                  {/* "2 Years" */}
+                  <span className="text-white font-bold tracking-wide text-[11px] xs:text-[12px] sm:text-[13px] md:text-sm whitespace-nowrap leading-none relative z-10">
+                    2 Years
+                  </span>
+
+                  {/* Separator 1 */}
+                  <span className="text-[#D8CCFF] opacity-85 select-none text-[9px] xs:text-[10px] sm:text-xs mx-0.5 leading-none relative z-10">
+                    &bull;
+                  </span>
+
+                  {/* "Countless Memories" */}
+                  <span className="text-white font-bold tracking-wide text-[11px] xs:text-[12px] sm:text-[13px] md:text-sm whitespace-nowrap leading-none relative z-10">
+                    Countless Memories
+                  </span>
+
+                  {/* Separator 2 */}
+                  <span className="text-[#D8CCFF] opacity-85 select-none text-[9px] xs:text-[10px] sm:text-xs mx-0.5 leading-none relative z-10">
+                    &bull;
+                  </span>
+
+                  {/* "One Shared Vision" */}
+                  <span className="text-white font-semibold tracking-wide text-[11px] xs:text-[12px] sm:text-[13px] md:text-sm whitespace-nowrap leading-none relative z-10">
+                    One Shared Vision
+                  </span>
+                </div>
+              </div>
+            </div>
+          </ScrollReveal>
+
+          {/* Asymmetric Editorial Photo Collage */}
+          <ScrollReveal variant="fade-up" delay={150}>
+            {/* --------------------------------------------------------
+                MOBILE & TABLET COLLAGE LAYOUT (Below lg: <1024px)
+                - Mobile (<640px): Dedicated full-width vertical single-column
+                - Tablet (640px-1023px): Balanced 2-column grid
+            -------------------------------------------------------- */}
+            <div className="lg:hidden flex flex-col sm:grid sm:grid-cols-2 gap-3.5 xs:gap-4 sm:gap-5">
+              {/* Photo 1: Main Anniversary Team Celebration (Birthday Cake) */}
+              <div className="group relative w-full h-[290px] xs:h-[320px] sm:h-[300px] md:h-[340px] rounded-2xl xs:rounded-[20px] sm:rounded-3xl overflow-hidden border border-[#E8E2FA] bg-white shadow-[0_10px_28px_rgba(89,41,214,0.08)]">
+                <Image
+                  src={WEBSITE_IMAGES.life.anniversaryCakeCelebration}
+                  alt="GharPadharo team celebrating 2nd anniversary with birthday cake and decorations"
+                  fill
+                  className="object-cover object-[center_46%] sm:object-[center_48%] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                  priority={false}
+                />
+                {/* Gradient Overlay for Caption Readability */}
+                <div
+                  className="absolute inset-0 bg-gradient-to-t from-[#11152F]/80 via-[#11152F]/20 to-transparent pointer-events-none"
+                  aria-hidden="true"
+                />
+                {/* Bottom Caption Overlay */}
+                <div className="absolute bottom-3 left-3.5 right-3.5 sm:bottom-4 sm:left-4 sm:right-4 z-10 text-white">
+                  <p className="text-xs sm:text-[13px] font-medium text-white/95 drop-shadow-sm leading-snug">
+                    Celebrating the people and energy that power GharPadharo every day.
+                  </p>
+                </div>
+              </div>
+
+              {/* Photo 2: Anniversary Celebration Group Photo */}
+              <div className="group relative w-full h-[210px] xs:h-[230px] sm:h-[300px] md:h-[340px] rounded-2xl xs:rounded-[20px] sm:rounded-3xl overflow-hidden border border-[#E8E2FA] bg-white shadow-[0_8px_24px_rgba(89,41,214,0.06)]">
+                <Image
+                  src={WEBSITE_IMAGES.life.anniversaryGroupPhoto}
+                  alt="GharPadharo team celebrating anniversary together with gift hampers, cakes, and balloons"
+                  fill
+                  className="object-cover object-[center_31%] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                />
+              </div>
+
+              {/* Photo 3: Anniversary Gift Hamper */}
+              <div className="group relative w-full h-[240px] xs:h-[260px] sm:h-[300px] md:h-[340px] rounded-2xl xs:rounded-[20px] sm:rounded-3xl overflow-hidden border border-[#E8E2FA] bg-white shadow-[0_8px_24px_rgba(89,41,214,0.06)]">
+                <Image
+                  src={WEBSITE_IMAGES.life.anniversaryHamper}
+                  alt="Ornate snack hamper at GharPadharo anniversary event"
+                  fill
+                  className="object-cover object-[center_52%] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                />
+              </div>
+
+              {/* Photo 4: Anniversary Celebration Setup */}
+              <div className="group relative w-full h-[240px] xs:h-[260px] sm:h-[300px] md:h-[340px] rounded-2xl xs:rounded-[20px] sm:rounded-3xl overflow-hidden border border-[#E8E2FA] bg-white shadow-[0_8px_24px_rgba(89,41,214,0.06)]">
+                <Image
+                  src={WEBSITE_IMAGES.life.anniversaryDisplay}
+                  alt="GharPadharo anniversary celebration display with balloons, backdrop, and cakes"
+                  fill
+                  className="object-cover object-[50%_68%] scale-[1.18] origin-[50%_68%] transition-transform duration-700 ease-out group-hover:scale-[1.24]"
+                  sizes="(max-width: 640px) 100vw, 50vw"
+                />
+              </div>
+            </div>
+
+            {/* --------------------------------------------------------
+                DESKTOP COLLAGE LAYOUT (lg: >=1024px)
+                - Preserved 100% unchanged asymmetric editorial collage
+            -------------------------------------------------------- */}
+            <div className="hidden lg:grid lg:grid-cols-12 gap-4 sm:gap-5 lg:gap-5 items-stretch">
+              {/* Featured Large Photograph (Col 1-7) */}
+              <div className="lg:col-span-7 flex flex-col">
+                <div className="group relative w-full h-full min-h-[300px] sm:min-h-[380px] md:min-h-[440px] lg:min-h-[490px] xl:min-h-[510px] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2FA] bg-white shadow-[0_12px_36px_rgba(89,41,214,0.08)]">
                   <Image
-                    src={WEBSITE_IMAGES.life.teamWorkspaceWork}
-                    alt="Five colleagues in business attire collaborating in a modern office"
+                    src={WEBSITE_IMAGES.life.anniversaryCakeCelebration}
+                    alt="GharPadharo team celebrating 2nd anniversary with birthday cake and decorations"
                     fill
-                    className="object-cover object-[center_25%] transition-transform duration-500 ease-out group-hover:scale-[1.02]"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 45vw, 520px"
+                    className="object-cover object-[center_46%] sm:object-[center_48%] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    sizes="(max-width: 1024px) 100vw, 58vw"
+                    priority={false}
+                  />
+
+                  {/* Gradient Overlay for Caption Readability */}
+                  <div
+                    className="absolute inset-0 bg-gradient-to-t from-[#11152F]/70 via-[#11152F]/10 to-transparent pointer-events-none"
+                    aria-hidden="true"
+                  />
+
+                  {/* Bottom Caption Overlay */}
+                  <div className="absolute bottom-3.5 left-3.5 right-3.5 sm:bottom-5 sm:left-5 sm:right-5 z-10 text-white">
+                    <p className="text-xs sm:text-sm font-medium text-white/90 drop-shadow-xs">
+                      Celebrating the people and energy that power GharPadharo every day.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Supporting Photos Stack (Col 8-12) */}
+              <div className="lg:col-span-5 flex flex-col gap-3.5 sm:gap-4 lg:gap-4">
+                {/* Top Supporting Image: Anniversary Celebration Group Photo */}
+                <div className="group relative w-full h-[190px] xs:h-[210px] sm:h-[225px] lg:h-[210px] xl:h-[220px] shrink-0 rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2FA] bg-white shadow-[0_10px_28px_rgba(89,41,214,0.06)]">
+                  <Image
+                    src={WEBSITE_IMAGES.life.anniversaryGroupPhoto}
+                    alt="GharPadharo team celebrating anniversary together with gift hampers, cakes, and balloons"
+                    fill
+                    className="object-cover object-[center_31%] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    sizes="(max-width: 1024px) 100vw, 42vw"
                   />
                 </div>
-              </ScrollReveal>
-            </div>
 
-            {/* Right Column on Desktop / Top on Mobile: Narrative */}
-            <div className="order-1 md:order-2 md:col-span-7 lg:col-span-7 text-center md:text-left">
-              <ScrollReveal variant="fade-up" delay={120} className="flex flex-col items-center md:items-start max-w-xl mx-auto md:max-w-none md:mx-0">
-                {/* Symmetrical Pill Badge Flanked by Animated Gradient Lines on Both Sides - Centered within column */}
-                <div className="w-full max-w-full flex items-center justify-center gap-2 xs:gap-2.5 sm:gap-3 lg:gap-3.5 mb-4 sm:mb-4.5 lg:mb-5 select-none">
-                  {/* Left horizontal line: outward travelling light towards the left */}
-                  <div
-                    className="relative overflow-hidden h-[2px] xs:h-[2.5px] rounded-full w-[28px] xs:w-[38px] sm:w-[70px] md:w-[90px] lg:w-[130px] xl:w-[150px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
-                    aria-hidden="true"
-                  >
-                    <div className="badge-line-glow-left" />
+                {/* Bottom Row: 2 Supporting Images (Anniversary Hamper + Celebration Display) */}
+                <div className="grid grid-cols-2 gap-3 sm:gap-3.5 lg:gap-4 flex-1">
+                  {/* Anniversary Gift Hamper */}
+                  <div className="group relative w-full h-[205px] xs:h-[225px] sm:h-[255px] md:h-[275px] lg:h-full lg:min-h-[265px] xl:min-h-[285px] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2FA] bg-white shadow-[0_10px_28px_rgba(89,41,214,0.06)]">
+                    <Image
+                      src={WEBSITE_IMAGES.life.anniversaryHamper}
+                      alt="Ornate snack hamper at GharPadharo anniversary event"
+                      fill
+                      className="object-cover object-[center_52%] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                      sizes="(max-width: 1024px) 50vw, 21vw"
+                    />
                   </div>
 
-                  {/* Pill badge */}
-                  <div className="inline-flex items-center justify-center px-3.5 xs:px-4 sm:px-5 lg:px-5.5 py-1.5 xs:py-2 sm:py-2.5 rounded-full bg-gradient-to-r from-[#5929D6] to-[#8561FF] shadow-lg shadow-[#5929D6]/30 select-none shrink-0">
-                    {/* Typography: Bold serif uppercase with generous letter spacing */}
-                    <span className="font-serif font-bold text-[11px] xs:text-xs sm:text-[13px] lg:text-[13.5px] text-white tracking-[0.14em] xs:tracking-[0.16em] sm:tracking-[0.18em] lg:tracking-[0.22em] uppercase leading-none whitespace-nowrap text-center">
-                      THE PEOPLE
-                    </span>
-                  </div>
-
-                  {/* Right horizontal line: outward travelling light towards the right */}
-                  <div
-                    className="relative overflow-hidden h-[2px] xs:h-[2.5px] rounded-full w-[28px] xs:w-[38px] sm:w-[70px] md:w-[90px] lg:w-[130px] xl:w-[150px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
-                    aria-hidden="true"
-                  >
-                    <div className="badge-line-glow-right" />
+                  {/* Anniversary Celebration Setup */}
+                  <div className="group relative w-full h-[205px] xs:h-[225px] sm:h-[255px] md:h-[275px] lg:h-full lg:min-h-[265px] xl:min-h-[285px] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#E8E2FA] bg-white shadow-[0_10px_28px_rgba(89,41,214,0.06)]">
+                    <Image
+                      src={WEBSITE_IMAGES.life.anniversaryDisplay}
+                      alt="GharPadharo anniversary celebration display with balloons, backdrop, and cakes"
+                      fill
+                      className="object-cover object-[50%_68%] scale-[1.24] origin-[50%_68%] transition-transform duration-700 ease-out group-hover:scale-[1.28]"
+                      sizes="(max-width: 1024px) 50vw, 21vw"
+                    />
                   </div>
                 </div>
-
-                <h2 className="text-[22px] xs:text-2xl sm:text-3xl md:text-[28px] lg:text-[34px] xl:text-[36px] font-extrabold text-[#11152F] tracking-tight leading-[1.25] sm:leading-[1.2] mb-3 sm:mb-3.5 lg:mb-4 text-center md:text-left">
-                  Different skills. One shared purpose.
-                </h2>
-
-                <div className="space-y-3 sm:space-y-3.5 text-sm sm:text-base md:text-[15px] lg:text-[15.5px] text-[#555A75] leading-relaxed font-normal text-center md:text-left max-w-lg md:max-w-none mx-auto md:mx-0">
-                  <p>
-                    Great products are built by people with different strengths. At GharPadharo, technology, product, operations, growth, marketing, and other disciplines come together to solve problems as a team.
-                  </p>
-                  <p>
-                    We value curiosity, ownership, openness, and the willingness to help each other get better.
-                  </p>
-                </div>
-              </ScrollReveal>
+              </div>
             </div>
-          </div>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -734,7 +981,7 @@ export default function LifeAtGharPadharoPage() {
               <div className="flex items-center justify-center gap-3 sm:gap-3.5 mb-4 sm:mb-5 max-w-full w-full mx-auto">
                 {/* Left horizontal line: outward travelling light towards the left */}
                 <div
-                  className="relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
+                  className="hidden sm:block relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
                   aria-hidden="true"
                 >
                   <div className="badge-line-glow-left" />
@@ -750,7 +997,7 @@ export default function LifeAtGharPadharoPage() {
 
                 {/* Right horizontal line: outward travelling light towards the right */}
                 <div
-                  className="relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
+                  className="hidden sm:block relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
                   aria-hidden="true"
                 >
                   <div className="badge-line-glow-right" />

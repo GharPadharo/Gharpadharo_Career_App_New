@@ -9,6 +9,7 @@ import { logActivity } from "@/lib/activityLogger";
 import { appendApplicationToSheet } from "@/lib/googleSheets";
 import { getOrCreateResumeToken } from "@/lib/resumeTokens";
 import { getNextApplicationNumber } from "@/lib/applicationCounter";
+import { sendNewApplicationNotification } from "@/lib/emailService";
 import {
   RATE_LIMIT_RULES,
   addRateLimitHeaders,
@@ -344,6 +345,11 @@ export async function POST(request) {
         console.error("Google Sheets sync error (general):", syncErr?.message || syncErr);
       });
 
+      // Automatic email notification to active administrators (fails safely, never breaks submission)
+      await sendNewApplicationNotification(newApplication).catch((mailErr) => {
+        console.error("Admin notification email failed safely (general):", mailErr?.message || mailErr);
+      });
+
       const response = NextResponse.json(
         {
           success: true,
@@ -548,6 +554,11 @@ export async function POST(request) {
     // Secondary downstream sync to Google Sheets (fails safely, never breaks submission)
     await appendApplicationToSheet(newApplication).catch((syncErr) => {
       console.error("Google Sheets sync error (job):", syncErr?.message || syncErr);
+    });
+
+    // Automatic email notification to active administrators (fails safely, never breaks submission)
+    await sendNewApplicationNotification(newApplication).catch((mailErr) => {
+      console.error("Admin notification email failed safely (job):", mailErr?.message || mailErr);
     });
 
     const response = NextResponse.json(

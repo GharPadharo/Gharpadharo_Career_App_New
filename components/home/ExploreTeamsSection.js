@@ -416,7 +416,7 @@ export default function ExploreTeamsSection() {
           <div className="flex items-center justify-center gap-3 sm:gap-3.5 mb-4 sm:mb-5 max-w-full w-full mx-auto">
             {/* Left horizontal line: outward travelling light towards the left */}
             <div
-              className="relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
+              className="hidden sm:block relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-transparent via-[#A78BFA]/60 to-[#8561FF] shrink"
               aria-hidden="true"
             >
               <div className="badge-line-glow-left" />
@@ -432,7 +432,7 @@ export default function ExploreTeamsSection() {
 
             {/* Right horizontal line: outward travelling light towards the right */}
             <div
-              className="relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
+              className="hidden sm:block relative overflow-hidden h-[2.5px] rounded-full w-[36px] sm:w-[90px] md:w-[130px] lg:w-[160px] bg-gradient-to-r from-[#8561FF] via-[#A78BFA]/60 to-transparent shrink"
               aria-hidden="true"
             >
               <div className="badge-line-glow-right" />
